@@ -1,0 +1,26 @@
+/*
+ * Injected with chrome.scripting.insertCSS. Injected sheets are invisible to
+ * the page's scripts, and these rules only style Bowerline's own named
+ * highlights (CSS Custom Highlight API), so no page element is restyled.
+ */
+::highlight(bowerline-yellow) {
+  background-color: rgba(255, 225, 77, 0.78);
+  color: #18214d;
+}
+::highlight(bowerline-mint) {
+  background-color: rgba(142, 240, 198, 0.85);
+  color: #18214d;
+}
+::highlight(bowerline-pink) {
+  background-color: rgba(255, 169, 216, 0.85);
+  color: #18214d;
+}
+::highlight(bowerline-sky) {
+  background-color: rgba(156, 220, 255, 0.9);
+  color: #18214d;
+}
+::highlight(bowerline-focus) {
+  background-color: rgba(24, 33, 77, 0.16);
+  text-decoration: underline 3px rgba(24, 33, 77, 0.85);
+  text-underline-offset: 3px;
+}

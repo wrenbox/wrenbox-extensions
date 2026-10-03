@@ -1,0 +1,133 @@
+body {
+  width: 340px;
+  padding: 14px 14px 12px;
+  background: var(--surface);
+}
+.head {
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.head .wordmark {
+  height: 24px;
+  width: auto;
+}
+.status {
+  display: flex;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.status .dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.status[data-state='active'] .dot {
+  background: #1f9d62;
+  box-shadow: 0 0 0 3px rgba(31, 157, 98, 0.18);
+}
+.status[data-state='restricted'] .dot,
+.status[data-state='error'] .dot {
+  background: #c9822b;
+}
+.status-title {
+  font-weight: 600;
+}
+.status-sub {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+.default-colour {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 14px 2px 10px;
+}
+.label {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.colours {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.colour-name {
+  grid-column: 1 / -1;
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+.action {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: 500 14px/1.2 var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+.action:hover {
+  background: var(--paper);
+}
+.action svg {
+  flex: none;
+  color: var(--muted);
+}
+.action.primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.action.primary svg {
+  color: inherit;
+}
+.action.primary:hover {
+  filter: brightness(1.15);
+}
+.action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.foot {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.action kbd {
+  flex: none;
+  min-width: 0;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: inherit;
+  background: transparent;
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+.action > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

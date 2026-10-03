@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- connect-src is set at runtime by pdf-loader.ts to this extension plus the PDF's own origin. -->
+    <title>Bowerline PDF viewer</title>
+    <link rel="icon" href="../icons/icon-32.png" />
+    <link rel="stylesheet" href="pdf_viewer.css" />
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/components.css" />
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="file">
+        <button
+          id="open-file"
+          class="icon-btn"
+          type="button"
+          title="Open another PDF"
+          aria-label="Open another PDF"
+        ></button>
+        <h1 id="file-name" class="file-name">Bowerline PDF viewer</h1>
+      </div>
+      <div class="pill pager" id="pager" hidden>
+        <label for="page-input">Page</label>
+        <input id="page-input" type="number" min="1" value="1" inputmode="numeric" />
+        <span>of <span id="page-count">1</span></span>
+      </div>
+      <div class="pill zoom" id="zoom-box" hidden>
+        <button
+          id="zoom-out"
+          type="button"
+          class="pill-btn"
+          aria-label="Zoom out"
+          title="Zoom out (−)"
+        >
+          −
+        </button>
+        <label for="zoom" class="sr-only">Zoom</label>
+        <select id="zoom">
+          <option value="auto">Fit</option>
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+          <option value="3">300%</option>
+          <option value="custom" hidden></option>
+        </select>
+        <button
+          id="zoom-in"
+          type="button"
+          class="pill-btn"
+          aria-label="Zoom in"
+          title="Zoom in (+)"
+        >
+          +
+        </button>
+      </div>
+      <div class="spacer"></div>
+      <div id="colours" class="colours" role="radiogroup" aria-label="Highlight colour"></div>
+      <button id="export" class="btn primary" type="button" disabled>Export</button>
+    </header>
+
+    <div class="stage">
+      <aside id="thumbs" class="thumbs" aria-label="Pages" hidden></aside>
+      <div class="viewer-wrap">
+        <div id="viewerContainer" tabindex="0" aria-label="PDF document">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+        <section id="open-panel" class="open-panel" aria-live="polite">
+          <div class="open-card" id="open-card"></div>
+        </section>
+      </div>
+    </div>
+
+    <div id="drop-overlay" class="drop-overlay" hidden><p>Drop the PDF to open it</p></div>
+
+    <dialog id="password-dialog" aria-labelledby="password-title">
+      <form method="dialog" class="password-body">
+        <h2 id="password-title">This PDF is password-protected</h2>
+        <p id="password-msg" class="muted">
+          Enter its password to open it. The password stays on this computer.
+        </p>
+        <input
+          id="password-input"
+          type="password"
+          autocomplete="off"
+          aria-labelledby="password-title"
+        />
+        <div class="password-actions">
+          <button value="cancel" class="btn ghost" type="submit" formnovalidate>Cancel</button>
+          <button value="ok" class="btn primary" type="submit">Open</button>
+        </div>
+      </form>
+    </dialog>
+    <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+    <script type="module" src="viewer.js"></script>
+  </body>
+</html>

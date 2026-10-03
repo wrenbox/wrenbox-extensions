@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas document</title>
+  </head>
+  <body style="margin: 0">
+    <canvas id="c" style="width: 100vw; height: 100vh; display: block"></canvas>
+    <script>
+      const c = document.getElementById('c');
+      c.width = innerWidth;
+      c.height = innerHeight;
+      c.getContext('2d').fillText('This text is drawn on a canvas and cannot be selected.', 40, 60);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Bowerline</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/components.css" />
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <header class="panel-head">
+      <span id="brand"></span>
+      <button
+        id="settings"
+        class="icon-btn"
+        type="button"
+        title="Settings"
+        aria-label="Settings"
+      ></button>
+    </header>
+    <div class="segmented" role="tablist" aria-label="View">
+      <button id="tab-page" role="tab" type="button" aria-selected="true" aria-controls="view">
+        This page
+      </button>
+      <button id="tab-library" role="tab" type="button" aria-selected="false" aria-controls="view">
+        Library
+      </button>
+    </div>
+    <div class="search">
+      <label for="q">Search</label>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" />
+    </div>
+    <div id="filters"></div>
+    <p id="summary" class="summary" aria-live="polite"></p>
+    <main id="view" role="tabpanel" aria-labelledby="tab-page">
+      <div id="list"></div>
+      <section id="orphans" class="orphans" hidden aria-labelledby="orphans-title">
+        <h2 id="orphans-title">Not found on this page</h2>
+        <p class="muted">
+          The text may have changed, or not loaded yet. These highlights are kept safe.
+        </p>
+        <div id="orphan-list"></div>
+      </section>
+    </main>
+    <footer class="panel-foot">
+      <button id="export" class="btn small" type="button">Export</button>
+      <button id="open-library" class="btn small ghost" type="button">Open full library</button>
+    </footer>
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+/* Two-column layout shared by the library and settings pages. */
+body {
+  background: var(--surface);
+}
+.layout {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 100vh;
+}
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 22px 16px;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+}
+.brand {
+  display: inline-flex;
+  color: var(--text);
+  padding: 0 2px;
+}
+.brand .wordmark {
+  height: 26px;
+  width: auto;
+}
+.nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav button,
+.nav a,
+.nav-link {
+  appearance: none;
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: 15px/1.2 var(--font);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.nav button:hover,
+.nav a:hover,
+.nav-link:hover {
+  background: var(--surface);
+  opacity: 1;
+}
+.nav [aria-current='page'],
+.nav [aria-current='true'] {
+  background: var(--surface);
+  font-weight: 700;
+  opacity: 1;
+  box-shadow: 0 1px 3px rgba(24, 33, 77, 0.08);
+}
+.side-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.side-foot .nav-link {
+  font-size: 14px;
+  color: var(--muted);
+}
+.content {
+  padding: 30px 40px 60px;
+  max-width: 980px;
+  width: 100%;
+}
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .nav button {
+    width: auto;
+  }
+  .side-foot {
+    flex-direction: row;
+  }
+  .content {
+    padding: 22px 16px 48px;
+  }
+}

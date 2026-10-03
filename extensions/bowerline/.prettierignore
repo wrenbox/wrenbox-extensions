@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-e2e
+release
+package-lock.json
+tests/fixtures/golden
+tests/output
+test-results
+store-assets
+public
+licenses
+BUILD_PROMPT.md

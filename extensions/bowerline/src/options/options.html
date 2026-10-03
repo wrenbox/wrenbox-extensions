@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Bowerline settings</title>
+    <link rel="icon" href="../icons/icon-32.png" />
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/layout.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="side" aria-label="Settings sections">
+        <a class="brand" id="brand" href="#general"></a>
+        <ul class="nav">
+          <li><a href="#general" data-section="general">General</a></li>
+          <li><a href="#colours" data-section="colours">Colours and labels</a></li>
+          <li><a href="#data" data-section="data">Your data</a></li>
+          <li><a href="#shortcuts" data-section="shortcuts">Keyboard shortcuts</a></li>
+          <li><a href="#about" data-section="about">About</a></li>
+        </ul>
+        <div class="side-foot">
+          <button type="button" class="nav-link" id="open-library">Open library</button>
+        </div>
+      </nav>
+
+      <main class="content">
+        <section id="general" class="section" aria-labelledby="general-title">
+          <h1 id="general-title">General</h1>
+          <p class="lede">How Bowerline looks and behaves while you read.</p>
+          <div class="rows">
+            <div class="row">
+              <div class="grow">
+                <p class="row-title" id="default-colour-label">Default colour</p>
+                <p class="row-sub">Used by the shortcut, the context menu, and "Add note".</p>
+              </div>
+              <div
+                id="default-colour"
+                class="colour-radios"
+                role="radiogroup"
+                aria-labelledby="default-colour-label"
+              ></div>
+            </div>
+            <label class="row" for="show-toolbar">
+              <div class="grow">
+                <p class="row-title">Show the selection toolbar</p>
+                <p class="row-sub">
+                  The navy toolbar that appears above text you select. Turn it off to highlight only
+                  with the shortcut or right-click menu.
+                </p>
+              </div>
+              <span class="switch"><input type="checkbox" id="show-toolbar" role="switch" /></span>
+            </label>
+            <div class="row">
+              <div class="grow">
+                <p class="row-title" id="theme-label">Theme</p>
+                <p class="row-sub">
+                  For Bowerline's own pages: popup, side panel, library, viewer and settings.
+                </p>
+              </div>
+              <div
+                id="theme"
+                class="segmented theme-seg"
+                role="radiogroup"
+                aria-labelledby="theme-label"
+              ></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="colours" class="section" aria-labelledby="colours-title" hidden>
+          <h1 id="colours-title">Colours and labels</h1>
+          <p class="lede">
+            Give each colour a meaning. Labels appear in tooltips, the library and every export.
+          </p>
+          <div id="labels" class="rows"></div>
+        </section>
+
+        <section id="data" class="section" aria-labelledby="data-title" hidden>
+          <h1 id="data-title">Your data</h1>
+          <p class="lede">
+            Everything is stored in this browser. Bowerline has no account, no server and no
+            tracking.
+          </p>
+          <div class="stats">
+            <div class="stat"><strong id="stat-highlights">0</strong><span>highlights</span></div>
+            <div class="stat"><strong id="stat-sources">0</strong><span>pages and PDFs</span></div>
+            <div class="stat"><strong>0</strong><span>servers your data is sent to</span></div>
+          </div>
+          <div class="rows">
+            <label class="row" for="always-on">
+              <div class="grow">
+                <p class="row-title">Show my highlights automatically when I revisit a page</p>
+                <p class="row-sub">
+                  Chrome will ask once for permission to run Bowerline on the sites you visit.
+                </p>
+              </div>
+              <span class="switch"><input type="checkbox" id="always-on" role="switch" /></span>
+            </label>
+            <div class="row">
+              <div class="grow">
+                <p class="row-title">Back up your highlights</p>
+                <p class="row-sub">Save a file you can restore on any computer.</p>
+              </div>
+              <button id="backup" type="button" class="btn">Back up now</button>
+              <button id="restore" type="button" class="btn">Restore</button>
+            </div>
+            <p id="restore-report" class="report" role="status" hidden></p>
+            <div class="row">
+              <div class="grow">
+                <p class="row-title">Delete all data</p>
+                <p class="row-sub">Removes every highlight and note from this browser.</p>
+              </div>
+              <button id="delete-all" type="button" class="btn danger">Delete all</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="shortcuts" class="section" aria-labelledby="shortcuts-title" hidden>
+          <h1 id="shortcuts-title">Keyboard shortcuts</h1>
+          <p class="lede">Highlight without reaching for the mouse.</p>
+          <div class="rows">
+            <div class="row">
+              <div class="grow">
+                <p class="row-title">Highlight the selection</p>
+                <p class="row-sub">
+                  Also turns Bowerline on for the current page and restores its highlights.
+                </p>
+              </div>
+              <span id="current-shortcut"></span>
+              <button id="change-shortcut" type="button" class="btn">Change shortcut</button>
+            </div>
+          </div>
+          <h2 class="sub-title">In the PDF viewer</h2>
+          <dl class="keys">
+            <dt><kbd>H</kbd></dt>
+            <dd>Highlight the selection in the chosen colour</dd>
+            <dt><kbd>N</kbd></dt>
+            <dd>Highlight the selection and add a note</dd>
+            <dt><kbd>+</kbd> <kbd>−</kbd></dt>
+            <dd>Zoom in and out</dd>
+            <dt><kbd>←</kbd> <kbd>→</kbd> <kbd>Page Up</kbd> <kbd>Page Down</kbd></dt>
+            <dd>Previous and next page</dd>
+            <dt><kbd>Esc</kbd></dt>
+            <dd>Close the toolbar or note editor</dd>
+          </dl>
+        </section>
+
+        <section id="about" class="section" aria-labelledby="about-title" hidden>
+          <h1 id="about-title">About</h1>
+          <div class="about">
+            <div id="about-mark"></div>
+            <div>
+              <p class="about-name">Bowerline <span id="version" class="muted"></span></p>
+              <p class="muted">Pronounced BOW-er-line ("bower" rhymes with "flower").</p>
+            </div>
+          </div>
+          <p class="story">
+            Bowerbirds collect colourful treasures and arrange them in their bower. Bowerline keeps
+            the lines you collect while reading, in colour, in one place.
+          </p>
+          <p class="studio">Made by Wrenbox: small, private tools for your browser.</p>
+          <ul class="links">
+            <li>
+              <a id="privacy-link" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+            </li>
+            <li>
+              <a href="../licenses/THIRD_PARTY_LICENSES.txt" target="_blank"
+                >Third-party licences</a
+              >
+              (pdf.js, idb, approx-string-match)
+            </li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="delete-dialog" aria-labelledby="delete-title">
+      <form method="dialog" class="dialog-body" id="delete-form">
+        <h2 id="delete-title">Delete everything?</h2>
+        <p>
+          This removes every highlight and note from this browser. It can't be undone. If you might
+          want them later, back up first.
+        </p>
+        <label for="delete-confirm">Type <strong>DELETE</strong> to confirm</label>
+        <input id="delete-confirm" type="text" autocomplete="off" spellcheck="false" />
+        <div class="dialog-actions">
+          <button type="button" class="btn ghost" id="delete-cancel">Cancel</button>
+          <button type="submit" class="btn danger" id="delete-confirm-btn" disabled>
+            Delete all
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

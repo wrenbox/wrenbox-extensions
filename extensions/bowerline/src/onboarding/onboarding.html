@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Welcome to Bowerline</title>
+    <link rel="icon" href="../icons/icon-32.png" />
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../content/content.css" />
+    <link rel="stylesheet" href="onboarding.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <span id="brand"></span>
+        <h1>Keep the lines that matter, in colour, in one place.</h1>
+        <p class="story">
+          Bowerbirds collect colourful treasures and arrange them in their bower. Bowerline keeps
+          the lines you collect while reading, in colour, in one place.
+          <span class="say">Say it BOW-er-line: "bower" rhymes with "flower".</span>
+        </p>
+        <ul class="promises" aria-label="Bowerline's promises">
+          <li>No account</li>
+          <li>Nothing leaves your browser</li>
+          <li>Free export to Obsidian, Notion and Markdown</li>
+        </ul>
+      </header>
+
+      <ol class="steps">
+        <li class="step" aria-labelledby="s1">
+          <span class="num" aria-hidden="true">1</span>
+          <div class="step-body">
+            <h2 id="s1">Try it right here</h2>
+            <p class="hint">
+              Select any words below, then pick a colour. Click a highlight to change it or add a
+              note.
+            </p>
+            <article id="demo" class="demo" aria-label="Practice paragraph">
+              <p>
+                Most readers finish an article feeling they understood it. A week later, little of
+                it remains. The problem is rarely comprehension; it is that nothing asks us to
+                retrieve what we read. Pulling an idea back out of memory, even imperfectly,
+                strengthens it far more than reading it again. Mark only what you would want to
+                explain to a friend, and write one line about why it matters.
+              </p>
+            </article>
+            <p id="demo-status" class="demo-status" aria-live="polite"></p>
+          </div>
+        </li>
+
+        <li class="step" aria-labelledby="s2">
+          <span class="num" aria-hidden="true">2</span>
+          <div class="step-body">
+            <h2 id="s2">Open a PDF</h2>
+            <p class="hint">
+              Bowerline's viewer works with files on your computer and PDFs on the web. Highlights
+              belong to the file itself, so they come back even if you move or rename it.
+            </p>
+            <div class="actions">
+              <button id="open-pdf" type="button" class="btn primary">
+                Open a PDF from your computer
+              </button>
+              <button id="sample-pdf" type="button" class="btn">Try the sample PDF</button>
+            </div>
+          </div>
+        </li>
+
+        <li class="step" aria-labelledby="s3">
+          <span class="num" aria-hidden="true">3</span>
+          <div class="step-body">
+            <h2 id="s3">Optional: show highlights automatically</h2>
+            <p class="hint">
+              Out of the box, Bowerline only runs on a page when you ask: click its icon, press
+              <kbd id="shortcut">Alt+Shift+H</kbd>, or right-click and choose "Highlight with
+              Bowerline". Turn this on and your highlights reappear by themselves when you revisit a
+              page.
+            </p>
+            <label class="row always-on" for="always-on">
+              <div class="grow">
+                <p class="row-title">Show my highlights automatically when I revisit a page</p>
+                <p class="row-sub">You can turn this off at any time in Settings.</p>
+              </div>
+              <span class="switch"><input type="checkbox" id="always-on" role="switch" /></span>
+            </label>
+            <details class="explain">
+              <summary>What will Chrome's permission prompt say?</summary>
+              <p>
+                Chrome will ask to let Bowerline
+                <strong>"Read and change all your data on all websites"</strong>. That is Chrome's
+                standard wording for any extension that runs on the pages you visit. Bowerline uses
+                it for one thing: finding your saved highlights on the page and drawing them. It
+                never reads pages for any other reason, never changes their content, and never sends
+                anything anywhere: there is no Bowerline server.
+              </p>
+            </details>
+          </div>
+        </li>
+      </ol>
+
+      <footer class="foot">
+        <p>Your highlights live only in this browser. Back them up any time from Settings.</p>
+        <p class="studio">Made by Wrenbox: small, private tools for your browser.</p>
+        <p>
+          <a href="../library/library.html">Open your library</a> ·
+          <a href="../options/options.html">Settings</a>
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="onboarding.js"></script>
+  </body>
+</html>

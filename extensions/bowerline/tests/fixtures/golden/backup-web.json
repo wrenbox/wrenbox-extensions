@@ -1,0 +1,102 @@
+{
+  "format": "bowerline-backup",
+  "version": 1,
+  "exportedAt": "2026-10-03T12:00:00.000Z",
+  "app": {
+    "name": "Bowerline",
+    "version": "1.0.0"
+  },
+  "settings": {
+    "defaultColor": "yellow",
+    "showToolbar": true,
+    "theme": "system",
+    "labels": {
+      "yellow": "key idea",
+      "mint": "evidence",
+      "pink": "",
+      "sky": ""
+    }
+  },
+  "sources": [
+    {
+      "id": "src-web",
+      "kind": "web",
+      "key": "https://longread.example/why-we-forget",
+      "url": "https://longread.example/why-we-forget",
+      "title": "Why we forget most of what we read",
+      "createdAt": 1789378200000,
+      "updatedAt": 1789378260000
+    }
+  ],
+  "highlights": [
+    {
+      "id": "h-web-1",
+      "sourceId": "src-web",
+      "color": "yellow",
+      "text": "The problem is rarely comprehension; it is that nothing asks us to retrieve what we read.",
+      "note": "Good opening line for my essay intro.",
+      "selectors": [
+        {
+          "type": "TextQuoteSelector",
+          "exact": "The problem is rarely comprehension; it is that nothing asks us to retrieve what we read.",
+          "prefix": "",
+          "suffix": ""
+        },
+        {
+          "type": "TextPositionSelector",
+          "start": 96,
+          "end": 186
+        }
+      ],
+      "orphaned": false,
+      "createdAt": 1789378210000,
+      "updatedAt": 1789378250000
+    },
+    {
+      "id": "h-web-2",
+      "sourceId": "src-web",
+      "color": "mint",
+      "text": "Pulling an idea back out of memory, even imperfectly, strengthens it far more than reading it again.",
+      "note": "",
+      "selectors": [
+        {
+          "type": "TextQuoteSelector",
+          "exact": "Pulling an idea back out of memory, even imperfectly, strengthens it far more than reading it again.",
+          "prefix": "",
+          "suffix": ""
+        },
+        {
+          "type": "TextPositionSelector",
+          "start": 260,
+          "end": 361
+        }
+      ],
+      "orphaned": false,
+      "createdAt": 1789378230000,
+      "updatedAt": 1789378230000
+    },
+    {
+      "id": "h-web-3",
+      "sourceId": "src-web",
+      "color": "pink",
+      "text": "Researchers say \"test yourself\", then = practice, + spaced, at a day, a week and a month later",
+      "note": "Quotes, commas and a leading = check CSV escaping.\nSecond line.",
+      "selectors": [
+        {
+          "type": "TextQuoteSelector",
+          "exact": "Researchers say \"test yourself\"",
+          "prefix": "",
+          "suffix": ""
+        },
+        {
+          "type": "TextPositionSelector",
+          "start": 400,
+          "end": 480
+        }
+      ],
+      "orphaned": true,
+      "createdAt": 1789378240000,
+      "updatedAt": 1789378240000
+    }
+  ]
+}

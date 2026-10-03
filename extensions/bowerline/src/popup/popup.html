@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Bowerline</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <span id="brand"></span>
+    </header>
+    <section id="status" class="status" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <div class="status-text">
+        <p id="status-title" class="status-title">Checking this tab…</p>
+        <p id="status-sub" class="status-sub"></p>
+      </div>
+    </section>
+    <section class="default-colour">
+      <p class="label" id="colour-label">Default colour</p>
+      <div id="colours" class="colours" role="radiogroup" aria-labelledby="colour-label"></div>
+      <p id="colour-name" class="colour-name"></p>
+    </section>
+    <nav class="actions" aria-label="Bowerline actions">
+      <button id="highlight" type="button" class="action primary"></button>
+      <button id="open-this-pdf" type="button" class="action" hidden></button>
+      <button id="panel" type="button" class="action"></button>
+      <button id="open-pdf" type="button" class="action"></button>
+      <button id="settings" type="button" class="action"></button>
+    </nav>
+    <footer class="foot">0 servers. Everything stays in this browser.</footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Late-loading thread</title>
+    <style>
+      body {
+        font:
+          17px/1.6 system-ui,
+          sans-serif;
+        max-width: 680px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      .post {
+        padding: 14px 16px;
+        border: 1px solid #dde;
+        border-radius: 10px;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Thread</h1>
+    <div id="app"><p class="loading">Loading comments…</p></div>
+    <nav><a href="#" id="next">Next thread</a></nav>
+    <script>
+      // Mimics a dynamic site: content renders late, re-renders, and routes with pushState.
+      const threads = {
+        '/spa.html': [
+          'Spaced repetition only works if you actually come back to the material.',
+          'The comment that loads last is the one you will want to highlight.',
+          'Infinite scroll keeps adding posts long after the page says it has loaded.',
+        ],
+        '/spa.html/second': ['A different thread entirely, with different words in it.'],
+      };
+      function render(delay) {
+        const items = threads[location.pathname] || threads['/spa.html'];
+        setTimeout(() => {
+          const app = document.getElementById('app');
+          app.innerHTML = items
+            .map((t, i) => `<div class="post" id="post-${i}"><p>${t}</p></div>`)
+            .join('');
+        }, delay);
+      }
+      render(Number(sessionStorage.getItem('delay') || 1500));
+      document.getElementById('next').addEventListener('click', (e) => {
+        e.preventDefault();
+        history.pushState({}, '', '/spa.html/second');
+        document.getElementById('app').innerHTML = '<p class="loading">Loading…</p>';
+        render(300);
+      });
+      window.addEventListener('popstate', () => render(100));
+    </script>
+  </body>
+</html>

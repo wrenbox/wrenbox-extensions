@@ -1,0 +1,53 @@
+.content-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.content-head h1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.tools .search {
+  flex: 1;
+  min-width: 260px;
+}
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 0 16px;
+  min-height: 30px;
+}
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 420px;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+}
+.source-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.library-list .hl-card {
+  padding: 14px 16px 10px 20px;
+}
+.library-list .hl-main {
+  font-size: 15px;
+}
+.library-list .group-head {
+  font-size: 13px;
+}

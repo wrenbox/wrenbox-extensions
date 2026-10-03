@@ -1,0 +1,51 @@
+body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+  padding: 16px 16px 0;
+  background: var(--surface);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text);
+}
+.panel-head .wordmark {
+  height: 26px;
+  width: auto;
+}
+#filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+main {
+  flex: 1;
+}
+.orphans {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.orphans h2 {
+  font-size: 13px;
+  font-weight: 700;
+}
+.orphans > p {
+  font-size: 12px;
+  margin: 2px 0 10px;
+}
+.orphans .hl-card {
+  opacity: 0.85;
+  border-style: dashed;
+}
+.panel-foot {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 0 14px;
+  background: linear-gradient(to bottom, transparent, var(--surface) 30%);
+}

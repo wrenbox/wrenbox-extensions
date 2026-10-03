@@ -1,0 +1,152 @@
+body {
+  background: var(--paper);
+}
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+.hero .wordmark {
+  height: 40px;
+  width: auto;
+  color: var(--text);
+}
+.hero h1 {
+  margin-top: 26px;
+  font-size: 34px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.story {
+  margin-top: 12px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.say {
+  white-space: nowrap;
+}
+.promises {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+}
+.promises li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
+}
+.steps {
+  list-style: none;
+  margin: 36px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.step {
+  display: flex;
+  gap: 18px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-dialog);
+}
+.num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+}
+:root[data-theme='dark'] .num {
+  background: var(--accent);
+  color: var(--ink);
+}
+.step-body {
+  flex: 1;
+  min-width: 0;
+}
+.step h2 {
+  font-size: 20px;
+  margin-top: 4px;
+}
+.hint {
+  margin-top: 6px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.demo {
+  margin-top: 16px;
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  background: #fff;
+  color: #18214d;
+  border: 1px solid var(--line);
+  font:
+    18px/1.75 Georgia,
+    'Iowan Old Style',
+    'Times New Roman',
+    serif;
+}
+.demo p {
+  margin: 0;
+}
+.demo-status {
+  min-height: 22px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.always-on {
+  margin-top: 14px;
+  cursor: pointer;
+}
+.explain {
+  margin-top: 12px;
+  color: var(--muted);
+}
+.explain summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+}
+.explain p {
+  margin-top: 8px;
+  line-height: 1.6;
+}
+.foot {
+  margin-top: 36px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.8;
+}
+.studio {
+  font-weight: 600;
+  color: var(--text);
+}
+@media (max-width: 600px) {
+  .step {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hero h1 {
+    font-size: 27px;
+  }
+}

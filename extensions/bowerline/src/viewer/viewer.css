@@ -1,0 +1,400 @@
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  padding: 7px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  z-index: 2;
+}
+.file {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.file-name {
+  font-size: 15px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 34vw;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.pill input {
+  width: 2.4em;
+  padding: 3px 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  text-align: center;
+  font: inherit;
+  -moz-appearance: textfield;
+}
+.pill input::-webkit-inner-spin-button {
+  display: none;
+}
+.pill input:hover,
+.pill input:focus {
+  border-color: var(--line);
+  background: var(--surface);
+}
+.pill select {
+  appearance: none;
+  padding: 3px 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.pill select:hover,
+.pill select:focus {
+  border-color: var(--line);
+  background: var(--surface);
+}
+.pill-btn {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 16px/1 var(--font);
+  cursor: pointer;
+}
+.pill-btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+.spacer {
+  flex: 1;
+}
+.colours {
+  display: flex;
+  gap: 8px;
+  margin-right: 4px;
+}
+.colours .swatch {
+  width: 24px;
+  height: 24px;
+}
+.topbar .btn {
+  min-height: 36px;
+  padding: 8px 16px;
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.thumbs {
+  width: 150px;
+  flex: none;
+  overflow: auto;
+  padding: 16px 0 24px;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.thumb {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 12.5px/1 var(--font);
+  cursor: pointer;
+}
+.thumb-frame {
+  position: relative;
+  width: 86px;
+  background: #fff;
+  border: 3px solid transparent;
+  outline: 1px solid var(--line);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(24, 33, 77, 0.1);
+}
+.thumb canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.thumb[aria-current='page'] .thumb-frame {
+  border-color: var(--ink);
+  outline-color: var(--ink);
+}
+:root[data-theme='dark'] .thumb[aria-current='page'] .thumb-frame {
+  border-color: var(--accent);
+}
+.thumb-dots {
+  display: flex;
+  gap: 3px;
+  height: 6px;
+}
+.thumb-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.viewer-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: #dfe3ee;
+}
+:root[data-theme='dark'] .viewer-wrap {
+  background: #0b0f26;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .viewer-wrap {
+    background: #0b0f26;
+  }
+}
+#viewerContainer {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  outline: none;
+}
+.pdfViewer {
+  padding: 16px 0 40px;
+}
+/* A margin for note cards, kept even when there are no notes yet so pages don't jump. */
+@media (min-width: 1100px) {
+  .pdfViewer {
+    padding-right: 250px;
+  }
+}
+.pdfViewer .page {
+  box-shadow: 0 2px 10px rgba(24, 33, 77, 0.14);
+  margin-bottom: 18px;
+}
+
+/* Highlights sit between the canvas and the transparent text layer. */
+.bl-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.bl-hl {
+  position: absolute;
+  mix-blend-mode: multiply;
+  border-radius: 1px;
+}
+.bl-hl[data-color='yellow'] {
+  background: rgba(255, 225, 77, 0.78);
+}
+.bl-hl[data-color='mint'] {
+  background: rgba(142, 240, 198, 0.85);
+}
+.bl-hl[data-color='pink'] {
+  background: rgba(255, 169, 216, 0.85);
+}
+.bl-hl[data-color='sky'] {
+  background: rgba(156, 220, 255, 0.9);
+}
+.bl-hl.flash {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+.bl-mark {
+  position: absolute;
+  width: 12px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1.5px solid rgba(24, 33, 77, 0.55);
+}
+.bl-notes {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 22px);
+  width: 210px;
+  height: 100%;
+  pointer-events: none;
+}
+.note-card {
+  position: absolute;
+  left: 0;
+  width: 210px;
+  padding: 12px 14px 13px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 12px;
+  border-top: 5px solid var(--bar);
+  box-shadow: 0 6px 20px rgba(24, 33, 77, 0.16);
+  pointer-events: auto;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  appearance: none;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.note-card:hover {
+  box-shadow: 0 8px 26px rgba(24, 33, 77, 0.24);
+}
+.note-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.note-text {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Open / error panel */
+.open-panel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+}
+.open-panel[hidden] {
+  display: none;
+}
+.open-card {
+  width: min(520px, 100%);
+  padding: 30px 32px;
+  background: var(--surface);
+  border-radius: var(--radius-dialog);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.open-card h2 {
+  font-size: 22px;
+  margin: 14px 0 8px;
+}
+.open-card p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+.open-card .expect {
+  margin-top: 10px;
+  color: var(--text);
+  font-weight: 600;
+}
+.drop {
+  margin-top: 20px;
+  padding: 26px 18px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+}
+.drop.over {
+  border-color: var(--text);
+  background: var(--surface-2);
+}
+.open-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.open-card .error-title {
+  color: var(--text);
+}
+.open-card .small {
+  font-size: 12.5px;
+  margin-top: 14px;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 8px auto;
+  border-radius: 50%;
+  border: 3px solid var(--line);
+  border-top-color: var(--text);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.drop-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(24, 33, 77, 0.45);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  z-index: 10;
+  pointer-events: none;
+}
+.drop-overlay[hidden] {
+  display: none;
+}
+#password-dialog {
+  width: 400px;
+}
+.password-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+}
+.password-body h2 {
+  font-size: 18px;
+}
+.password-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+@media (max-width: 900px) {
+  .thumbs {
+    display: none;
+  }
+  .file-name {
+    max-width: 30vw;
+  }
+}
+.pdfViewer.removePageBorders .page {
+  margin: 0 auto 18px;
+}

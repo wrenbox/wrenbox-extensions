@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Bowerline library</title>
+    <link rel="icon" href="../icons/icon-32.png" />
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/components.css" />
+    <link rel="stylesheet" href="../shared/layout.css" />
+    <link rel="stylesheet" href="library.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="side" aria-label="Library sections">
+        <a class="brand" id="brand" href="library.html"></a>
+        <ul class="nav" id="nav">
+          <li><button type="button" data-view="all" aria-current="page">All highlights</button></li>
+          <li><button type="button" data-view="web">Web pages</button></li>
+          <li><button type="button" data-view="pdf">PDFs</button></li>
+          <li><button type="button" data-view="notes">Notes</button></li>
+        </ul>
+        <div class="side-foot">
+          <button type="button" class="nav-link" id="open-pdf">Open a PDF</button>
+          <button type="button" class="nav-link" id="settings">Settings</button>
+        </div>
+      </nav>
+      <main class="content">
+        <div class="content-head">
+          <h1 id="title">Library</h1>
+          <button id="export" class="btn primary" type="button">Export</button>
+        </div>
+        <div class="tools">
+          <div class="search">
+            <label for="q">Search</label>
+            <input id="q" type="search" autocomplete="off" spellcheck="false" />
+          </div>
+          <div id="filters"></div>
+        </div>
+        <div class="status-row">
+          <p id="summary" class="summary" aria-live="polite"></p>
+          <div id="source-filter"></div>
+        </div>
+        <div id="list" class="library-list"></div>
+      </main>
+    </div>
+    <script type="module" src="library.js"></script>
+  </body>
+</html>
