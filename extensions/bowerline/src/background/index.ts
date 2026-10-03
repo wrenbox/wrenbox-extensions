@@ -462,11 +462,28 @@ const handlers: { [T in RequestType]: Handler<T> } = {
   'alwaysOn:sync': async () => ({ enabled: await syncAlwaysOn() }),
 };
 
+const CONTENT_SCRIPT_REQUESTS = new Set<RequestType>([
+  'source:get',
+  'highlight:create',
+  'highlight:update',
+  'highlight:delete',
+  'highlight:restore',
+  'highlight:status',
+  'content:hello',
+]);
+
 chrome.runtime.onMessage.addListener((msg: RequestMessage, sender, sendResponse) => {
   if (!msg || typeof msg.type !== 'string' || !(msg.type in handlers)) return false;
   // Only Bowerline's own pages and content scripts can reach this listener
   // (there is no externally_connectable), but check the sender anyway.
   if (sender.id !== chrome.runtime.id) return false;
+  // Content scripts run inside web pages' processes, so they get only what they
+  // need for the page they are on, never the whole library or bulk operations.
+  const fromContentScript = !sender.url?.startsWith(chrome.runtime.getURL(''));
+  if (fromContentScript && !CONTENT_SCRIPT_REQUESTS.has(msg.type)) {
+    sendResponse({ ok: false, error: 'Not allowed from a web page.' } satisfies Envelope<unknown>);
+    return false;
+  }
   const handler = handlers[msg.type] as Handler<RequestType>;
   handler(msg, sender).then(
     (value) => sendResponse({ ok: true, value } satisfies Envelope<unknown>),

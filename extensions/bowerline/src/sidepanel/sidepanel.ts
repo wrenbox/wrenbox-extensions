@@ -117,7 +117,11 @@ async function refreshLibrary(): Promise<void> {
 }
 
 async function refreshTab(): Promise<void> {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  // ?tabId= pins the panel to one tab (used when the panel is opened as a page, e.g. in tests).
+  const pinned = new URLSearchParams(location.search).get('tabId');
+  const [tab] = pinned
+    ? [await chrome.tabs.get(Number(pinned)).catch(() => undefined)]
+    : await chrome.tabs.query({ active: true, currentWindow: true });
   state.current = tab?.id !== undefined ? await send('tab:info', { tabId: tab.id }) : null;
   render();
 }

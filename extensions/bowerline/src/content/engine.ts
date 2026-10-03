@@ -99,7 +99,7 @@ export class Engine {
   private retryUntil = 0;
   private reported = new Map<string, boolean>();
   private mutationTimer = 0;
-  private orphanTimer = 0;
+  private orphanTimers: number[] = [];
   private lastHref = location.href;
   private mouseDown = false;
   private selectTimer = 0;
@@ -257,10 +257,12 @@ export class Engine {
   }
 
   private scheduleOrphanReport(): void {
-    window.clearTimeout(this.orphanTimer);
+    for (const t of this.orphanTimers) window.clearTimeout(t);
     this.reportFound();
-    this.orphanTimer = window.setTimeout(() => this.reportOrphans(), ORPHAN_REPORT_DELAY);
-    window.setTimeout(() => this.reportOrphans(), RETRY_WINDOW + 100);
+    this.orphanTimers = [
+      window.setTimeout(() => this.reportOrphans(), ORPHAN_REPORT_DELAY),
+      window.setTimeout(() => this.reportOrphans(), RETRY_WINDOW + 100),
+    ];
   }
 
   /** Highlights stored as orphaned that we found again. */

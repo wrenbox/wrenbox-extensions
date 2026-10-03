@@ -438,3 +438,15 @@ kbd {
     scroll-behavior: auto !important;
   }
 }
+
+/* The navy logo square needs a faint edge on navy backgrounds. */
+:root[data-theme='dark'] :is(.wordmark > g, .logo-mark) > rect:first-child {
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :is(.wordmark > g, .logo-mark) > rect:first-child {
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 4;
+  }
+}

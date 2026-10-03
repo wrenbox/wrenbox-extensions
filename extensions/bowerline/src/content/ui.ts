@@ -88,6 +88,11 @@ export class PageUi {
     window.addEventListener('resize', schedule, { passive: true });
   }
 
+  /** Some pages rebuild <html>'s children; put the host back if it was removed. */
+  private attach(): void {
+    if (!this.host.isConnected) document.documentElement.append(this.host);
+  }
+
   /** True if an event target is Bowerline's own UI (events from the shadow root retarget to the host). */
   owns(target: EventTarget | null): boolean {
     return target === this.host;
@@ -115,6 +120,7 @@ export class PageUi {
     hasNote: boolean,
     actions: ToolbarActions,
   ): void {
+    this.attach();
     this.hideToolbar();
     const labels = this.labels();
     const bar = el('div', {
@@ -213,6 +219,7 @@ export class PageUi {
     onSave: (text: string) => void,
     onClose?: () => void,
   ): void {
+    this.attach();
     this.closeNoteEditor();
     this.hideToolbar();
     const labelText = colorLabel(color, this.labels());
@@ -290,6 +297,7 @@ export class PageUi {
   // ── Note markers and hover cards ───────────────────────────────────────────
 
   setMarkers(specs: MarkerSpec[], onClick: (id: string) => void): void {
+    this.attach();
     this.onMarkerClick = onClick;
     this.hideCard();
     for (const m of this.markers) m.node.remove();
@@ -355,6 +363,7 @@ export class PageUi {
   // ── Toasts ─────────────────────────────────────────────────────────────────
 
   toast(message: string, action?: { label: string; run(): void }, ms = 5000): void {
+    this.attach();
     this.toastNode?.remove();
     window.clearTimeout(this.toastTimer);
     const t = el('div', { class: 'toast', role: 'status', 'aria-live': 'polite' });

@@ -315,6 +315,8 @@ async function loadHighlights(): Promise<void> {
   highlights = res.highlights.filter((x) => x.pdf);
   renderAll();
   updateThumbDots();
+  highlightsReady = true;
+  maybeFocusPending();
 }
 
 function pageView(n: number): PageView | null {
@@ -402,14 +404,22 @@ eventBus.on('textlayerrendered', ({ pageNumber }: { pageNumber: number }) =>
   renderPage(pageNumber),
 );
 eventBus.on('scalechanging', () => requestAnimationFrame(renderAll));
+let pagesReady = false;
+let highlightsReady = false;
+
+/** Scrolls to the highlight named in ?focus= once both the pages and the highlights are in. */
+function maybeFocusPending(): void {
+  if (!pendingFocus || !pagesReady || !highlightsReady) return;
+  const id = pendingFocus;
+  pendingFocus = null;
+  window.setTimeout(() => focusHighlight(id), 150);
+}
+
 eventBus.on('pagesinit', () => {
   viewer.currentScaleValue = String(defaultScale());
   syncZoom();
-  if (pendingFocus) {
-    const id = pendingFocus;
-    pendingFocus = null;
-    window.setTimeout(() => focusHighlight(id), 150);
-  }
+  pagesReady = true;
+  maybeFocusPending();
 });
 eventBus.on('pagechanging', ({ pageNumber }: { pageNumber: number }) => {
   $<HTMLInputElement>('#page-input').value = String(pageNumber);

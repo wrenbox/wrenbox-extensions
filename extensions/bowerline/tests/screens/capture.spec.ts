@@ -167,5 +167,30 @@ test('capture screens', async ({ ext }) => {
   await empty.waitForTimeout(300);
   await empty.screenshot({ path: join(OUT, '8-viewer-open.png') });
 
+  // Dark theme
+  for (const [name, path, w] of [
+    ['9-dark-library', 'library/library.html', 1280],
+    ['9-dark-settings', 'options/options.html#data', 1280],
+    ['9-dark-sidepanel', 'sidepanel/sidepanel.html', 400],
+    ['9-dark-popup', `popup/popup.html?tabId=${tabId}`, 340],
+  ] as const) {
+    const p = await ext.ctx.newPage();
+    await p.emulateMedia({ colorScheme: 'dark' });
+    await p.setViewportSize({ width: w, height: name.includes('popup') ? 520 : 800 });
+    await p.goto(ext.url(path));
+    if (name.includes('sidepanel')) await p.click('#tab-library');
+    await p.waitForTimeout(400);
+    await p.screenshot({ path: join(OUT, `${name}.png`) });
+  }
+  const darkViewer = await ext.ctx.newPage();
+  await darkViewer.emulateMedia({ colorScheme: 'dark' });
+  await darkViewer.setViewportSize({ width: 1280, height: 800 });
+  await darkViewer.goto(
+    ext.url(`viewer/viewer.html?src=${encodeURIComponent(`${ext.server.url}/cors/study.pdf`)}`),
+  );
+  await darkViewer.waitForSelector('.textLayer span');
+  await darkViewer.waitForTimeout(600);
+  await darkViewer.screenshot({ path: join(OUT, '9-dark-viewer.png') });
+
   console.log('errors:', JSON.stringify(ext.errors, null, 1));
 });
