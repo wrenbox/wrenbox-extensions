@@ -108,7 +108,7 @@ Dark theme, popup, onboarding and the viewer's empty and error states were also 
 
 ## Release process
 
-Releases moved to GitHub Releases: pushing a `bowerline-v<version>` tag runs `.github/workflows/bowerline-release.yml`, which runs `npm run verify` and publishes the release with the zip attached. `.github/workflows/bowerline-ci.yml` runs the same suite on every push to `main` and every pull request. On CI only, end-to-end tests may retry once, because shared runners are slower than a developer machine.
+Releases are published as GitHub Releases by `.github/workflows/bowerline.yml`. Every push and pull request runs `npm run verify`. On `main`, when `package.json` has a version with no release yet, a separate job (the only one with write access) tags `bowerline-v<version>` and publishes the release with the zip attached. On CI only, end-to-end tests may retry once, because shared runners are slower than a developer machine.
 
 ## Owner actions before publishing
 

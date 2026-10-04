@@ -63,19 +63,15 @@ Out of scope for v1: accounts, cloud sync, AI features, paid features, iframes, 
 
 ## Releasing
 
-Releases are built by GitHub Actions, never by hand, so every zip on the Releases page comes from a tagged commit that passed the full suite.
+Releases are built by GitHub Actions, never by hand, so every zip on the [Releases page](https://github.com/wrenbox/wrenbox-extensions/releases) comes from a commit on `main` that passed the full suite.
 
-1. Bump `version` in `package.json` (and run `npm install` so the lockfile matches).
+1. Bump `version` in `package.json` (run `npm install` so the lockfile matches).
 2. Add a `## <version> (<date>)` section at the top of `CHANGELOG.md`. It becomes the release notes.
-3. Commit, merge to `main`, then tag that commit and push the tag:
-   ```sh
-   git tag bowerline-v1.0.1
-   git push origin bowerline-v1.0.1
-   ```
-4. The **Bowerline release** workflow (`.github/workflows/bowerline-release.yml`) checks that the tag matches `package.json`, runs `npm run verify` (typecheck, lint, unit tests, build, audits, e2e, zip) and only then creates the GitHub Release **Bowerline 1.0.1** with `bowerline-1.0.1.zip` attached and its SHA-256 in the notes.
-5. Download the zip from the release and upload it to the Chrome Web Store.
+3. Merge to `main`.
 
-Tags are prefixed with the extension's name (`bowerline-v…`) because this repository will hold several extensions. Every push to `main` and every pull request touching Bowerline also runs the **Bowerline CI** workflow, which keeps the built zip as a downloadable artifact for 7 days. `release/` stays out of git.
+The **Bowerline** workflow (`.github/workflows/bowerline.yml`) then runs `npm run verify` (typecheck, lint, unit tests, build, audits, e2e, zip). If it passes and that version has no release yet, it creates the tag `bowerline-v<version>` on that commit and publishes the GitHub Release **Bowerline <version>**, with `bowerline-<version>.zip` attached and its SHA-256 in the notes. Pushes that don't change the version are verified but publish nothing. Download the zip from the release and upload it to the Chrome Web Store.
+
+Tags carry the extension's name (`bowerline-v…`) because this repository will hold several extensions. Pull requests run the same checks, and every run keeps the built zip as a downloadable artifact for 7 days. `release/` stays out of git.
 
 ## Development
 

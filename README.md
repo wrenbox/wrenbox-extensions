@@ -19,7 +19,7 @@ Wrenbox makes small, private, high-quality Chrome extensions. Every Wrenbox exte
                            tests, store assets and paperwork
 ```
 
-Releases are published on the [GitHub Releases page](https://github.com/wrenbox/wrenbox-extensions/releases) by GitHub Actions, one tag per extension version (for example `bowerline-v1.0.0`). Built files are never committed. See each extension's README for its release steps.
+Releases are published on the [GitHub Releases page](https://github.com/wrenbox/wrenbox-extensions/releases) by GitHub Actions when an extension's version changes on `main`, one tag per extension version (for example `bowerline-v1.0.0`). Built files are never committed. See each extension's README for its release steps.
 
 Each extension is self-contained: it has its own `package.json` and lockfile and never imports from another extension's folder. To work on one, `cd extensions/<name>` and follow its README.
 
