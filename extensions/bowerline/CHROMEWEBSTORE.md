@@ -4,7 +4,7 @@ Everything needed to fill in the Chrome Web Store Developer Dashboard, field by 
 
 ## Package
 
-- Upload: `release/bowerline-1.0.0.zip` (built by `npm run zip`; `manifest.json` at the zip root, no source maps).
+- Upload: `bowerline-1.0.0.zip`, attached to the GitHub Release **bowerline-v1.0.0** (Releases page of this repository). It is built and checked by CI from the tagged commit; `npm run zip` reproduces it byte for byte. `manifest.json` is at the zip root and there are no source maps.
 - Code is bundled and **not minified**, so reviewers can read it directly.
 
 ## Store listing tab

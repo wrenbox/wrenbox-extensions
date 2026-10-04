@@ -106,6 +106,10 @@ Dark theme, popup, onboarding and the viewer's empty and error states were also 
 - **N3: Minimum Chrome version is 140.** pdf.js 6 uses `Uint8Array.prototype.toHex/fromBase64` (Chrome 140). Newer built-ins it relies on (`Map.prototype.getOrInsertComputed`, `Math.sumPrecise`, `RegExp.escape`) are polyfilled in `viewer/polyfills.ts`. End-to-end tests run on Chromium 141.
 - **N4: E2E permissions.** Chrome's permission prompt can't be clicked headlessly. The tests seed the granted origins in the test profile (what Chrome records when a user accepts) and test the unmodified `dist/`. The "request" step of Always on is covered by asserting exactly which origins are requested.
 
+## Release process
+
+Releases moved to GitHub Releases: pushing a `bowerline-v<version>` tag runs `.github/workflows/bowerline-release.yml`, which runs `npm run verify` and publishes the release with the zip attached. `.github/workflows/bowerline-ci.yml` runs the same suite on every push to `main` and every pull request. On CI only, end-to-end tests may retry once, because shared runners are slower than a developer machine.
+
 ## Owner actions before publishing
 
 1. Re-capture real store screenshots (`npm run screens` gives a starting point).

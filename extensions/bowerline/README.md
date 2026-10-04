@@ -61,6 +61,22 @@ Out of scope for v1: accounts, cloud sync, AI features, paid features, iframes, 
 
 ---
 
+## Releasing
+
+Releases are built by GitHub Actions, never by hand, so every zip on the Releases page comes from a tagged commit that passed the full suite.
+
+1. Bump `version` in `package.json` (and run `npm install` so the lockfile matches).
+2. Add a `## <version> (<date>)` section at the top of `CHANGELOG.md`. It becomes the release notes.
+3. Commit, merge to `main`, then tag that commit and push the tag:
+   ```sh
+   git tag bowerline-v1.0.1
+   git push origin bowerline-v1.0.1
+   ```
+4. The **Bowerline release** workflow (`.github/workflows/bowerline-release.yml`) checks that the tag matches `package.json`, runs `npm run verify` (typecheck, lint, unit tests, build, audits, e2e, zip) and only then creates the GitHub Release **Bowerline 1.0.1** with `bowerline-1.0.1.zip` attached and its SHA-256 in the notes.
+5. Download the zip from the release and upload it to the Chrome Web Store.
+
+Tags are prefixed with the extension's name (`bowerline-v…`) because this repository will hold several extensions. Every push to `main` and every pull request touching Bowerline also runs the **Bowerline CI** workflow, which keeps the built zip as a downloadable artifact for 7 days. `release/` stays out of git.
+
 ## Development
 
 Requires Node 20+ (the pinned pdf.js declares Node ≥ 22.13 for its _Node_ entry points; Bowerline only bundles it for the browser, so Node 20 works with an engine warning) and Chromium for end-to-end tests (Playwright's bundled Chromium, or set `PLAYWRIGHT_BROWSERS_PATH`).

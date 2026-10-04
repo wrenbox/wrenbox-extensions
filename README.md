@@ -8,7 +8,7 @@ Wrenbox makes small, private, high-quality Chrome extensions. Every Wrenbox exte
 
 | Extension | What it does | Folder | Status |
 | --- | --- | --- | --- |
-| **Bowerline – PDF & Web Highlighter** (BOW-er-line) | Highlight and annotate web pages and PDFs, keep the highlights privately in your browser, export to Obsidian, Notion, Markdown or CSV. Bowerbirds collect colourful treasures and arrange them in their bower; Bowerline keeps the lines you collect while reading, in colour, in one place. | [`extensions/bowerline`](extensions/bowerline) | 1.0.0, ready for store review |
+| **Bowerline – PDF & Web Highlighter** (BOW-er-line) | Highlight and annotate web pages and PDFs, keep the highlights privately in your browser, export to Obsidian, Notion, Markdown or CSV. Bowerbirds collect colourful treasures and arrange them in their bower; Bowerline keeps the lines you collect while reading, in colour, in one place. | [`extensions/bowerline`](extensions/bowerline) | 1.0.0 ([releases](https://github.com/wrenbox/wrenbox-extensions/releases)) |
 
 ## Repository layout
 
@@ -18,6 +18,8 @@ Wrenbox makes small, private, high-quality Chrome extensions. Every Wrenbox exte
 /extensions/<name>/        everything for one extension: its own package.json, source,
                            tests, store assets and paperwork
 ```
+
+Releases are published on the [GitHub Releases page](https://github.com/wrenbox/wrenbox-extensions/releases) by GitHub Actions, one tag per extension version (for example `bowerline-v1.0.0`). Built files are never committed. See each extension's README for its release steps.
 
 Each extension is self-contained: it has its own `package.json` and lockfile and never imports from another extension's folder. To work on one, `cd extensions/<name>` and follow its README.
 
