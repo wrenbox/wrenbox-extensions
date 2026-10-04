@@ -151,8 +151,10 @@ function installCursor() {
 }
 
 class Actor {
-  constructor(page) {
+  /** `note(type, wall, area)` logs a sound-worthy moment and where it shows (see record()). */
+  constructor(page, note) {
     this.page = page;
+    this.note = note;
     this.x = 640;
     this.y = 400;
   }
@@ -161,12 +163,22 @@ class Actor {
     this.x = x;
     this.y = y;
   }
-  async click(x, y) {
+  /** With `sound`, logs the click at the button release, when the page reacts. */
+  async click(x, y, sound) {
     await this.moveTo(x, y);
     await sleep(120);
     await this.page.mouse.down();
     await sleep(60);
+    const t0 = Date.now();
     await this.page.mouse.up();
+    if (sound)
+      this.note(sound, (t0 + Date.now()) / 2, {
+        page: this.page,
+        x: x - 40,
+        y: y - 24,
+        w: 80,
+        h: 48,
+      });
   }
   async drag(from, to) {
     await this.moveTo(from.x, from.y);
@@ -183,8 +195,16 @@ class Actor {
     if (!b) throw new Error(`No box for ${locator}`);
     await this.click(b.x + b.width / 2, b.y + b.height / 2);
   }
-  /** Center of a button inside Bowerline's closed shadow root, via DevTools' DOM view. */
-  async shadowCenter(match, timeout = 4000) {
+  /** Center of a button inside Bowerline's closed shadow root. */
+  async shadowCenter(match) {
+    const b = await this.shadowBox(match);
+    return { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+  }
+  /**
+   * Box of an element inside Bowerline's closed shadow root, via DevTools' DOM view:
+   * a button by aria-label or text, or the first element with a tag name.
+   */
+  async shadowBox(match, timeout = 4000) {
     const until = Date.now() + timeout;
     for (;;) {
       const cdp = await this.page.context().newCDPSession(this.page);
@@ -195,12 +215,12 @@ class Actor {
         if (found) return;
         const a = n.attributes ?? [];
         const label = a.includes('aria-label') ? a[a.indexOf('aria-label') + 1] : null;
-        if (
-          inShadow &&
-          n.nodeName === 'BUTTON' &&
-          ((match.label && label === match.label) ||
-            (match.text && textOf(n).trim() === match.text))
-        ) {
+        const hit = match.tag
+          ? n.nodeName === match.tag
+          : n.nodeName === 'BUTTON' &&
+            ((match.label && label === match.label) ||
+              (match.text && textOf(n).trim() === match.text));
+        if (inShadow && hit) {
           found = n;
           return;
         }
@@ -212,19 +232,29 @@ class Actor {
         const { model } = await cdp.send('DOM.getBoxModel', { backendNodeId: found.backendNodeId });
         await cdp.detach();
         const q = model.content;
-        return { x: (q[0] + q[2] + q[4] + q[6]) / 4, y: (q[1] + q[3] + q[5] + q[7]) / 4 };
+        const xs = [q[0], q[2], q[4], q[6]];
+        const ys = [q[1], q[3], q[5], q[7]];
+        const x = Math.min(...xs);
+        const y = Math.min(...ys);
+        return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
       }
       await cdp.detach();
       if (Date.now() > until) throw new Error(`Shadow button not found: ${JSON.stringify(match)}`);
       await sleep(100);
     }
   }
-  async clickShadow(match) {
+  async clickShadow(match, sound) {
     const p = await this.shadowCenter(match);
-    await this.click(p.x, p.y);
+    await this.click(p.x, p.y, sound);
   }
-  async type(text) {
-    await this.page.keyboard.type(text, { delay: TYPE_DELAY });
+  /** Types one character every TYPE_DELAY ms, logging each keystroke and the field's box. */
+  async type(text, box) {
+    for (const ch of text) {
+      const t0 = Date.now();
+      await this.page.keyboard.type(ch);
+      this.note('key', (t0 + Date.now()) / 2, { page: this.page, ...box });
+      await sleep(TYPE_DELAY);
+    }
   }
 }
 
@@ -300,6 +330,14 @@ async function selectText(page, selector, text) {
     },
     { selector, text },
   );
+}
+
+/**
+ * Waits for `stamp`, checked once per frame in the page, to return a value: it
+ * returns the page's clock (`Date.now()`) on the frame where the change first shows.
+ */
+async function appears(page, stamp, arg) {
+  return (await page.waitForFunction(stamp, arg, { polling: 'raf' })).jsonValue();
 }
 
 async function highlightCount(page) {
@@ -401,6 +439,30 @@ async function record(dir, server, extId) {
   await ctx.addInitScript(installCursor);
   const ext = (p) => `chrome-extension://${extId}/${p}`;
   const scenes = {};
+  // Moments on the wall clock: sounds (click, swipe, key, pop) are placed on them, and
+  // `end` marks a scene's last visible change, so audio.py knows how far its pause can shrink.
+  const events = [];
+  const note = (type, wall = Date.now(), area = null) => events.push({ type, wall, area });
+  /** Box of a page's yellow highlight / mint PDF highlight, for the swipe's area. */
+  const yellowBox = (page) =>
+    page.evaluate(() => {
+      const r = [...CSS.highlights.get('bowerline-yellow')][0].getBoundingClientRect();
+      return { x: r.left, y: r.top, w: r.width, h: r.height };
+    });
+  const mintBox = (page) =>
+    page.evaluate(() => {
+      const rs = [...document.querySelectorAll('.bl-hl[data-color="mint"]')].map((e) =>
+        e.getBoundingClientRect(),
+      );
+      const x = Math.min(...rs.map((r) => r.left));
+      const y = Math.min(...rs.map((r) => r.top));
+      return {
+        x,
+        y,
+        w: Math.max(...rs.map((r) => r.right)) - x,
+        h: Math.max(...rs.map((r) => r.bottom)) - y,
+      };
+    });
   const pages = new Map(); // page → { syncs: wall times of its sync flashes }
   /**
    * Every recorded page gets its own window whose content area is exactly the
@@ -517,7 +579,7 @@ async function record(dir, server, extId) {
   await article.waitForFunction(() => !!document.querySelector('bowerline-ui'));
   await article.waitForFunction(() => (CSS.highlights.get('bowerline-mint')?.size ?? 0) > 0);
   await sync(article);
-  const a = new Actor(article);
+  const a = new Actor(article, note);
   await a.moveTo(900, 640, 5);
   await sleep(400);
   let t0 = Date.now();
@@ -527,7 +589,12 @@ async function record(dir, server, extId) {
   const ends = await textEnds(article, '#p1', sentence);
   await a.drag(ends.start, ends.end);
   await sleep(PAUSE); // toolbar is showing
-  await a.clickShadow({ label: 'Highlight Yellow' });
+  await a.clickShadow({ label: 'Highlight Yellow' }, 'click');
+  const yellowAt = await appears(
+    article,
+    () => CSS.highlights.get('bowerline-yellow')?.size && Date.now(),
+  );
+  note('swipe', yellowAt, { page: article, ...(await yellowBox(article)) });
   await sleep(PAUSE); // highlighted
   const mid = await article.evaluate(() => {
     const r = [...CSS.highlights.get('bowerline-yellow')][0];
@@ -538,10 +605,11 @@ async function record(dir, server, extId) {
   await sleep(450); // edit toolbar
   await a.clickShadow({ text: 'Add note' });
   await sleep(450); // note editor
-  await a.type('Good opening line for my essay');
+  await a.type('Good opening line for my essay', await a.shadowBox({ tag: 'TEXTAREA' }));
   await sleep(200);
   await a.clickShadow({ text: 'Save note' });
-  await sleep(PAUSE); // marker appears
+  note('end'); // the marker appears: the scene's last visible change
+  await sleep(PAUSE);
   mark('highlight', partsA, done(t0));
   await tail('highlight');
 
@@ -554,7 +622,11 @@ async function record(dir, server, extId) {
   await article.goto('about:blank');
   await sleep(350);
   await article.goto(url);
-  await article.waitForFunction(() => (CSS.highlights.get('bowerline-yellow')?.size ?? 0) > 0);
+  const backAt = await appears(
+    article,
+    () => CSS.highlights.get('bowerline-yellow')?.size && Date.now(),
+  );
+  note('swipe', backAt, { page: article, ...(await yellowBox(article)) });
   await sleep(PAUSE);
   const marker = await article.evaluate(() => {
     const r = [...CSS.highlights.get('bowerline-yellow')][0];
@@ -563,7 +635,9 @@ async function record(dir, server, extId) {
     return { x: last.right + 2, y: last.top - 2 };
   });
   await a.moveTo(marker.x, marker.y);
-  await sleep(PAUSE * 2); // note card
+  await sleep(PAUSE); // the note card opens on hover
+  note('end');
+  await sleep(PAUSE);
   mark('reload', partsB, done(t0));
   await tail('reload');
   await finish(article);
@@ -573,7 +647,7 @@ async function record(dir, server, extId) {
   await viewer.goto(ext('viewer/viewer.html'));
   await viewer.waitForSelector('#open-card button');
   await sync(viewer);
-  const v = new Actor(viewer);
+  const v = new Actor(viewer, note);
   await v.moveTo(900, 560, 5);
   await sleep(500);
   t0 = Date.now();
@@ -602,9 +676,15 @@ async function record(dir, server, extId) {
   );
   await v.drag(pdfEnds.start, pdfEnds.end);
   await sleep(PAUSE);
-  await v.clickShadow({ label: 'Highlight Mint' });
+  await v.clickShadow({ label: 'Highlight Mint' }, 'click');
+  const mintAt = await appears(
+    viewer,
+    () => document.querySelector('.bl-hl[data-color="mint"]') && Date.now(),
+  );
+  note('swipe', mintAt, { page: viewer, ...(await mintBox(viewer)) });
   await sleep(PAUSE);
   await v.moveTo(1180, 470);
+  note('end');
   mark('pdf', partsC, done(t0));
   await tail('pdf');
   await finish(viewer);
@@ -622,7 +702,7 @@ async function record(dir, server, extId) {
   await panel.goto(ext(`sidepanel/sidepanel.html?tabId=${tabId}`));
   await panel.waitForSelector('#tab-library');
   await sync(panel);
-  const p = new Actor(panel);
+  const p = new Actor(panel, note);
   await p.moveTo(300, 600, 5);
   await sleep(600);
   t0 = Date.now();
@@ -634,11 +714,35 @@ async function record(dir, server, extId) {
   await p.clickLocator(panel.locator('#tab-library'));
   await sleep(PAUSE);
   await p.clickLocator(panel.locator('#q'));
-  await p.type('retrieval');
+  // Every time the result count changes, on the page's clock.
+  await panel.evaluate(() => {
+    const el = document.getElementById('summary');
+    window.__counts = [];
+    let last = el.textContent;
+    new MutationObserver(() => {
+      if (el.textContent !== last) window.__counts.push(Date.now());
+      last = el.textContent;
+    }).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+  const q = await panel.locator('#q').boundingBox();
+  await p.type('retrieval', { x: q.x, y: q.y, w: q.width, h: q.height });
   await sleep(PAUSE);
+  // One pop when the results settle: the last change of the count.
+  const counts = await panel.evaluate(() => window.__counts);
+  if (!counts.length) throw new Error('Search results never updated');
+  const sum = await panel.locator('#summary').boundingBox();
+  note('pop', counts[counts.length - 1], {
+    page: panel,
+    x: sum.x,
+    y: sum.y,
+    w: sum.width,
+    h: sum.height,
+  });
   const card = panel.locator('.hl-card', { hasText: '61%' }).locator('.hl-main');
   await p.clickLocator(card);
-  await sleep(PAUSE * 2.5); // the viewer scrolls to the passage and outlines it
+  await sleep(PAUSE * 1.5); // the viewer scrolls to the passage and outlines it
+  note('end');
+  await sleep(PAUSE);
   mark('library', partsD, done(t0));
   await tail('library');
   await finish(viewer2, panel);
@@ -648,7 +752,7 @@ async function record(dir, server, extId) {
   await lib.goto(ext('library/library.html'));
   await lib.waitForSelector('.hl-card');
   await sync(lib);
-  const l = new Actor(lib);
+  const l = new Actor(lib, note);
   await l.moveTo(1000, 120, 5);
   await sleep(500);
   t0 = Date.now();
@@ -663,6 +767,7 @@ async function record(dir, server, extId) {
   const download = lib.waitForEvent('download');
   await l.clickLocator(lib.getByRole('button', { name: /Download .md file/ }));
   await download;
+  note('end');
   await sleep(PAUSE);
   mark('export', partsE, done(t0));
   await tail('export');
@@ -674,7 +779,7 @@ async function record(dir, server, extId) {
   await opts.waitForSelector('#stat-highlights');
   await sync(opts);
   await sleep(400);
-  const o = new Actor(opts);
+  const o = new Actor(opts, note);
   await o.moveTo(1150, 700, 5);
   await sleep(400);
   t0 = Date.now();
@@ -690,6 +795,7 @@ async function record(dir, server, extId) {
   await sleep(PAUSE);
   const zero = await besideNumber(2);
   await o.moveTo(zero.x, zero.y);
+  note('end');
   await sleep(PAUSE * 2);
   mark('privacy', partsF, done(t0));
   await tail('privacy');
@@ -697,6 +803,28 @@ async function record(dir, server, extId) {
 
   // Videos are finalised when their pages close; collect the paths.
   for (const s of Object.values(scenes)) {
+    const from = s.parts[0].wall;
+    const next = Math.min(
+      ...Object.values(scenes)
+        .map((x) => x.parts[0].wall)
+        .filter((w) => w > from),
+    );
+    s.events = events
+      .filter((e) => e.wall >= from && e.wall < next)
+      .map(({ type, wall, area }) => ({
+        type,
+        t: +((wall - from) / 1000).toFixed(3),
+        // Where it shows, in the recorded page's CSS px, and which part of the scene.
+        ...(area && {
+          area: {
+            part: s.parts.findIndex((x) => x.page === area.page),
+            x: Math.round(area.x),
+            y: Math.round(area.y),
+            w: Math.round(area.w),
+            h: Math.round(area.h),
+          },
+        }),
+      }));
     for (const part of s.parts) {
       part.video = await part.page.video().path();
       part.syncs = pages.get(part.page).syncs;
@@ -776,6 +904,7 @@ try {
     const slot = SCENES.find((x) => x.id === sceneId).duration;
     manifest[sceneId] = {
       actions: s.actions,
+      events: s.events, // t: seconds after the scene begins; shown at its start + LEAD + t
       parts: s.parts.map(({ video, wall, syncs, crop, x }) => {
         const [v1, v2] = flashTimes(video);
         const rate = (v2 - v1) / ((syncs[1] - syncs[0]) / 1000); // video seconds per wall second

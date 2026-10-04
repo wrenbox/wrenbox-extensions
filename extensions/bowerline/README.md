@@ -91,7 +91,8 @@ npm run zip          # release/bowerline-<version>.zip
 npm run verify       # all of the above, in order
 npm run screens      # capture every screen at 1280×800 into tests/output/screens/ (for review)
 npm run store-screenshots  # the five framed Chrome Web Store screenshots → store-assets/captured/
-npm run video        # the 45 s promo video, recorded from dist/ → store-assets/video/ (needs ffmpeg)
+npm run video        # the 45 s promo video with soundtrack, recorded from dist/ → store-assets/video/
+                     # (needs ffmpeg and: pip install -r tools/demo-video/requirements.txt)
 ```
 
 Golden files for the exporters live in `tests/fixtures/golden/`; regenerate with `UPDATE_GOLDEN=1 npm test` and review the diff.

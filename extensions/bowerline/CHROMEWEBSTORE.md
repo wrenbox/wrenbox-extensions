@@ -87,7 +87,7 @@ Made by Wrenbox: small, private tools for your browser.
 | Small promo tile (440×280)    | `store-assets/promo-small-440x280.png`    |
 | Marquee promo tile (1400×560) | `store-assets/promo-marquee-1400x560.png` |
 
-**Promo video:** the dashboard asks for a YouTube link, not a file. Upload `store-assets/video/bowerline-demo-1080p.mp4` to YouTube (Public or Unlisted; title "Bowerline – PDF & Web Highlighter"), add `store-assets/video/bowerline-demo.srt` as its English subtitles, and paste the video's URL into the "Promo video" field. The video is 45 s of real footage of the extension; regenerate it with `npm run video` (see `store-assets/video/README.md`).
+**Promo video:** the dashboard asks for a YouTube link, not a file. Upload `store-assets/video/bowerline-demo-1080p.mp4` to YouTube (Public or Unlisted; title "Bowerline – PDF & Web Highlighter"), add `store-assets/video/bowerline-demo.srt` as its English subtitles, put the music credit from `store-assets/video/MUSIC_CREDIT.md` in the video's description, and paste the video's URL into the "Promo video" field. The video is 45 s of real footage of the extension with a soundtrack (the owner's YouTube Audio Library track plus synthesised effects); regenerate it with `npm run video` (see `store-assets/video/README.md`).
 
 **Screenshots (1280×800), in this order.** Use the captured set in `store-assets/captured/`. These are real captures of the extension, framed like the design mockups; regenerate them with `npm run store-screenshots` after any UI change. The designed mockups in `store-assets/` stay as the visual reference.
 

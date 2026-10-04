@@ -18,10 +18,12 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
   CAPTION_BAND,
+  CAPTION_IN,
   CROSSFADE,
   FINAL_DIR,
   FPS,
   HEIGHT,
+  LEAD,
   OUT,
   REC,
   ROOT,
@@ -29,18 +31,19 @@ import {
   SCENES,
   TOOL_DIR,
   WIDTH,
+  scenes,
   timeline,
 } from './config.mjs';
 
 export const VIDEO = join(FINAL_DIR, 'bowerline-demo-1080p.mp4');
+/** The composed picture with a silent track; soundtrack.mjs muxes the mix into VIDEO. */
+export const SILENT = join(FINAL_DIR, 'bowerline-demo-1080p-silent.mp4');
 export const SRT = join(FINAL_DIR, 'bowerline-demo.srt');
 
 const NAVY = '#18214D';
 const YELLOW = '#FFE14D';
 const BG = '#F4F6FB';
-const CAPTION_IN = 0.15; // caption starts fading in this long after its scene starts (mid-crossfade)
 const CAPTION_FADE = 0.2;
-const LEAD = 0.1; // footage shown before a scene's first action
 const RW = REC.width * SCALE; // 1536
 const RH = REC.height * SCALE; // 960
 const RX = (WIDTH - RW) / 2; // 192
@@ -291,7 +294,7 @@ function joinSegments(segments) {
     '128k',
     '-movflags',
     '+faststart',
-    VIDEO,
+    SILENT,
   ]);
 }
 
@@ -303,12 +306,13 @@ const stamp = (t) => {
 
 /** One cue per caption, from when it starts to appear until the next one does. */
 export function srt() {
-  const { starts } = timeline();
+  const list = scenes();
+  const { starts } = timeline(list);
   const cues = [];
-  SCENES.forEach((s, i) => {
+  list.forEach((s, i) => {
     if (!s.caption) return;
     const from = i === 0 ? 0 : starts[i] + CAPTION_IN;
-    const to = starts[i + 1] + (SCENES[i + 1].caption ? CAPTION_IN : CROSSFADE);
+    const to = starts[i + 1] + (list[i + 1].caption ? CAPTION_IN : CROSSFADE);
     cues.push(`${cues.length + 1}\n${stamp(from)} --> ${stamp(to)}\n${s.caption}\n`);
   });
   return cues.join('\n');
@@ -319,7 +323,7 @@ export async function compose() {
   await renderStills();
   mkdirSync(SEGMENTS, { recursive: true });
   const segments = [];
-  for (const s of SCENES) {
+  for (const s of scenes()) {
     const out = join(SEGMENTS, `${segments.length}-${s.id}.mp4`);
     if (s.kind === 'card') cardSegment(s, out);
     else recSegment(s, manifest[s.id], out);
@@ -328,7 +332,9 @@ export async function compose() {
   }
   joinSegments(segments);
   writeFileSync(SRT, srt());
-  console.log(`  ${VIDEO.replace(ROOT + '/', '')} (${(statSync(VIDEO).size / 1e6).toFixed(1)} MB)`);
+  console.log(
+    `  ${SILENT.replace(ROOT + '/', '')} (${(statSync(SILENT).size / 1e6).toFixed(1)} MB)`,
+  );
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) await compose();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await compose();
