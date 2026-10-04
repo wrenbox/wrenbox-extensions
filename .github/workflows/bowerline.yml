@@ -37,8 +37,8 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -48,7 +48,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run verify
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: bowerline-zip
           path: extensions/bowerline/release/bowerline-${{ steps.version.outputs.version }}.zip
@@ -70,7 +70,7 @@ jobs:
       run:
         working-directory: extensions/bowerline
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Skip if this version is already released
         id: check
         run: |
@@ -81,7 +81,7 @@ jobs:
             echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.check.outputs.publish == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: bowerline-zip
           path: extensions/bowerline/release
