@@ -162,8 +162,27 @@ Served by GitHub Pages from `/docs/bowerline/privacy.md` in this repository. The
 - Trader status: declare **non-trader** while Bowerline is free and has no paid features. **Switch to trader** (and provide the required business contact details) **before** adding any paid feature, such as the possible future one-time Pro licence.
 - Verify the contact email on the account; reviewers may write to it.
 
-## Notes for the reviewer (paste into "Notes for reviewers" if asked)
+## Test instructions tab
+
+**Optional for Bowerline.** Google says this tab is only useful when an item needs restricted credentials or a paid account to reach all its features. Bowerline has neither, and filling it in does not by itself speed up review. It's still worth pasting the text below, because it heads off the most likely false "doesn't work" verdicts:
+
+- a reviewer trying Bowerline on a `chrome://` or Chrome Web Store page, where Chrome blocks every extension;
+- a reviewer trying to highlight inside Chrome's own PDF viewer.
+
+Leave any username and password fields empty. Paste this into the instructions field. If it's too long for the field, the first two paragraphs are enough.
 
 ```
-Bowerline stores everything locally (IndexedDB + chrome.storage.local) and makes no network requests except fetching a PDF the user explicitly opens, from that PDF's own URL (viewer/viewer.js, function loadPdf / fetchDirect; and background.js fetchPdfViaTab, which runs fetch(location.href) inside the PDF's own tab). The code is not minified. Host permissions are optional and requested only from an explicit user action. To test: click the toolbar icon on any article, select text, pick a colour; open the side panel; open a PDF from the popup.
+No account, login or payment is needed. All features are free and work offline; data stays in the browser.
+
+Please test on a normal web page (for example any Wikipedia article). Chrome does not allow extensions on chrome:// pages or on the Chrome Web Store, so Bowerline cannot run there.
+
+Web pages: click the Bowerline toolbar icon (or press Alt+Shift+H, or right-click a selection > "Highlight with Bowerline"). Select text, pick a colour in the small toolbar. Click a highlight to add a note, change colour, copy or delete. Reload the page and click the icon again: highlights come back.
+
+PDFs: Chrome's built-in PDF viewer cannot be changed by extensions, so Bowerline opens PDFs in its own viewer. Click the icon on a PDF tab and choose "Open this PDF in Bowerline", or choose "Open a PDF from your computer", or click "Try the sample PDF" in the viewer. Select text and press H (or pick a colour).
+
+Library and export: popup > "Open side panel" > Library tab to search all highlights; Export offers Obsidian, Notion, Markdown, CSV and a backup file.
+
+Permissions: no host access at install. Settings > "Show my highlights automatically" asks for optional host access only when the user turns it on.
+
+Network: the only request is fetching a PDF the user opens, from its own URL (viewer/viewer.js loadPdf / fetchDirect; background.js fetchPdfViaTab). The code is not minified.
 ```
