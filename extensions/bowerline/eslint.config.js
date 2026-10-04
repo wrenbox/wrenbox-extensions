@@ -3,7 +3,15 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'dist-e2e/**', 'release/**', 'node_modules/**', 'test-results/**'],
+    ignores: [
+      'dist/**',
+      'dist-e2e/**',
+      'release/**',
+      'node_modules/**',
+      'test-results/**',
+      'tools/demo-video/out/**',
+      'tools/demo-video/review/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -59,6 +67,25 @@ export default tseslint.config(
       },
     },
     rules: { 'no-restricted-globals': 'off' },
+  },
+  {
+    // Node scripts whose page.evaluate() callbacks run in the browser.
+    files: ['tools/demo-video/**'],
+    languageOptions: {
+      globals: {
+        setTimeout: 'readonly',
+        URL: 'readonly',
+        CSS: 'readonly',
+        MutationObserver: 'readonly',
+        NodeFilter: 'readonly',
+        getSelection: 'readonly',
+        requestAnimationFrame: 'readonly',
+        innerWidth: 'readonly',
+        innerHeight: 'readonly',
+        outerWidth: 'readonly',
+        outerHeight: 'readonly',
+      },
+    },
   },
   {
     files: ['src/background/db.ts'],

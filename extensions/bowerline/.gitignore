@@ -8,3 +8,5 @@ playwright-report/
 tests/output/
 *.log
 test-results-screens/
+tools/demo-video/out/
+tools/demo-video/review/

@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:03,150
+Highlight PDFs and web pages. Privately.
+
+2
+00:00:03,150 --> 00:00:12,250
+Select. Pick a colour. Add a note.
+
+3
+00:00:12,250 --> 00:00:15,750
+Still there when you come back.
+
+4
+00:00:15,750 --> 00:00:23,450
+Works on PDFs, even files on your computer.
+
+5
+00:00:23,450 --> 00:00:30,150
+Find any highlight in seconds.
+
+6
+00:00:30,150 --> 00:00:36,050
+Export to Obsidian, Notion or Markdown.
+
+7
+00:00:36,050 --> 00:00:41,200
+No account. Nothing leaves your browser.

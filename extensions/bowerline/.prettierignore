@@ -10,3 +10,6 @@ store-assets
 public
 licenses
 BUILD_PROMPT.md
+tools/demo-video/out
+tools/demo-video/review
+tools/demo-video/fonts

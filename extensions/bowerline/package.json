@@ -21,7 +21,8 @@
     "zip": "node scripts/zip.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build && npm run audit:network && npm run audit:permissions && npm run test:e2e && npm run zip",
     "screens": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts capture.spec.ts",
-    "store-screenshots": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts store.spec.ts"
+    "store-screenshots": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts store.spec.ts",
+    "video": "node tools/demo-video/run.mjs"
   },
   "dependencies": {
     "approx-string-match": "2.0.0",
