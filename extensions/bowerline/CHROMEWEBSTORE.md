@@ -147,7 +147,7 @@ Chrome asks which categories of user data the extension _collects_. Bowerline tr
 https://wrenbox.github.io/wrenbox-extensions/bowerline/privacy
 ```
 
-Served by GitHub Pages from `/docs/bowerline/privacy.md` in this repository. The policy matches the answers above exactly: what is stored and where (this browser only), that nothing is transmitted, the one PDF request, every permission, how to delete everything, a contact address and the effective date. **Owner: in the repository's GitHub settings, enable Pages from the `main` branch's `/docs` folder, and replace the placeholder contact email in the policy.**
+Served by GitHub Pages from `/docs/bowerline/privacy.md` in this repository. The policy matches the answers above exactly: what is stored and where (this browser only), that nothing is transmitted, the one PDF request, every permission, how to delete everything, a contact address and the effective date. GitHub Pages is enabled (from `main`, folder `/docs`), and the policy's contact address is wrenbox.studio@gmail.com.
 
 ## Distribution tab
 

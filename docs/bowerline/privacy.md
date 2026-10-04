@@ -61,6 +61,6 @@ If this policy changes, the new version will be published at this address with a
 
 ## Contact
 
-Questions about privacy: **privacy@wrenbox.example** <!-- TODO(owner): replace with the real contact address before publishing. -->
+Questions about privacy: **[wrenbox.studio@gmail.com](mailto:wrenbox.studio@gmail.com)**
 
 Wrenbox: small, private tools for your browser.
