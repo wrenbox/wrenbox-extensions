@@ -1,9 +1,9 @@
 /** The sample PDF offered on the onboarding page and in the empty viewer. */
 import { makePdf } from './pdf-writer.mjs';
 
-export function samplePdf() {
+export function samplePdf(title = 'Spaced retrieval study (Bowerline sample)') {
   return makePdf({
-    title: 'Spaced retrieval study (Bowerline sample)',
+    title,
     seed: 'bowerline-sample-v1',
     pages: [
       [

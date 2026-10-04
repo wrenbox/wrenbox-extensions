@@ -475,7 +475,7 @@ function selectionPieces(): Piece[] {
     end.selectNodeContents(textLayer);
     if (sub.compareBoundaryPoints(Range.END_TO_END, end) > 0)
       sub.setEnd(textLayer, textLayer.childNodes.length);
-    const text = collapseWhitespace(sub.toString());
+    const text = collapseWhitespace(textOf(sub));
     if (!text) continue;
     const origin = textLayer.getBoundingClientRect();
     const scale = view.viewport.scale;
@@ -498,6 +498,46 @@ function selectionPieces(): Piece[] {
     pieces.push({ page: n, text, rects, quote });
   }
   return pieces;
+}
+
+/**
+ * The selected text, with a space wherever the selection wraps onto a new line.
+ * pdf.js puts each line in its own element, so Range.toString() would glue the
+ * last word of one line to the first word of the next.
+ */
+function textOf(range: Range): string {
+  const root = range.commonAncestorContainer;
+  const walker = document.createTreeWalker(
+    root.nodeType === Node.TEXT_NODE ? root.parentNode! : root,
+    NodeFilter.SHOW_TEXT,
+  );
+  let out = '';
+  let prevTop: number | null = null;
+  let prevHeight = 0;
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!range.intersectsNode(n)) continue;
+    const t = n as Text;
+    const start = t === range.startContainer ? range.startOffset : 0;
+    const end = t === range.endContainer ? range.endOffset : t.data.length;
+    const piece = t.data.slice(start, end);
+    if (!piece) continue;
+    const rect = t.parentElement?.getBoundingClientRect();
+    if (
+      rect &&
+      prevTop !== null &&
+      rect.top - prevTop > prevHeight * 0.5 &&
+      !/\s$/.test(out) &&
+      !/^\s/.test(piece)
+    ) {
+      out += ' ';
+    }
+    out += piece;
+    if (rect) {
+      prevTop = rect.top;
+      prevHeight = rect.height;
+    }
+  }
+  return out;
 }
 
 async function highlightSelection(color: Color, withNote = false): Promise<void> {
@@ -615,7 +655,7 @@ function onSelectionSettled(): void {
     color: (c) => void highlightSelection(c),
     note: () => void highlightSelection(activeColor, true),
     copy: async () => {
-      await copyText(collapseWhitespace(range.toString()));
+      await copyText(collapseWhitespace(textOf(range)));
       ui.hideToolbar();
       ui.toast('Copied to the clipboard.', undefined, 1800);
     },

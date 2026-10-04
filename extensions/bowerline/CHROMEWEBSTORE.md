@@ -4,7 +4,7 @@ Everything needed to fill in the Chrome Web Store Developer Dashboard, field by 
 
 ## Package
 
-- Upload: `bowerline-1.0.0.zip`, attached to the GitHub Release **bowerline-v1.0.0** (Releases page of this repository). It is built and checked by CI from the tagged commit; `npm run zip` reproduces it byte for byte. `manifest.json` is at the zip root and there are no source maps.
+- Upload: the zip attached to the **latest Bowerline release** on the repository's Releases page (for example `bowerline-1.0.1.zip` from **Bowerline 1.0.1**). CI builds and checks it from the released commit, and `npm run zip` reproduces it byte for byte. `manifest.json` is at the zip root and there are no source maps.
 - Code is bundled and **not minified**, so reviewers can read it directly.
 
 ## Store listing tab
@@ -87,15 +87,13 @@ Made by Wrenbox: small, private tools for your browser.
 | Small promo tile (440×280)    | `store-assets/promo-small-440x280.png`    |
 | Marquee promo tile (1400×560) | `store-assets/promo-marquee-1400x560.png` |
 
-**Screenshots (1280×800), in this order:**
+**Screenshots (1280×800), in this order.** Use the captured set in `store-assets/captured/`. These are real captures of the extension, framed like the design mockups; regenerate them with `npm run store-screenshots` after any UI change. The designed mockups in `store-assets/` stay as the visual reference.
 
-1. `store-assets/screenshot-1-web-highlighting.png`: "Highlight any web page in four colours. Select text, pick a colour, add a note. Your highlights come back every time you return."
-2. `store-assets/screenshot-2-pdf-highlighting.png`: "Highlight PDFs, including files on your computer. Highlights stay with the file, even if you move it."
-3. `store-assets/screenshot-3-library-search.png`: "Every highlight in one searchable library. Search across web pages and PDFs, filter by colour, and jump straight back to the passage."
-4. `store-assets/screenshot-4-export.png`: "Export to Obsidian, Notion or Markdown, for one page or your whole library."
-5. `store-assets/screenshot-5-privacy.png`: "Private by design: no account, no tracking. Your highlights never leave your browser."
-
-The owner will re-capture real screenshots before publishing; `npm run screens` captures every screen at 1280×800 into `tests/output/screens/` as a starting point.
+1. `store-assets/captured/screenshot-1-web-highlighting.png`: "Highlight any web page in four colours. Select text, pick a colour, add a note. Your highlights come back every time you return."
+2. `store-assets/captured/screenshot-2-pdf-highlighting.png`: "Highlight PDFs, including files on your computer. Highlights stay with the file, even if you move it."
+3. `store-assets/captured/screenshot-3-library-search.png`: "Every highlight in one searchable library. Search across web pages and PDFs, filter by colour, and jump straight back to the passage."
+4. `store-assets/captured/screenshot-4-export.png`: "Export to Obsidian, Notion or Markdown, for one page or your whole library."
+5. `store-assets/captured/screenshot-5-privacy.png`: "Private by design: no account, no tracking. Your highlights never leave your browser."
 
 ## Privacy practices tab
 

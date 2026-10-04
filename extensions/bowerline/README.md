@@ -89,7 +89,8 @@ npm run audit:network
 npm run audit:permissions
 npm run zip          # release/bowerline-<version>.zip
 npm run verify       # all of the above, in order
-npm run screens      # capture every screen at 1280×800 into tests/output/screens/
+npm run screens      # capture every screen at 1280×800 into tests/output/screens/ (for review)
+npm run store-screenshots  # the five framed Chrome Web Store screenshots → store-assets/captured/
 ```
 
 Golden files for the exporters live in `tests/fixtures/golden/`; regenerate with `UPDATE_GOLDEN=1 npm test` and review the diff.

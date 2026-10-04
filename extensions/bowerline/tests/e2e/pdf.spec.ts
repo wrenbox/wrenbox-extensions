@@ -1,4 +1,4 @@
-import { STUDY_PDF, expect, selectText, storedHighlights, test } from './helpers';
+import { STUDY_PDF, expect, selectAcross, selectText, storedHighlights, test } from './helpers';
 
 test('highlights a PDF opened from the computer, then restores it by fingerprint when opened from a URL', async ({
   ext,
@@ -42,6 +42,17 @@ test('highlights a PDF opened from the computer, then restores it by fingerprint
   await expect(viewer.locator('.note-card')).toContainText('Second key finding.');
   await expect(viewer.locator('.thumb[data-page="2"] .thumb-dots span')).toHaveCount(1);
 
+  // A selection that wraps onto the next line keeps the space between the lines.
+  await selectAcross(
+    viewer,
+    '.page[data-page-number="2"] .textLayer',
+    'compared with 38% for the restudy group.',
+  );
+  await viewer.keyboard.press('h');
+  await expect
+    .poll(async () => (await storedHighlights(ext)).map((h) => h.text))
+    .toContain('compared with 38% for the restudy group.');
+
   // Overlays follow the zoom.
   const before = await viewer.locator('.bl-hl').first().boundingBox();
   await viewer.keyboard.press('+');
@@ -55,7 +66,7 @@ test('highlights a PDF opened from the computer, then restores it by fingerprint
     ext.url(`viewer/viewer.html?src=${encodeURIComponent(`${ext.server.url}/cors/renamed.pdf`)}`),
   );
   await again.waitForSelector('.page[data-page-number="2"] .textLayer span');
-  await expect(again.locator('.page[data-page-number="2"] .bl-hl')).toHaveCount(2);
+  await expect(again.locator('.page[data-page-number="2"] .bl-hl')).toHaveCount(4);
   await expect(again.locator('.note-card')).toContainText('Second key finding.');
 
   // One source, keyed by fingerprint, now with the URL recorded.

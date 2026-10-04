@@ -2,6 +2,18 @@
 
 All notable changes to Bowerline are recorded here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## 1.0.1 (2026-10-04)
+
+### Fixed
+
+- PDF highlights and copied text that wrap onto the next line no longer lose the space between the lines ("seven days,compared" is now "seven days, compared").
+- A note card that doesn't fit in the right margin now opens below the line instead of covering the highlighted text.
+- The export dialog fits short windows: the preview shrinks so Copy and Download stay on screen.
+
+### Added
+
+- `npm run store-screenshots` generates the five Chrome Web Store screenshots from the real extension.
+
 ## 1.0.0 (2026-10-03)
 
 First release.

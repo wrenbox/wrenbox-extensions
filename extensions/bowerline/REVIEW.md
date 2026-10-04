@@ -112,7 +112,7 @@ Releases are published as GitHub Releases by `.github/workflows/bowerline.yml`. 
 
 ## Owner actions before publishing
 
-1. Re-capture real store screenshots (`npm run screens` gives a starting point).
+1. ~~Re-capture real store screenshots~~ Done: `store-assets/captured/` holds real, framed captures (`npm run store-screenshots`).
 2. Replace the placeholder contact email in `/docs/bowerline/privacy.md`.
 3. Enable GitHub Pages from `/docs` so the privacy URL resolves.
 4. Register the developer account as **Wrenbox**, as a non-trader.

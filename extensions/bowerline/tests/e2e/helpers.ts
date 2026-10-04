@@ -174,6 +174,38 @@ export async function selectText(
   );
 }
 
+/** Selects `text` inside `selector` even when it spans several text nodes (pdf.js lines). */
+export async function selectAcross(page: Page, selector: string, text: string): Promise<void> {
+  await page.evaluate(
+    ({ selector, text }) => {
+      const root = document.querySelector(selector)!;
+      const nodes: Array<{ node: Text; start: number }> = [];
+      let all = '';
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        nodes.push({ node: n as Text, start: all.length });
+        all += (n as Text).data;
+      }
+      const words = text.split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const m = new RegExp(words.join('\\s*')).exec(all);
+      if (!m) throw new Error(`Not found: ${text}`);
+      const at = (offset: number, end: boolean) => {
+        const hit = [...nodes].reverse().find((x) => (end ? x.start < offset : x.start <= offset))!;
+        return { node: hit.node, offset: offset - hit.start };
+      };
+      const s = at(m.index, false);
+      const e = at(m.index + m[0].length, true);
+      const r = document.createRange();
+      r.setStart(s.node, s.offset);
+      r.setEnd(e.node, e.offset);
+      const sel = window.getSelection()!;
+      sel.removeAllRanges();
+      sel.addRange(r);
+    },
+    { selector, text },
+  );
+}
+
 /** Highlighted text currently registered in CSS.highlights, per colour. */
 export async function renderedHighlights(page: Page): Promise<Record<string, string[]>> {
   return page.evaluate(() => {

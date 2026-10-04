@@ -347,11 +347,18 @@ export class PageUi {
     this.root.append(card);
     const r = marker.getBoundingClientRect();
     const vw = document.documentElement.clientWidth || window.innerWidth;
-    const w = card.offsetWidth;
-    let left = r.right + 8;
-    if (left + w > vw - MARGIN) left = Math.max(MARGIN, r.left - 8 - w);
-    card.style.left = `${Math.round(left)}px`;
-    card.style.top = `${Math.round(Math.max(MARGIN, r.top - 6))}px`;
+    // In the right margin when there is room (narrowing to fit), otherwise just
+    // below the line: never over the highlighted text itself.
+    const margin = vw - MARGIN - (r.right + 8);
+    if (margin >= 150) {
+      card.style.maxWidth = `${Math.min(260, margin)}px`;
+      card.style.left = `${Math.round(r.right + 8)}px`;
+      card.style.top = `${Math.round(Math.max(MARGIN, r.top - 6))}px`;
+    } else {
+      const w = card.offsetWidth;
+      card.style.left = `${Math.round(Math.max(MARGIN, Math.min(r.right, vw - MARGIN) - w))}px`;
+      card.style.top = `${Math.round(r.bottom + 6)}px`;
+    }
     this.card = card;
   }
 

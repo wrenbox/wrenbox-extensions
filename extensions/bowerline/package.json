@@ -1,6 +1,6 @@
 {
   "name": "bowerline",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Bowerline – PDF & Web Highlighter. A private, local-first Chrome extension by Wrenbox.",
   "license": "UNLICENSED",
@@ -20,7 +20,8 @@
     "audit:permissions": "node scripts/audit-permissions.mjs",
     "zip": "node scripts/zip.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build && npm run audit:network && npm run audit:permissions && npm run test:e2e && npm run zip",
-    "screens": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts"
+    "screens": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts capture.spec.ts",
+    "store-screenshots": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts store.spec.ts"
   },
   "dependencies": {
     "approx-string-match": "2.0.0",

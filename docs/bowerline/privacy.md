@@ -1,6 +1,5 @@
 ---
 title: Bowerline privacy policy
-permalink: /bowerline/privacy
 ---
 
 # Bowerline privacy policy

@@ -311,9 +311,10 @@
   font-size: 12px;
 }
 .preview {
-  flex: 1;
-  min-height: 300px;
-  max-height: 360px;
+  /* Fills the height beside the format list without growing the dialog, so
+     the buttons stay on screen even in short windows; long output scrolls. */
+  flex: 1 1 0;
+  min-height: 140px;
   margin: 0;
   overflow: auto;
   padding: 16px 18px;
