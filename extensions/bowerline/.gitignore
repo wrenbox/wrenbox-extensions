@@ -10,3 +10,4 @@ tests/output/
 test-results-screens/
 tools/demo-video/out/
 tools/demo-video/review/
+__pycache__/
