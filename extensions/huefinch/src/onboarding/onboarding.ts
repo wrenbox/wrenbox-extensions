@@ -9,23 +9,25 @@ import { DEFAULTS } from '../shared/settings';
 import { PRIVACY_URL, STORY, STUDIO_LINE, brandBar } from '../shared/ui/brand';
 import { PreviewFilter } from '../shared/ui/controls';
 import { $, h, svg } from '../shared/ui/dom';
-import { keyLabel, toggleShortcut } from '../shared/ui/keys';
+import { browserName, keyLabel, toggleShortcut } from '../shared/ui/keys';
 
 $('#bar').replaceWith(brandBar());
 $('#story').textContent = STORY;
 $('#studio').textContent = STUDIO_LINE;
 ($('#privacy') as HTMLAnchorElement).href = PRIVACY_URL;
 
-const isEdge = /\bEdg\//.test(navigator.userAgent);
 $('#warning').textContent =
-  `${isEdge ? 'Edge' : 'Chrome'} will ask with its standard wording for this kind of access ("read and change all your data on all websites"), ` +
+  `${browserName()} will ask with its standard wording for this kind of access ("read and change all your data on all websites"), ` +
   'because recoloring a page needs the same permission as reading it. Huefinch only adds a filter, and makes no network requests at all.';
 
 // --- The before/after demo ----------------------------------------------------------
 
-/** A red/green pair that green-weak eyes confuse (see shared/pairs.ts, pair d2). */
-const NORTH = '#FF3366';
-const SOUTH = '#00BB66';
+/**
+ * A common chart red and green that green-weak eyes confuse: CIEDE2000 3.8
+ * between them as seen with deuteranopia, 26.7 with Huefinch at 80%.
+ */
+const NORTH = '#DC3545';
+const SOUTH = '#558833';
 const north = [62, 48, 40, 37, 40, 46, 52, 54, 52, 44];
 const south = [40, 41, 47, 53, 54, 50, 42, 34, 30, 30];
 
@@ -42,7 +44,14 @@ function chart(): SVGElement {
       'stroke-linecap': 'round',
     });
   const grid = [0, 1, 2, 3, 4].map((i) =>
-    svg('line', { x1: 10, x2: 490, y1: 60 + i * 40, y2: 60 + i * 40, stroke: '#e6e9f2', 'stroke-width': 1 }),
+    svg('line', {
+      x1: 10,
+      x2: 490,
+      y1: 60 + i * 40,
+      y2: 60 + i * 40,
+      stroke: '#e6e9f2',
+      'stroke-width': 1,
+    }),
   );
   const text = (t: string, attrs: Record<string, string | number>) => {
     const el = svg('text', { 'font-size': 13, fill: '#18214d', ...attrs });
@@ -54,13 +63,25 @@ function chart(): SVGElement {
     text(label, { x: at + 28, y: 37 }),
   ];
   const dot = (label: string, color: string, col: number, row: number) => [
-    svg('rect', { x: 10 + col * 245, y: 268 + row * 40, width: 235, height: 32, rx: 8, fill: '#fff', stroke: '#dce1ec' }),
+    svg('rect', {
+      x: 10 + col * 245,
+      y: 268 + row * 40,
+      width: 235,
+      height: 32,
+      rx: 8,
+      fill: '#fff',
+      stroke: '#dce1ec',
+    }),
     svg('circle', { cx: 28 + col * 245, cy: 284 + row * 40, r: 6, fill: color }),
     text(label, { x: 42 + col * 245, y: 289 + row * 40 }),
   ];
   return svg(
     'svg',
-    { viewBox: '0 0 500 350', role: 'img', 'aria-label': 'Line chart of weekly orders: North and South cross twice.' },
+    {
+      viewBox: '0 0 500 350',
+      role: 'img',
+      'aria-label': 'Line chart of weekly orders: North and South cross twice.',
+    },
     text('Weekly orders by region', { x: 10, y: 16, 'font-size': 16, 'font-weight': 700 }),
     ...legend('North', NORTH, 10),
     ...legend('South', SOUTH, 90),
@@ -111,9 +132,14 @@ chrome.permissions.onRemoved.addListener(() => void render());
 const toggle = await toggleShortcut();
 $('#tip-toggle').append(
   h('strong', null, toggle ?? 'A shortcut'),
-  toggle ? ' turns Huefinch on or off on every tab.' : ' to turn Huefinch on or off can be set in Settings.',
+  toggle
+    ? ' turns Huefinch on or off on every tab.'
+    : ' to turn Huefinch on or off can be set in Settings.',
 );
-$('#tip-hold').append(h('strong', null, `Hold ${keyLabel('Alt+Shift+X')}`), ' to see a page’s original colors for a moment.');
+$('#tip-hold').append(
+  h('strong', null, `Hold ${keyLabel('Alt+Shift+X')}`),
+  ' to see a page’s original colors for a moment.',
+);
 $('#tip-pick').append(
   h('strong', null, keyLabel('Alt+Shift+C')),
   ', then click anywhere, names the color under the pointer and copies its hex code. Even inside photos.',

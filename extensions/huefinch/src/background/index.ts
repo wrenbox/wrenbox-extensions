@@ -11,7 +11,8 @@
  * It holds no page data. The only thing content scripts send it is whether
  * their tab is recolored, for the icon.
  */
-import { canRunOn } from '../shared/hostname';
+import { canRunOn, isOffOn, siteOf } from '../shared/hostname';
+import { excludePatterns, initialFilesFor } from '../shared/initial';
 import {
   ALL_SITES,
   CONTENT_SCRIPT_FILE,
@@ -23,7 +24,13 @@ import {
   type PingReply,
   type WorkerRequest,
 } from '../shared/messages';
-import { loadSettings, migrateStorage, saveSettings } from '../shared/settings';
+import {
+  SETTING_KEYS,
+  loadSettings,
+  migrateStorage,
+  saveSettings,
+  type Settings,
+} from '../shared/settings';
 
 const SIZES = [16, 32, 48] as const;
 const iconPaths = (on: boolean): Record<string, string> =>
@@ -39,23 +46,46 @@ function serial<T>(job: () => Promise<T>): Promise<T> {
   return next;
 }
 
-/** Registers or unregisters the automatic content script to match the permission. Returns whether automatic mode is on. */
+/**
+ * What gets registered: the initial-state files for the current settings,
+ * then the content script, on every site except those switched off.
+ */
+function registration(s: Settings): chrome.scripting.RegisteredContentScript {
+  const exclude = excludePatterns(s.offSites);
+  return {
+    id: CONTENT_SCRIPT_ID,
+    js: [...initialFilesFor(s), CONTENT_SCRIPT_FILE],
+    matches: ALL_SITES,
+    ...(exclude.length ? { excludeMatches: exclude } : {}),
+    runAt: 'document_start',
+    allFrames: false,
+    persistAcrossSessions: true,
+  };
+}
+
+/**
+ * Registers, updates or unregisters the automatic content script to match the
+ * permission and the settings. Returns whether automatic mode is on.
+ */
 export function syncRegistration(): Promise<boolean> {
   return serial(async () => {
     const want = await hasAllSites();
-    const existing = await chrome.scripting.getRegisteredContentScripts({ ids: [CONTENT_SCRIPT_ID] });
-    if (want && !existing.length) {
-      await chrome.scripting.registerContentScripts([
-        {
-          id: CONTENT_SCRIPT_ID,
-          js: [CONTENT_SCRIPT_FILE],
-          matches: ALL_SITES,
-          runAt: 'document_start',
-          allFrames: false,
-          persistAcrossSessions: true,
-        },
-      ]);
-    } else if (!want && existing.length) {
+    const existing = await chrome.scripting.getRegisteredContentScripts({
+      ids: [CONTENT_SCRIPT_ID],
+    });
+    if (want) {
+      const script = registration(await loadSettings());
+      const current = existing[0];
+      if (!current) await chrome.scripting.registerContentScripts([script]);
+      else if (
+        JSON.stringify(current.js) !== JSON.stringify(script.js) ||
+        JSON.stringify(current.excludeMatches ?? []) !== JSON.stringify(script.excludeMatches ?? [])
+      ) {
+        await chrome.scripting.updateContentScripts([
+          { ...script, excludeMatches: script.excludeMatches ?? [] },
+        ]);
+      }
+    } else if (existing.length) {
       await chrome.scripting.unregisterContentScripts({ ids: [CONTENT_SCRIPT_ID] });
     }
     return want;
@@ -87,7 +117,7 @@ async function inject(tabId: number): Promise<boolean> {
   try {
     await chrome.scripting.executeScript({
       target: { tabId, frameIds: [0] },
-      files: [CONTENT_SCRIPT_FILE],
+      files: [...initialFilesFor(await loadSettings()), CONTENT_SCRIPT_FILE],
     });
     return true;
   } catch {
@@ -194,14 +224,26 @@ chrome.permissions.onAdded.addListener((p) => {
 });
 chrome.permissions.onRemoved.addListener(() => void syncRegistration());
 
+let resync: ReturnType<typeof setTimeout> | undefined;
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && 'enabled' in changes) void setGlobalIcon();
+  if (area !== 'local') return;
+  if ('enabled' in changes) void setGlobalIcon();
+  // Keep the initial-state files in step (debounced: the slider writes often).
+  if (SETTING_KEYS.some((k) => k in changes)) {
+    clearTimeout(resync);
+    resync = setTimeout(() => void syncRegistration().catch(() => {}), 150);
+  }
 });
 
 // After a navigation the page may no longer run Huefinch (activeTab ends there).
-chrome.tabs.onUpdated.addListener((tabId, info) => {
+chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.status !== 'complete') return;
-  void ping(tabId).then((r) => setTabIcon(tabId, r ? r.applied : null));
+  void ping(tabId).then(async (r) => {
+    if (r) return setTabIcon(tabId, r.applied);
+    // Not running here. With website access the URL is visible: grey on sites switched off.
+    const s = await loadSettings();
+    return setTabIcon(tabId, s.enabled && !isOffOn(s.offSites, siteOf(tab.url)));
+  });
 });
 
 chrome.runtime.onInstalled.addListener((details) => {

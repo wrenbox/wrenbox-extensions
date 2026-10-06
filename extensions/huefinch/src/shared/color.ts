@@ -34,7 +34,13 @@ export function parseColor(value: string): Vec3 | null {
 }
 
 export function toHex(rgb: Vec3): string {
-  return `#${rgb.map((c) => Math.max(0, Math.min(255, Math.round(c))).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+  return `#${rgb
+    .map((c) =>
+      Math.max(0, Math.min(255, Math.round(c)))
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`.toUpperCase();
 }
 
 export function rgbToHsl([r8, g8, b8]: Vec3): Hsl {
@@ -418,7 +424,12 @@ const CSS_LAB: Array<{ name: string; keyword: string; hex: string; lab: Lab }> =
 export const CSS_COLOR_COUNT = CSS_COLORS.length;
 
 /** The CSS named color closest to `rgb` (CIEDE2000). */
-export function nearestCssColor(rgb: Vec3): { name: string; keyword: string; hex: string; distance: number } {
+export function nearestCssColor(rgb: Vec3): {
+  name: string;
+  keyword: string;
+  hex: string;
+  distance: number;
+} {
   const lab = rgbToLab(rgb);
   let best = CSS_LAB[0]!;
   let bestD = Infinity;
@@ -444,7 +455,12 @@ export function identifyColor(value: string): ColorReport | null {
   const rgb = parseColor(value);
   if (!rgb) return null;
   const near = nearestCssColor(rgb);
-  return { hex: toHex(rgb), name: describeColor(rgb), closeTo: near.name, cssKeyword: near.keyword };
+  return {
+    hex: toHex(rgb),
+    name: describeColor(rgb),
+    closeTo: near.name,
+    cssKeyword: near.keyword,
+  };
 }
 
 /** WCAG 2 relative luminance and contrast ratio. */

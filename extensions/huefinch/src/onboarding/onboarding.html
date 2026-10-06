@@ -14,7 +14,9 @@
   <body>
     <main class="page">
       <header class="hero">
-        <p class="logo"><img src="../icons/icon-128.png" width="44" height="44" alt="" />Huefinch</p>
+        <p class="logo">
+          <img src="../icons/icon-128.png" width="44" height="44" alt="" />Huefinch
+        </p>
         <div id="bar"></div>
         <h1>Tell colors apart on every website</h1>
         <p class="story" id="story"></p>
@@ -24,11 +26,15 @@
         <h2 id="demo-title" class="sr-only">Before and after</h2>
         <div class="demo-grid">
           <figure class="panel">
-            <figcaption><span>Without Huefinch</span><span class="tag">Lines look the same</span></figcaption>
+            <figcaption>
+              <span>Without Huefinch</span><span class="tag">Lines look the same</span>
+            </figcaption>
             <div class="chart" id="chart-before"></div>
           </figure>
           <figure class="panel">
-            <figcaption><span>With Huefinch</span><span class="tag dark">Easy to tell apart</span></figcaption>
+            <figcaption>
+              <span>With Huefinch</span><span class="tag dark">Easy to tell apart</span>
+            </figcaption>
             <div class="chart" id="chart-after"></div>
           </figure>
         </div>
@@ -43,22 +49,25 @@
         <div id="ask">
           <h2 id="access-title">Turn Huefinch on for every website</h2>
           <p>
-            Huefinch needs access to websites <strong>to recolor the pages you visit; it never reads them.</strong>
+            Huefinch needs access to websites
+            <strong>to recolor the pages you visit; it never reads them.</strong>
             It only lays a color filter over each page, in your browser.
           </p>
           <p class="muted" id="warning"></p>
-          <button id="grant" type="button" class="btn primary large">Turn on for all websites</button>
+          <button id="grant" type="button" class="btn primary large">
+            Turn on for all websites
+          </button>
           <p id="declined" class="declined" role="status" hidden>
             No problem. Huefinch still works one tab at a time: click its icon in the toolbar and it
-            recolors that tab until you leave the page. You can turn on automatic mode later from the
-            popup or Settings.
+            recolors that tab until you leave the page. You can turn on automatic mode later from
+            the popup or Settings.
           </p>
         </div>
         <div id="done" hidden>
           <h2 tabindex="-1" id="done-title">Huefinch is on for every website</h2>
           <p>
-            It starts with <strong>Green-weak at 80% strength</strong>, the most common setting. Change it
-            any time from the toolbar icon, or let Huefinch suggest one.
+            It starts with <strong>Green-weak at 80% strength</strong>, the most common setting.
+            Change it any time from the toolbar icon, or let Huefinch suggest one.
           </p>
           <div class="next">
             <a class="btn primary" href="../options/options.html#find">Find my setting</a>
@@ -70,17 +79,26 @@
       <section class="tips" aria-labelledby="tips-title">
         <h2 id="tips-title">Good to know</h2>
         <ul>
-          <li><strong>Pin Huefinch</strong> so it's one click away: open the puzzle-piece menu in the toolbar and click the pin next to Huefinch.</li>
+          <li>
+            <strong>Pin Huefinch</strong> so it’s one click away: open the puzzle-piece menu in the
+            toolbar and click the pin next to Huefinch.
+          </li>
           <li id="tip-toggle"></li>
           <li id="tip-hold"></li>
           <li id="tip-pick"></li>
-          <li><strong>Designers:</strong> switch the popup to <em>Simulate</em> to see a page the way red-, green- or blue-weak eyes do.</li>
+          <li>
+            <strong>Designers:</strong> switch the popup to <em>Simulate</em> to see a page the way
+            red-, green- or blue-weak eyes do.
+          </li>
         </ul>
       </section>
 
       <footer class="foot">
         <p id="studio"></p>
-        <p><a id="privacy" target="_blank" rel="noopener">Privacy policy</a> · Nothing leaves your browser.</p>
+        <p>
+          <a id="privacy" target="_blank" rel="noopener">Privacy policy</a> · Nothing leaves your
+          browser.
+        </p>
       </footer>
     </main>
     <script type="module" src="onboarding.js"></script>

@@ -22,6 +22,7 @@ import {
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { initialFiles } from './lib/initial.mjs';
 import { decodePng, encodePng, grayIcon } from './lib/png.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -45,9 +46,17 @@ const common = {
 };
 
 const builds = [
-  { entryPoints: ['src/background/index.ts'], outfile: join(outdir, 'background.js'), format: 'esm' },
+  {
+    entryPoints: ['src/background/index.ts'],
+    outfile: join(outdir, 'background.js'),
+    format: 'esm',
+  },
   // Classic script: injected by registerContentScripts and executeScript.
-  { entryPoints: ['src/content/index.ts'], outfile: join(outdir, 'content/content.js'), format: 'iife' },
+  {
+    entryPoints: ['src/content/index.ts'],
+    outfile: join(outdir, 'content/content.js'),
+    format: 'iife',
+  },
   ...PAGES.map((p) => ({
     entryPoints: [`src/${p}/${p}.ts`],
     outfile: join(outdir, `${p}/${p}.js`),
@@ -73,6 +82,10 @@ function copyStatic() {
     const icon = decodePng(readFileSync(join(root, `public/icons/icon-${size}.png`)));
     writeFileSync(join(outdir, `icons/icon-off-${size}.png`), encodePng(grayIcon(icon)));
   }
+  for (const { path, source } of initialFiles()) {
+    mkdirSync(dirname(join(outdir, path)), { recursive: true });
+    writeFileSync(join(outdir, path), source);
+  }
   const manifest = JSON.parse(readFileSync(join(root, 'src/manifest.json'), 'utf8'));
   manifest.version = pkg.version;
   writeFileSync(join(outdir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
@@ -80,7 +93,9 @@ function copyStatic() {
 
 function sizeReport() {
   for (const f of ['content/content.js', 'background.js', 'popup/popup.js', 'options/options.js']) {
-    console.log(`  ${f.padEnd(22)} ${(statSync(join(outdir, f)).size / 1024).toFixed(1).padStart(7)} KB`);
+    console.log(
+      `  ${f.padEnd(22)} ${(statSync(join(outdir, f)).size / 1024).toFixed(1).padStart(7)} KB`,
+    );
   }
 }
 

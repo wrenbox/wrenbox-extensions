@@ -4,15 +4,20 @@
  * mode is off.
  */
 import { canRunOn, isOffOn, siteOf, withSite } from '../shared/hostname';
-import { ALL_SITES, hasAllSites, type ActivateResult, type WorkerRequest } from '../shared/messages';
+import {
+  ALL_SITES,
+  hasAllSites,
+  type ActivateResult,
+  type WorkerRequest,
+} from '../shared/messages';
 import { applyChanges, loadSettings, saveSettings, type Settings } from '../shared/settings';
 import { $, h } from '../shared/ui/dom';
 import { gearIcon, pickerIcon } from '../shared/ui/icons';
-import { keyLabel, toggleShortcut } from '../shared/ui/keys';
+import { browserName, keyLabel, toggleShortcut } from '../shared/ui/keys';
 import { switchControl, visionControls } from '../shared/ui/controls';
 
 let settings: Settings = await loadSettings();
-let tab: chrome.tabs.Tab | undefined;
+let tab: chrome.tabs.Tab | undefined = undefined; // set once the target tab is known
 let site: string | null = null;
 let runnable = false;
 let activation: ActivateResult | null = null;
@@ -90,7 +95,7 @@ function showNote(): void {
         null,
         tab.url === undefined
           ? 'Huefinch can’t reach this tab. Click its icon while you’re on a web page.'
-          : 'Chrome doesn’t let extensions change this page. Huefinch works on websites.',
+          : `${browserName()} doesn’t let extensions change this page. Huefinch works on websites.`,
       ),
     );
     return;
@@ -112,11 +117,16 @@ function showNote(): void {
           type: 'button',
           class: 'btn small primary',
           // The popup may close while Chrome asks; the service worker finishes the setup.
-          onclick: () => void chrome.permissions.request({ origins: ALL_SITES }).then(refreshAccess),
+          onclick: () =>
+            void chrome.permissions.request({ origins: ALL_SITES }).then(refreshAccess),
         },
         'Turn on for all websites',
       ),
-      h('p', { class: 'muted' }, 'Then it works on every page automatically, and never reads them.'),
+      h(
+        'p',
+        { class: 'muted' },
+        'Then it works on every page automatically, and never reads them.',
+      ),
     );
   }
 }
@@ -132,7 +142,9 @@ async function hints(): Promise<void> {
   $('#hints').replaceChildren(
     line(keyLabel('Alt+Shift+C'), 'to name any color'),
     line(`Hold ${keyLabel('Alt+Shift+X')}`, 'to see original colors'),
-    toggle ? line(toggle, 'to turn Huefinch on or off') : h('p', null, 'Set an on/off shortcut in Settings'),
+    toggle
+      ? line(toggle, 'to turn Huefinch on or off')
+      : h('p', null, 'Set an on/off shortcut in Settings'),
   );
 }
 

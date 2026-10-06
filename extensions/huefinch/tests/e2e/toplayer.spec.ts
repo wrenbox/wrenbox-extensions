@@ -5,7 +5,18 @@
  * strength, so the checks tell them apart.
  */
 import type { Vec3 } from '../../src/shared/matrix';
-import { expectClose, expected, fixture, matrixOf, pixels, setSettings, test, expect, waitForFilter, type Ext } from './helpers';
+import {
+  expectClose,
+  expected,
+  fixture,
+  matrixOf,
+  pixels,
+  setSettings,
+  test,
+  expect,
+  waitForFilter,
+  type Ext,
+} from './helpers';
 
 const RED: Vec3 = [255, 0, 0];
 const BLUE: Vec3 = [0, 0, 255];

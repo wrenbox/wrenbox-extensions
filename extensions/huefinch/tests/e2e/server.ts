@@ -1,5 +1,5 @@
 /** A tiny static server for e2e fixtures, on two origins (for cross-origin iframes). */
-import { createServer, type Server } from 'node:http';
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
@@ -18,7 +18,9 @@ export interface FixtureServer {
   close(): Promise<void>;
 }
 
-function listen(handler: Parameters<typeof createServer>[1]): Promise<{ server: Server; url: string }> {
+function listen(
+  handler: Parameters<typeof createServer>[1],
+): Promise<{ server: Server; url: string }> {
   const server = createServer(handler);
   return new Promise((resolve) => {
     server.listen(0, '127.0.0.1', () => {
@@ -36,7 +38,7 @@ function listen(handler: Parameters<typeof createServer>[1]): Promise<{ server: 
  */
 export async function startServer(root: string): Promise<FixtureServer> {
   const origins: string[] = [];
-  const handler = (self: number) => (req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) => {
+  const handler = (self: number) => (req: IncomingMessage, res: ServerResponse) => {
     let path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
     if (path === '/favicon.ico') {
       res.writeHead(204);
@@ -57,7 +59,8 @@ export async function startServer(root: string): Promise<FixtureServer> {
       return;
     }
     let body: Buffer | string = readFileSync(file);
-    if (extname(file) === '.html') body = body.toString('utf8').replaceAll('__OTHER__', origins[1 - self]!);
+    if (extname(file) === '.html')
+      body = body.toString('utf8').replaceAll('__OTHER__', origins[1 - self]!);
     headers['content-type'] = TYPES[extname(file)] ?? 'application/octet-stream';
     res.writeHead(200, headers);
     res.end(body);
@@ -69,7 +72,9 @@ export async function startServer(root: string): Promise<FixtureServer> {
     url: a.url,
     other: b.url,
     close: async () => {
-      await Promise.all([a, b].map(({ server }) => new Promise<void>((r) => server.close(() => r()))));
+      await Promise.all(
+        [a, b].map(({ server }) => new Promise<void>((r) => server.close(() => r()))),
+      );
     },
   };
 }

@@ -17,4 +17,7 @@ export const BLOCKS: Vec3[] = [
 ];
 
 /** A point inside block i, below where the Simulate pill (and its shadow) can reach. */
-export const blockCenter = (i: number): [number, number] => [(i % 6) * 100 + 50, Math.floor(i / 6) * 100 + 80];
+export const blockCenter = (i: number): [number, number] => [
+  (i % 6) * 100 + 50,
+  Math.floor(i / 6) * 100 + 80,
+];

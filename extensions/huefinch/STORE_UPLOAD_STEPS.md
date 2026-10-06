@@ -3,6 +3,7 @@
 This uses your **second** item slot (Bowerline is the first). New accounts get two slots by default, so don't submit anything else until more slots are granted.
 
 ## Before you start
+
 1. **Trademark check:** search "Huefinch" on tmsearch.uspto.gov and ipindia.gov.in (Class 9 and Class 42). If anything live shows up in those classes, stop and tell me.
 2. **Test it yourself:** `chrome://extensions` → Developer mode → Load unpacked → `extensions/huefinch/dist`. Go through the checklist in `extensions/huefinch/README.md`.
 3. **Real screenshots:** the images in `store-assets/` were designed before the code. If the built extension looks noticeably different, re-capture them at 1280×800 (DevTools → device toolbar → 1280×800 → Ctrl+Shift+P → "Capture screenshot"). Store images must show the real product.
@@ -10,6 +11,7 @@ This uses your **second** item slot (Bowerline is the first). New accounts get t
 5. **Video:** follow `YOUTUBE_UPLOAD.md` and keep the link ready. This step is optional; it can be added after launch.
 
 ## In the developer dashboard
+
 1. **Items → New item** → upload `extensions/huefinch/release/huefinch-<version>.zip`.
 2. **Store listing tab:**
    - **Description:** paste the detailed description from `extensions/huefinch/CHROMEWEBSTORE.md`.
@@ -36,8 +38,10 @@ This uses your **second** item slot (Bowerline is the first). New accounts get t
 5. **Submit for review.**
 
 ## While it's in review
+
 - Expect a few days, possibly longer. Huefinch asks for website access (as an optional permission), which gets a closer look.
 - If it's rejected, paste the full rejection email here and I'll fix the cause.
 
 ## Optional: Microsoft Edge
+
 Register at Microsoft Partner Center (Edge Add-ons), then upload `release/huefinch-<version>-edge.zip` with the same images and text. This doesn't use a Chrome slot.

@@ -10,11 +10,7 @@
  * Ozguven (2005), "Analysis of Color Blindness".
  */
 
-export type Mat3 = [
-  [number, number, number],
-  [number, number, number],
-  [number, number, number],
-];
+export type Mat3 = [[number, number, number], [number, number, number], [number, number, number]];
 export type Vec3 = [number, number, number];
 export type CvdType = 'protan' | 'deutan' | 'tritan';
 export type Mode = 'correct' | 'simulate';
@@ -72,7 +68,8 @@ export const REDISTRIBUTION: Record<CvdType, Mat3> = {
 const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n);
 
 export function multiply(a: Mat3, b: Mat3): Mat3 {
-  const row = (r: Vec3): Vec3 => [0, 1, 2].map((j) => r[0] * b[0][j]! + r[1] * b[1][j]! + r[2] * b[2][j]!) as Vec3;
+  const row = (r: Vec3): Vec3 =>
+    [0, 1, 2].map((j) => r[0] * b[0][j]! + r[1] * b[1][j]! + r[2] * b[2][j]!) as Vec3;
   return [row(a[0]), row(a[1]), row(a[2])];
 }
 

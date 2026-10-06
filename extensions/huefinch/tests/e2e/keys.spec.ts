@@ -1,10 +1,22 @@
 import { BLOCKS, blockCenter } from './colors';
-import { expectClose, expected, fixture, matrixOf, pixels, shadowText, test, expect, waitForFilter } from './helpers';
+import {
+  expectClose,
+  expected,
+  fixture,
+  matrixOf,
+  pixels,
+  shadowText,
+  test,
+  expect,
+  waitForFilter,
+} from './helpers';
 
 const M = matrixOf({ mode: 'correct', type: 'deutan', amount: 80 });
 const points = BLOCKS.map((_, i) => blockCenter(i));
 
-test('holding Alt+Shift+X shows the original pixels; letting go brings the filter back', async ({ ext }) => {
+test('holding Alt+Shift+X shows the original pixels; letting go brings the filter back', async ({
+  ext,
+}) => {
   const page = await ext.ctx.newPage();
   await page.goto(fixture(ext, 'blocks.html'));
   await waitForFilter(page, M);
@@ -31,7 +43,9 @@ test('holding Alt+Shift+X shows the original pixels; letting go brings the filte
   expect(ext.errors).toEqual([]);
 });
 
-test('releasing Alt or Shift first, or the window losing focus, also restores the filter', async ({ ext }) => {
+test('releasing Alt or Shift first, or the window losing focus, also restores the filter', async ({
+  ext,
+}) => {
   const page = await ext.ctx.newPage();
   await page.goto(fixture(ext, 'blocks.html'));
   await waitForFilter(page, M);

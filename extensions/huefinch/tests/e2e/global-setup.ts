@@ -7,7 +7,8 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { DIST, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
 
 export default async function globalSetup(): Promise<void> {
-  if (!existsSync(`${DIST}/manifest.json`)) throw new Error('Run `npm run build` first: dist/ is missing.');
+  if (!existsSync(`${DIST}/manifest.json`))
+    throw new Error('Run `npm run build` first: dist/ is missing.');
   rmSync(PROFILE_TEMPLATE, { recursive: true, force: true });
   mkdirSync(PROFILE_TEMPLATE, { recursive: true });
   const ctx = await chromium.launchPersistentContext(PROFILE_TEMPLATE, {

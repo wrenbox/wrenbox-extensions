@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" style="color-scheme: dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Server status (dark)</title>
+    <style>
+      html {
+        background: #0f1117;
+        color: #e6e8ef;
+      }
+      body {
+        margin: 0;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px;
+      }
+      .card {
+        background: #1a1d27;
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .up {
+        color: #3ddc84;
+      }
+      .down {
+        color: #ff5c5c;
+      }
+      .warn {
+        color: #ffb020;
+      }
+      .badge {
+        padding: 2px 10px;
+        border-radius: 999px;
+        border: 1px solid currentColor;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Server status</h1>
+      <div class="card">api-eu-1 <span class="badge up">● Up</span></div>
+      <div class="card">api-us-2 <span class="badge down">● Down</span></div>
+      <div class="card">worker-3 <span class="badge warn">● Degraded</span></div>
+      <div class="card">db-primary <span class="badge up">● Up</span></div>
+    </main>
+  </body>
+</html>

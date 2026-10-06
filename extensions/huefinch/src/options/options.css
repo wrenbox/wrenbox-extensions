@@ -53,6 +53,10 @@ section {
 h2 {
   font-size: 28px;
 }
+/* Headings receive focus when a section opens (for screen readers); no ring needed. */
+h2[tabindex='-1']:focus {
+  outline: none;
+}
 h3 {
   font-size: 17px;
 }

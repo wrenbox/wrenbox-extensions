@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { canRunOn, cleanSiteList, isOffOn, siteKey, siteOf, withSite } from '../../src/shared/hostname';
+import {
+  canRunOn,
+  cleanSiteList,
+  isOffOn,
+  siteKey,
+  siteOf,
+  withSite,
+} from '../../src/shared/hostname';
 
 describe('site keys', () => {
   it.each([

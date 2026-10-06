@@ -23,7 +23,8 @@ export function h<K extends keyof HTMLElementTagNameMap>(
       if (key === 'class') el.className = String(value);
       else if (key === 'text') el.textContent = String(value);
       else if (key === 'style') {
-        for (const [k, v] of Object.entries(value as Record<string, string>)) el.style.setProperty(k, v);
+        for (const [k, v] of Object.entries(value as Record<string, string>))
+          el.style.setProperty(k, v);
       } else if (key === 'dataset') Object.assign(el.dataset, value);
       else if (key.startsWith('on') && typeof value === 'function') {
         el.addEventListener(key.slice(2).toLowerCase(), value as Handler);

@@ -12,6 +12,10 @@ export function brandBar(): HTMLElement {
   const bar = document.createElement('div');
   bar.className = 'brand-bar';
   bar.setAttribute('aria-hidden', 'true');
-  bar.append(document.createElement('span'), document.createElement('span'), document.createElement('span'));
+  bar.append(
+    document.createElement('span'),
+    document.createElement('span'),
+    document.createElement('span'),
+  );
   return bar;
 }

@@ -16,5 +16,7 @@ export function chromeArgs(): string[] {
     '--window-size=1280,800',
     // Screenshots in plain sRGB, so pixels can be compared with the maths.
     '--force-color-profile=srgb',
+    // Lets screenshots show realistic addresses (dashboard.example) for the fixture server.
+    '--host-resolver-rules=MAP *.example 127.0.0.1',
   ];
 }

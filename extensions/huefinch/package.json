@@ -21,7 +21,7 @@
     "zip": "node scripts/zip.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build && npm run audit:network && npm run audit:permissions && npm run test:e2e && npm run zip",
     "screens": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts",
-    "perf": "node scripts/build.mjs && playwright test performance.spec.ts --workers=1"
+    "perf": "node scripts/build.mjs && playwright test --project=performance --no-deps"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

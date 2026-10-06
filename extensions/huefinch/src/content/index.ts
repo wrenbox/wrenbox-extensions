@@ -8,13 +8,14 @@
  * worker for the toolbar icon.
  */
 import { identifyColor } from '../shared/color';
+import { settingsFromInitial, type Initial } from '../shared/initial';
 import { siteKey, isOffOn } from '../shared/hostname';
 import { simulationLabel } from '../shared/labels';
 import { feColorMatrixValues, matrixFor } from '../shared/matrix';
 import type { ContentRequest, PingReply, WorkerRequest } from '../shared/messages';
 import { amountOf, applyChanges, sanitize, STORAGE_KEYS, type Settings } from '../shared/settings';
 import { PageFilter } from './filter';
-import { PageUi } from './ui';
+import { PageUi, copyText } from './ui';
 
 interface EyeDropperResult {
   sRGBHex: string;
@@ -23,7 +24,7 @@ interface EyeDropperCtor {
   new (): { open(): Promise<EyeDropperResult> };
 }
 
-const flag = globalThis as { __huefinch?: true };
+const flag = globalThis as { __huefinch?: true; __huefinchInitial?: Initial };
 const isHtml = document.documentElement?.namespaceURI === 'http://www.w3.org/1999/xhtml';
 
 if (!flag.__huefinch && isHtml) {
@@ -33,7 +34,9 @@ if (!flag.__huefinch && isHtml) {
 
 function start(): void {
   const site = siteKey(location.hostname) || null;
-  let settings: Settings | null = null;
+  // Known synchronously when registered with the initial-state files, so the
+  // very first frame is already recolored; storage confirms a moment later.
+  let settings: Settings | null = settingsFromInitial(flag.__huefinchInitial);
   /** Alt+Shift+X is held: show the original colors. */
   let holding = false;
   /** The eyedropper is open: show the original colors so the pick is the true color. */
@@ -43,13 +46,18 @@ function start(): void {
   const filter = new PageFilter();
   const ui = new PageUi(filter.root, { onPick: () => pick() });
 
-  const active = (): boolean =>
-    !!settings && settings.enabled && !isOffOn(settings.offSites, site);
+  const active = (): boolean => !!settings && settings.enabled && !isOffOn(settings.offSites, site);
 
   function render(): void {
     const on = active();
     const s = settings;
-    filter.set(on && s && !holding && !picking ? feColorMatrixValues(matrixFor(s.mode, s.type, amountOf(s))) : null);
+    // At 0% the matrix is the identity: no filter at all, so no rendering cost.
+    const amount = s ? amountOf(s) : 0;
+    filter.set(
+      on && s && amount > 0 && !holding && !picking
+        ? feColorMatrixValues(matrixFor(s.mode, s.type, amount))
+        : null,
+    );
     let pill: string | null = null;
     if (on && s && !picking) {
       if (holding) pill = 'Showing original colors';
@@ -93,12 +101,7 @@ function start(): void {
         picking = false;
         render();
         const report = identifyColor(sRGBHex);
-        const copied = report
-          ? navigator.clipboard.writeText(report.hex).then(
-              () => true,
-              () => false,
-            )
-          : Promise.resolve(false);
+        const copied = report ? copyText(report.hex) : Promise.resolve(false);
         ui.showCard(report, copied);
       },
       () => {
@@ -111,6 +114,7 @@ function start(): void {
 
   // --- Settings ------------------------------------------------------------
 
+  if (settings) render();
   void chrome.storage.local.get([...STORAGE_KEYS]).then((raw) => {
     settings = sanitize(raw);
     render();
@@ -136,7 +140,17 @@ function start(): void {
     if (t instanceof HTMLTextAreaElement || t instanceof HTMLSelectElement) return true;
     return (
       t instanceof HTMLInputElement &&
-      !['button', 'checkbox', 'color', 'radio', 'range', 'reset', 'submit', 'file', 'image'].includes(t.type)
+      ![
+        'button',
+        'checkbox',
+        'color',
+        'radio',
+        'range',
+        'reset',
+        'submit',
+        'file',
+        'image',
+      ].includes(t.type)
     );
   };
 

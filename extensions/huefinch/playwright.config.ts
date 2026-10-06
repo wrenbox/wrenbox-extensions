@@ -7,8 +7,18 @@ export default defineConfig({
   globalSetup: './tests/e2e/global-setup.ts',
   fullyParallel: true,
   workers: 3,
-  retries: process.env.CI ? 1 : 0,
+  retries: 0,
   timeout: 60_000,
   expect: { timeout: 10_000 },
   reporter: [['list']],
+  projects: [
+    { name: 'e2e', testIgnore: '**/performance.spec.ts' },
+    // Frame timings run after everything else, one at a time, so other tests can't skew them.
+    {
+      name: 'performance',
+      testMatch: '**/performance.spec.ts',
+      dependencies: ['e2e'],
+      fullyParallel: false,
+    },
+  ],
 });

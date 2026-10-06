@@ -67,7 +67,8 @@ describe('correction matrices at k = 1 (the values the store screenshots rely on
   it('keeps grays gray (every row sums to 1)', () => {
     for (const t of CVD_TYPES)
       for (const k of [0.3, 0.8, 1])
-        for (const row of correctionMatrix(t, k)) expect(row[0] + row[1] + row[2]).toBeCloseTo(1, 5);
+        for (const row of correctionMatrix(t, k))
+          expect(row[0] + row[1] + row[2]).toBeCloseTo(1, 5);
   });
 });
 
@@ -120,7 +121,13 @@ describe('feColorMatrix values', () => {
     expect(s).toBe(
       '1 0 0 0 0 0.16279 0.725047 0.112165 0 0 0.454695 -0.645392 1.190697 0 0 0 0 0 1 0',
     );
-    expect(feColorMatrixValues([[1e-9, -1e-9, 0], [0, 1, 0], [0, 0, 1]])).not.toMatch(/e|-0\b/);
+    expect(
+      feColorMatrixValues([
+        [1e-9, -1e-9, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+      ]),
+    ).not.toMatch(/e|-0\b/);
   });
 });
 

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Video and a long page</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      video {
+        display: block;
+        width: 640px;
+        height: 360px;
+        border-radius: 12px;
+        background: #000;
+      }
+      .tile {
+        height: 140px;
+        margin: 14px 0;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 22px;
+      }
+      .sticky {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #18214d;
+        color: #fff;
+        padding: 10px 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sticky">Heavy page: video, 200 colored tiles, sticky header</div>
+    <main class="page">
+      <video id="video" muted autoplay playsinline></video>
+      <div id="tiles"></div>
+    </main>
+    <script src="video.js"></script>
+  </body>
+</html>

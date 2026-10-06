@@ -1,10 +1,23 @@
 /** Shared e2e fixtures: a fresh profile per test, the fixture server, and helpers. */
-import { test as base, chromium, expect, type BrowserContext, type Page, type Worker } from '@playwright/test';
+import {
+  test as base,
+  chromium,
+  expect,
+  type BrowserContext,
+  type Page,
+  type Worker,
+} from '@playwright/test';
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { decodePng } from '../../scripts/lib/png.mjs';
-import { applyToSrgb255, feColorMatrixValues, matrixFor, type Mat3, type Vec3 } from '../../src/shared/matrix';
+import {
+  applyToSrgb255,
+  feColorMatrixValues,
+  matrixFor,
+  type Mat3,
+  type Vec3,
+} from '../../src/shared/matrix';
 import type { Settings } from '../../src/shared/settings';
 import { EXTENSION_NAME, FIXTURES, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
 import { startServer, type FixtureServer } from './server';
@@ -37,7 +50,13 @@ function grantOrigins(profile: string, id: string, origins: string[]): void {
   writeFileSync(file, JSON.stringify(prefs));
 }
 
-export async function launchExtension(origins: string[]): Promise<Omit<Ext, 'server'> & { profile: string }> {
+/** The *.example hosts used in screenshots; treated as https-like secure origins (Clipboard API). */
+export const DEMO_HOSTS = ['dashboard.example', 'shop.example', 'app.example'];
+
+export async function launchExtension(
+  origins: string[],
+  extraArgs: string[] = [],
+): Promise<Omit<Ext, 'server'> & { profile: string }> {
   const { id } = JSON.parse(readFileSync(TEMPLATE_INFO, 'utf8')) as { id: string };
   const profile = mkdtempSync(join(tmpdir(), 'huefinch-e2e-'));
   cpSync(PROFILE_TEMPLATE, profile, { recursive: true });
@@ -46,11 +65,17 @@ export async function launchExtension(origins: string[]): Promise<Omit<Ext, 'ser
     channel: 'chromium',
     headless: true,
     viewport: { width: 1280, height: 800 },
-    args: chromeArgs(),
+    args: [...chromeArgs(), ...extraArgs],
   });
   let [sw] = ctx.serviceWorkers();
   if (!sw) sw = await ctx.waitForEvent('serviceworker');
-  await sw.evaluate(() => (globalThis as unknown as { huefinch: { ready: Promise<void> } }).huefinch.ready);
+  // Chrome can report the worker before its module has finished running.
+  await expect
+    .poll(() => sw.evaluate(() => 'huefinch' in globalThis), { timeout: 10_000 })
+    .toBe(true);
+  await sw.evaluate(
+    () => (globalThis as unknown as { huefinch: { ready: Promise<void> } }).huefinch.ready,
+  );
   const errors: string[] = [];
   const watch = (p: Page) => {
     p.on('console', (m) => {
@@ -67,7 +92,11 @@ export const test = base.extend<{ ext: Ext; origins: string[] }>({
   origins: [ALL_SITES, { option: true }],
   ext: async ({ origins }, use) => {
     const server = await startServer(FIXTURES);
-    const launched = await launchExtension(origins);
+    const port = new URL(server.url).port;
+    const secure = DEMO_HOSTS.map((h) => `http://${h}:${port}`).join(',');
+    const launched = await launchExtension(origins, [
+      `--unsafely-treat-insecure-origin-as-secure=${secure}`,
+    ]);
     await use({ ...launched, server });
     await launched.ctx.close();
     await server.close();
@@ -98,12 +127,18 @@ export async function tabId(ext: Ext, page: Page): Promise<number> {
 /** Runs Huefinch on a tab the way a toolbar click does (activeTab). */
 export async function activate(ext: Ext, page: Page): Promise<{ ok: boolean; reason?: string }> {
   const id = await tabId(ext, page);
-  return ext.sw.evaluate((id) => (globalThis as unknown as { huefinch: Api }).huefinch.activateTab(id), id);
+  return ext.sw.evaluate(
+    (id) => (globalThis as unknown as { huefinch: Api }).huefinch.activateTab(id),
+    id,
+  );
 }
 
 export async function api<T>(ext: Ext, fn: string, arg?: number): Promise<T> {
   return ext.sw.evaluate(
-    ([fn, arg]) => (globalThis as unknown as Record<string, Record<string, (a?: number) => Promise<T>>>).huefinch[fn]!(arg),
+    ([fn, arg]) =>
+      (globalThis as unknown as { huefinch: Record<string, (a?: number) => Promise<T>> }).huefinch[
+        fn
+      ]!(arg),
     [fn, arg] as const,
   ) as Promise<T>;
 }
@@ -147,7 +182,9 @@ export async function waitForFilter(page: Page, m: Mat3 | null): Promise<void> {
       return s.htmlFilter.includes('huefinch-filter') && s.values === want;
     })
     .toBe(true);
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
 }
 
 export function matrixOf(s: Pick<Settings, 'mode' | 'type'> & { amount: number }): Mat3 {
@@ -172,7 +209,9 @@ export function expected(m: Mat3 | null, rgb: Vec3, times = 1): Vec3 {
 
 export function expectClose(actual: Vec3, want: Vec3, label: string, tolerance = 3): void {
   const diff = Math.max(...actual.map((v, i) => Math.abs(v - want[i]!)));
-  expect(diff, `${label}: got rgb(${actual}), expected rgb(${want})`).toBeLessThanOrEqual(tolerance);
+  expect(diff, `${label}: got rgb(${actual}), expected rgb(${want})`).toBeLessThanOrEqual(
+    tolerance,
+  );
 }
 
 // --- Inside the content script's isolated world -------------------------------------------
@@ -184,12 +223,19 @@ export function expectClose(actual: Vec3, want: Vec3, label: string, tolerance =
  */
 export async function evalInContentWorld(page: Page, expression: string): Promise<unknown> {
   const cdp = await page.context().newCDPSession(page);
-  const contexts: Array<{ id: number; name: string; auxData?: { type?: string; isDefault?: boolean; frameId?: string } }> = [];
+  const contexts: Array<{
+    id: number;
+    name: string;
+    auxData?: { type?: string; isDefault?: boolean; frameId?: string };
+  }> = [];
   cdp.on('Runtime.executionContextCreated', (e) => contexts.push(e.context));
   await cdp.send('Runtime.enable');
   const { frameTree } = await cdp.send('Page.getFrameTree');
   const ctx = contexts.find(
-    (c) => c.name === EXTENSION_NAME && c.auxData?.type === 'isolated' && c.auxData.frameId === frameTree.frame.id,
+    (c) =>
+      c.name === EXTENSION_NAME &&
+      c.auxData?.type === 'isolated' &&
+      c.auxData.frameId === frameTree.frame.id,
   );
   if (!ctx) {
     await cdp.detach();
@@ -202,7 +248,8 @@ export async function evalInContentWorld(page: Page, expression: string): Promis
     returnByValue: true,
   });
   await cdp.detach();
-  if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
+  if (exceptionDetails)
+    throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
   return result.value;
 }
 
@@ -211,7 +258,13 @@ export async function shadowText(page: Page, host: string): Promise<string> {
   const cdp = await page.context().newCDPSession(page);
   const { root } = await cdp.send('DOM.getDocument', { depth: -1, pierce: true });
   await cdp.detach();
-  type N = { nodeName: string; nodeType: number; nodeValue?: string; children?: N[]; shadowRoots?: N[] };
+  type N = {
+    nodeName: string;
+    nodeType: number;
+    nodeValue?: string;
+    children?: N[];
+    shadowRoots?: N[];
+  };
   const texts: string[] = [];
   const collect = (n: N) => {
     if (n.nodeType === 3 && n.nodeValue?.trim()) texts.push(n.nodeValue.trim());
@@ -230,6 +283,8 @@ export async function shadowText(page: Page, host: string): Promise<string> {
   return texts.join(' | ');
 }
 
-export function fixture(ext: Ext, path: string): string {
-  return `${ext.server.url}/${path}`;
+/** A fixture page's address; `host` (any *.example name) resolves to the fixture server. */
+export function fixture(ext: Ext, path: string, host?: string): string {
+  const base = host ? ext.server.url.replace('127.0.0.1', host) : ext.server.url;
+  return `${base}/${path}`;
 }

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Everyday cotton tee</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      html {
+        background: #fff;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+        margin-top: 24px;
+      }
+      .photo {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 248 / 300;
+        border-radius: 12px;
+        background: #f4f6fb;
+      }
+      .photo svg {
+        width: 66%;
+      }
+      .name {
+        margin: 14px 0 2px;
+      }
+      .price {
+        color: #5d6690;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Everyday cotton tee</h1>
+      <p class="sub">Choose a color</p>
+      <div class="grid">
+        <div>
+          <div class="photo">
+            <svg viewBox="0 0 160 170">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0" stop-color="#6b7a2e" />
+                  <stop offset="1" stop-color="#5c6a24" />
+                </linearGradient>
+              </defs>
+              <path
+                fill="url(#g1)"
+                d="M50 10 30 18 0 48l20 30 18-14v106h84V64l18 14 20-30-30-30-20-8c-4 10-16 16-30 16S54 20 50 10Z"
+              />
+            </svg>
+          </div>
+          <p class="name">Tee, color 1</p>
+          <p class="price">$24</p>
+        </div>
+        <div>
+          <div class="photo">
+            <svg viewBox="0 0 160 170">
+              <defs>
+                <linearGradient id="g2" x1="0" x2="1">
+                  <stop offset="0" stop-color="#9c5560" />
+                  <stop offset="1" stop-color="#b8656c" />
+                </linearGradient>
+              </defs>
+              <path
+                fill="url(#g2)"
+                d="M50 10 30 18 0 48l20 30 18-14v106h84V64l18 14 20-30-30-30-20-8c-4 10-16 16-30 16S54 20 50 10Z"
+              />
+            </svg>
+          </div>
+          <p class="name">Tee, color 2</p>
+          <p class="price">$24</p>
+        </div>
+        <div>
+          <div class="photo">
+            <svg viewBox="0 0 160 170">
+              <path
+                fill="#2a8466"
+                d="M50 10 30 18 0 48l20 30 18-14v106h84V64l18 14 20-30-30-30-20-8c-4 10-16 16-30 16S54 20 50 10Z"
+              />
+            </svg>
+          </div>
+          <p class="name">Tee, color 3</p>
+          <p class="price">$24</p>
+        </div>
+        <div>
+          <div class="photo">
+            <svg viewBox="0 0 160 170">
+              <path
+                fill="#7b4a80"
+                d="M50 10 30 18 0 48l20 30 18-14v106h84V64l18 14 20-30-30-30-20-8c-4 10-16 16-30 16S54 20 50 10Z"
+              />
+            </svg>
+          </div>
+          <p class="name">Tee, color 4</p>
+          <p class="price">$24</p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

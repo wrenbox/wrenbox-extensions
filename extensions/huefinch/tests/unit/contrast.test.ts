@@ -32,8 +32,20 @@ describe('in-page UI under every filter', () => {
 });
 
 describe('extension pages meet WCAG AA', () => {
-  const light = { text: '#18214d', muted: '#5d6690', surface: '#ffffff', paper: '#f4f6fb', track: '#e9ecf4' };
-  const dark = { text: '#eef1fb', muted: '#a9b1d6', surface: '#171e42', paper: '#0f1430', track: '#262f5c' };
+  const light = {
+    text: '#18214d',
+    muted: '#5d6690',
+    surface: '#ffffff',
+    paper: '#f4f6fb',
+    track: '#e9ecf4',
+  };
+  const dark = {
+    text: '#eef1fb',
+    muted: '#a9b1d6',
+    surface: '#171e42',
+    paper: '#0f1430',
+    track: '#262f5c',
+  };
   it.each([
     ['light', light],
     ['dark', dark],

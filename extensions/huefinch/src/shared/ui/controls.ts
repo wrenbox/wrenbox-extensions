@@ -17,7 +17,11 @@ export interface SwitchControl {
  * A checkbox with role="switch". Its knob position shows the state; a hidden
  * "On"/"Off" word, linked with aria-describedby, says it in words.
  */
-export function switchControl(id: string, label: string, onToggle: (on: boolean) => void): SwitchControl {
+export function switchControl(
+  id: string,
+  label: string,
+  onToggle: (on: boolean) => void,
+): SwitchControl {
   const state = h('span', { class: 'sr-only', id: `${id}-state` }, 'Off');
   const input = h('input', {
     type: 'checkbox',
@@ -57,27 +61,40 @@ export interface VisionControls {
  * Strength / Severity slider. Every change is reported at once, so the page
  * filter follows the slider live.
  */
-export function visionControls(prefix: string, onChange: (patch: Partial<Settings>) => void): VisionControls {
+export function visionControls(
+  prefix: string,
+  onChange: (patch: Partial<Settings>) => void,
+): VisionControls {
   let current: Settings | null = null;
 
   const modeInputs = (['correct', 'simulate'] as Mode[]).map((m) =>
-    h('input', { type: 'radio', name: `${prefix}-mode`, value: m, onchange: () => onChange({ mode: m }) }),
+    h('input', {
+      type: 'radio',
+      name: `${prefix}-mode`,
+      value: m,
+      onchange: () => onChange({ mode: m }),
+    }),
   );
   const mode = h(
-    'fieldset',
-    { class: 'segmented' },
-    h('legend', { class: 'sr-only' }, 'Mode'),
-    ...modeInputs.map((input, i) => h('label', null, input, MODE_LABEL[i === 0 ? 'correct' : 'simulate'])),
+    'div',
+    { class: 'segmented', role: 'radiogroup', 'aria-label': 'Mode' },
+    ...modeInputs.map((input, i) =>
+      h('label', null, input, MODE_LABEL[i === 0 ? 'correct' : 'simulate']),
+    ),
   );
 
-  const typeLegend = h('legend', { class: 'field-label' });
+  const typeLegend = h('p', { class: 'field-label', id: `${prefix}-type-label` });
   const typeInputs = CVD_TYPES.map((t) =>
-    h('input', { type: 'radio', name: `${prefix}-type`, value: t, onchange: () => onChange({ type: t }) }),
+    h('input', {
+      type: 'radio',
+      name: `${prefix}-type`,
+      value: t,
+      onchange: () => onChange({ type: t }),
+    }),
   );
   const types = h(
-    'fieldset',
-    { class: 'options' },
-    typeLegend,
+    'div',
+    { class: 'options', role: 'radiogroup', 'aria-labelledby': `${prefix}-type-label` },
     ...typeInputs.map((input, i) => {
       const t = CVD_TYPES[i]!;
       return h(
@@ -111,7 +128,14 @@ export function visionControls(prefix: string, onChange: (patch: Partial<Setting
     });
   });
 
-  const el = h('div', { class: 'vision' }, mode, types, h('div', { class: 'amount' }, sliderLabel, slider));
+  const el = h(
+    'div',
+    { class: 'vision' },
+    mode,
+    typeLegend,
+    types,
+    h('div', { class: 'amount' }, sliderLabel, slider),
+  );
   return {
     el,
     update(s) {
@@ -149,7 +173,9 @@ export class PreviewFilter {
     // An empty SVG filter would paint nothing at all; identity shows the original.
     if (!matrices.length) matrices = [IDENTITY];
     this.filter.replaceChildren(
-      ...matrices.map((m) => svg('feColorMatrix', { type: 'matrix', values: feColorMatrixValues(m) })),
+      ...matrices.map((m) =>
+        svg('feColorMatrix', { type: 'matrix', values: feColorMatrixValues(m) }),
+      ),
     );
   }
 }

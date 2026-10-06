@@ -1,5 +1,17 @@
 import { BLOCKS, blockCenter } from './colors';
-import { expectClose, expected, fixture, getSettings, matrixOf, pixels, setSettings, tabId, test, expect, waitForFilter } from './helpers';
+import {
+  expectClose,
+  expected,
+  fixture,
+  getSettings,
+  matrixOf,
+  pixels,
+  setSettings,
+  tabId,
+  test,
+  expect,
+  waitForFilter,
+} from './helpers';
 
 const M = matrixOf({ mode: 'correct', type: 'deutan', amount: 80 });
 const points = BLOCKS.map((_, i) => blockCenter(i));

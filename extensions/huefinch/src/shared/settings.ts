@@ -47,7 +47,9 @@ export const MIGRATIONS: ReadonlyArray<(raw: Raw) => Raw> = [
 ];
 
 const percent = (v: unknown, fallback: number): number =>
-  typeof v === 'number' && Number.isFinite(v) ? Math.round(Math.min(100, Math.max(0, v))) : fallback;
+  typeof v === 'number' && Number.isFinite(v)
+    ? Math.round(Math.min(100, Math.max(0, v)))
+    : fallback;
 
 /** Turns anything read from storage into valid settings, keeping what's valid. */
 export function sanitize(raw: Raw): Settings {

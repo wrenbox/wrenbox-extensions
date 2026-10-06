@@ -3,17 +3,21 @@ import { TYPE_LABEL, TYPE_TERM, simulationLabel } from '../shared/labels';
 import { correctionMatrix, matrixFor, type CvdType } from '../shared/matrix';
 import { ALL_SITES, hasAllSites } from '../shared/messages';
 import { PAIRS, suggestType, type ConfusionPair } from '../shared/pairs';
-import { amountOf, applyChanges, loadSettings, saveSettings, type Settings } from '../shared/settings';
+import {
+  amountOf,
+  applyChanges,
+  loadSettings,
+  saveSettings,
+  type Settings,
+} from '../shared/settings';
 import { withSite } from '../shared/hostname';
 import { NOT_MEDICAL, PRIVACY_URL, STORY, STUDIO_LINE } from '../shared/ui/brand';
 import { PreviewFilter, switchControl, visionControls } from '../shared/ui/controls';
 import { $, h } from '../shared/ui/dom';
 import { checkIcon, closeIcon } from '../shared/ui/icons';
-import { keyLabel, toggleShortcut } from '../shared/ui/keys';
+import { browserName, keyLabel, toggleShortcut } from '../shared/ui/keys';
 
 let settings: Settings = await loadSettings();
-const isEdge = /\bEdg\//.test(navigator.userAgent);
-const browserName = isEdge ? 'Edge' : 'Chrome';
 
 // --- Sections (hash navigation) ---------------------------------------------------
 
@@ -37,7 +41,11 @@ showSection(false);
 
 // --- Color vision -----------------------------------------------------------------
 
-const master = switchControl('master', 'Huefinch is on', (on) => void saveSettings({ enabled: on }));
+const master = switchControl(
+  'master',
+  'Huefinch is on',
+  (on) => void saveSettings({ enabled: on }),
+);
 $('#master').replaceWith(master.el);
 
 const vision = visionControls('options', (patch) => {
@@ -47,7 +55,16 @@ const vision = visionControls('options', (patch) => {
 });
 $('#vision-controls').replaceWith(vision.el);
 
-const STRIP = ['#E53935', '#FB8C00', '#FDD835', '#43A047', '#00897B', '#1E88E5', '#8E24AA', '#D81B60'];
+const STRIP = [
+  '#E53935',
+  '#FB8C00',
+  '#FDD835',
+  '#43A047',
+  '#00897B',
+  '#1E88E5',
+  '#8E24AA',
+  '#D81B60',
+];
 for (const id of ['#strip-original', '#strip-filtered'])
   $(id).append(...STRIP.map((c) => h('span', { style: { background: c } })));
 const stripFilter = new PreviewFilter('huefinch-preview');
@@ -60,7 +77,9 @@ async function renderVision(): Promise<void> {
   $('#master-sub').textContent = settings.enabled
     ? `Recoloring pages with your setting below.${toggle ? ` ${toggle} turns it off.` : ''}`
     : `Off everywhere.${toggle ? ` ${toggle} turns it back on.` : ''}`;
-  stripFilter.set(settings.enabled ? [matrixFor(settings.mode, settings.type, amountOf(settings))] : []);
+  stripFilter.set(
+    settings.enabled ? [matrixFor(settings.mode, settings.type, amountOf(settings))] : [],
+  );
   $('#preview-label').textContent = !settings.enabled
     ? 'With Huefinch (off)'
     : settings.mode === 'simulate'
@@ -86,8 +105,8 @@ async function renderAccess(): Promise<void> {
   const granted = await hasAllSites();
   auto.set(granted);
   $('#auto-sub').textContent = granted
-    ? `${browserName} asked once for permission to adjust colors on the pages you visit.`
-    : `Off: Huefinch works on a tab when you click its icon. ${browserName} will ask once for permission to adjust colors on the pages you visit. Huefinch never reads them.`;
+    ? `${browserName()} asked once for permission to adjust colors on the pages you visit.`
+    : `Off: Huefinch works on a tab when you click its icon. ${browserName()} will ask once for permission to adjust colors on the pages you visit. Huefinch never reads them.`;
 }
 
 function renderSites(): void {
@@ -117,7 +136,13 @@ function renderSites(): void {
     ),
   );
   if (!settings.offSites.length)
-    list.append(h('li', { class: 'empty' }, 'None. Huefinch is on for every site. Switch it off for a site from the toolbar popup.'));
+    list.append(
+      h(
+        'li',
+        { class: 'empty' },
+        'None. Huefinch is on for every site. Switch it off for a site from the toolbar popup.',
+      ),
+    );
 }
 
 // --- Shortcuts --------------------------------------------------------------------
@@ -129,9 +154,11 @@ async function renderShortcuts(): Promise<void> {
   $('#hold-key').textContent = keyLabel('Alt+Shift+X');
 }
 const openShortcuts = $<HTMLButtonElement>('#open-shortcuts');
-openShortcuts.textContent = `Open ${browserName} shortcuts`;
+openShortcuts.textContent = `Open ${browserName()} shortcuts`;
 openShortcuts.addEventListener('click', () => {
-  void chrome.tabs.create({ url: `${isEdge ? 'edge' : 'chrome'}://extensions/shortcuts` });
+  void chrome.tabs.create({
+    url: `${browserName() === 'Edge' ? 'edge' : 'chrome'}://extensions/shortcuts`,
+  });
 });
 // Shortcut changes in Chrome don't fire an event; refresh when the user comes back.
 document.addEventListener('visibilitychange', () => {
@@ -197,14 +224,24 @@ function renderSuggestion(): void {
       'p',
       null,
       `${n} of the ${total} pairs that ${TYPE_LABEL[type].toLowerCase()} eyes tend to confuse looked alike to you.` +
-        (s.alsoTry ? ` ${TYPE_LABEL[s.alsoTry]} scored the same, so try both and keep the one that separates the pairs best.` : ''),
+        (s.alsoTry
+          ? ` ${TYPE_LABEL[s.alsoTry]} scored the same, so try both and keep the one that separates the pairs best.`
+          : ''),
     ),
     h(
       'div',
       { class: 'find-actions' },
-      h('button', { type: 'button', class: 'btn primary', onclick: () => void useType(type) }, `Use ${TYPE_LABEL[type]}`),
+      h(
+        'button',
+        { type: 'button', class: 'btn primary', onclick: () => void useType(type) },
+        `Use ${TYPE_LABEL[type]}`,
+      ),
       s.alsoTry
-        ? h('button', { type: 'button', class: 'btn', onclick: () => void useType(s.alsoTry!) }, `Try ${TYPE_LABEL[s.alsoTry]}`)
+        ? h(
+            'button',
+            { type: 'button', class: 'btn', onclick: () => void useType(s.alsoTry!) },
+            `Try ${TYPE_LABEL[s.alsoTry]}`,
+          )
         : null,
     ),
   );
@@ -218,7 +255,8 @@ async function useType(type: CvdType): Promise<void> {
   const shown = marked.length ? marked : PAIRS.filter((p) => p.type === type);
   $('#tuned').replaceChildren(...shown.map((p, i) => pairCard(p, i, false)));
   $('#tuned').style.filter = tuneFilter.url;
-  $('#tune-sub').textContent = `${TYPE_LABEL[type]} is on. Here are the pairs again, with Huefinch. Move the slider until the two colors in each pair look clearly different. A lower strength keeps colors more natural.`;
+  $('#tune-sub').textContent =
+    `${TYPE_LABEL[type]} is on. Here are the pairs again, with Huefinch. Move the slider until the two colors in each pair look clearly different. A lower strength keeps colors more natural.`;
   $('#tune').hidden = false;
   renderTune();
   $('#tune-amount').focus();

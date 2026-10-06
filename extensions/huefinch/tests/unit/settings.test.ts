@@ -17,7 +17,12 @@ describe('settings migrations', () => {
   it('fresh install: writes the defaults (Correct, Green-weak, 80%) and the schema version', () => {
     const { settings, write, remove } = migrate({});
     expect(settings).toEqual(DEFAULTS);
-    expect(settings).toMatchObject({ mode: 'correct', type: 'deutan', strength: 80, enabled: true });
+    expect(settings).toMatchObject({
+      mode: 'correct',
+      type: 'deutan',
+      strength: 80,
+      enabled: true,
+    });
     expect(write).toEqual({ ...DEFAULTS, schemaVersion: SCHEMA_VERSION });
     expect(remove).toEqual([]);
   });
@@ -48,7 +53,13 @@ describe('settings migrations', () => {
       severity: 0,
       offSites: ['example.com', 'news.example.org'],
     });
-    expect(Object.keys(write).sort()).toEqual(['enabled', 'mode', 'offSites', 'severity', 'strength']);
+    expect(Object.keys(write).sort()).toEqual([
+      'enabled',
+      'mode',
+      'offSites',
+      'severity',
+      'strength',
+    ]);
   });
 
   it('rounds percentages to whole numbers', () => {

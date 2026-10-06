@@ -215,6 +215,46 @@ function closeIcon(): SVGElement {
   return svg;
 }
 
+/**
+ * Copies text. The Clipboard API exists only on secure (https) pages; on
+ * plain http pages a temporary text field and the copy command are used.
+ */
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Not allowed here (no focus or no permission): try the copy command.
+  }
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  for (const [k, v] of [
+    ['position', 'fixed'],
+    ['opacity', '0'],
+    ['pointer-events', 'none'],
+    ['left', '0'],
+    ['top', '0'],
+  ] as const)
+    area.style.setProperty(k, v, 'important');
+  const host = document.createElement('huefinch-copy');
+  const shadow = host.attachShadow({ mode: 'closed' });
+  shadow.append(area);
+  document.documentElement.append(host);
+  const before = document.activeElement;
+  try {
+    area.select();
+    return document.execCommand('copy');
+  } catch {
+    return false;
+  } finally {
+    host.remove();
+    if (before instanceof HTMLElement) before.focus({ preventScroll: true });
+  }
+}
+
 export interface UiCallbacks {
   /** The overlay was clicked (or Enter pressed on it): open the eyedropper now. */
   onPick(): void;
@@ -262,7 +302,10 @@ export class PageUi {
     this.rememberFocus();
     const button = el('button', { type: 'button', class: 'overlay' });
     const prompt = el('span', { class: 'prompt' });
-    prompt.append(el('strong', {}, 'Click anywhere to pick a color'), el('span', {}, 'Esc to cancel'));
+    prompt.append(
+      el('strong', {}, 'Click anywhere to pick a color'),
+      el('span', {}, 'Esc to cancel'),
+    );
     button.append(prompt);
     button.addEventListener('click', (e) => {
       e.preventDefault();
@@ -288,7 +331,7 @@ export class PageUi {
           const t = el('div', { class: 'text' });
           t.append(
             el('p', { class: 'name', id: 'hf-name' }, 'No color picked'),
-            el('p', { class: 'line' }, "This browser can't pick colors from the screen here."),
+            el('p', { class: 'line' }, 'This browser can’t pick colors from the screen here.'),
           );
           return t;
         })(),
@@ -300,16 +343,16 @@ export class PageUi {
       text.append(
         el('p', { class: 'name', id: 'hf-name' }, report.name),
         hexLine,
-        el('p', { class: 'line', title: `CSS: ${report.cssKeyword}` }, `Close to: ${report.closeTo}`),
+        el(
+          'p',
+          { class: 'line', title: `CSS: ${report.cssKeyword}` },
+          `Close to: ${report.closeTo}`,
+        ),
       );
       const status = el('p', { class: 'sr', role: 'status' });
       text.append(status);
       card.setAttribute('aria-describedby', 'hf-hex');
-      card.append(
-        swatch(report.hex),
-        text,
-        close,
-      );
+      card.append(swatch(report.hex), text, close);
       void copied.then((ok) => {
         if (ok) {
           hexLine.textContent = `${report.hex}, copied`;
@@ -319,16 +362,16 @@ export class PageUi {
         status.textContent = `${report.name}, ${report.hex}`;
         const copy = el('button', { type: 'button', class: 'copy' }, 'Copy hex');
         copy.addEventListener('click', () => {
-          void navigator.clipboard.writeText(report.hex).then(
-            () => {
-              hexLine.textContent = `${report.hex}, copied`;
-              copy.remove();
-              close.focus({ preventScroll: true });
-            },
-            () => {
+          void copyText(report.hex).then((ok) => {
+            if (!ok) {
               copy.textContent = 'Copy failed';
-            },
-          );
+              return;
+            }
+            hexLine.textContent = `${report.hex}, copied`;
+            status.textContent = 'Copied';
+            copy.remove();
+            close.focus({ preventScroll: true });
+          });
         });
         text.append(copy);
       });

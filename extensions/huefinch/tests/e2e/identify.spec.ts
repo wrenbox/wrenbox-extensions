@@ -4,7 +4,18 @@
  * with a stand-in that records what the page looked like when it opened.
  */
 import type { Page } from '@playwright/test';
-import { api, evalInContentWorld, fixture, matrixOf, shadowText, tabId, test, expect, waitForFilter, type Ext } from './helpers';
+import {
+  api,
+  evalInContentWorld,
+  fixture,
+  matrixOf,
+  shadowText,
+  tabId,
+  test,
+  expect,
+  waitForFilter,
+  type Ext,
+} from './helpers';
 
 const M = matrixOf({ mode: 'correct', type: 'deutan', amount: 80 });
 
@@ -30,7 +41,9 @@ async function setup(ext: Ext, hex: string | null) {
   return page;
 }
 
-test('Alt+Shift+C picks the true color (filter off while picking), names it and copies the hex', async ({ ext }) => {
+test('Alt+Shift+C picks the true color (filter off while picking), names it and copies the hex', async ({
+  ext,
+}) => {
   const page = await setup(ext, '#6b7a2e');
   await page.keyboard.press('Alt+Shift+KeyC');
   await expect.poll(() => shadowText(page, 'huefinch-identify')).toContain('Olive green');
@@ -43,14 +56,20 @@ test('Alt+Shift+C picks the true color (filter off while picking), names it and 
   await waitForFilter(page, M);
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('#6B7A2E');
   // The card is in the top layer, above everything on the page.
-  expect(await page.evaluate(() => document.querySelector('huefinch-identify')?.matches(':popover-open'))).toBe(true);
+  expect(
+    await page.evaluate(() =>
+      document.querySelector('huefinch-identify')?.matches(':popover-open'),
+    ),
+  ).toBe(true);
 
   await page.keyboard.press('Escape');
   await expect.poll(() => shadowText(page, 'huefinch-identify')).toBe('');
   expect(ext.errors).toEqual([]);
 });
 
-test('clicking away closes the card; cancelling the picker restores the filter', async ({ ext }) => {
+test('clicking away closes the card; cancelling the picker restores the filter', async ({
+  ext,
+}) => {
   const page = await setup(ext, '#ff0000');
   await page.keyboard.press('Alt+Shift+KeyC');
   await expect.poll(() => shadowText(page, 'huefinch-identify')).toContain('Bright red');
@@ -64,12 +83,16 @@ test('clicking away closes the card; cancelling the picker restores the filter',
   expect(await evalInContentWorld(page, 'globalThis.__opened')).toEqual(['none']);
 });
 
-test('the popup button shows "Click anywhere to pick a color"; that click opens the picker', async ({ ext }) => {
+test('the popup button shows "Click anywhere to pick a color"; that click opens the picker', async ({
+  ext,
+}) => {
   const page = await setup(ext, '#18214d');
   const id = await tabId(ext, page);
   expect(await api<{ ok: boolean }>(ext, 'identify', id)).toEqual({ ok: true });
   await page.bringToFront();
-  await expect.poll(() => shadowText(page, 'huefinch-identify')).toContain('Click anywhere to pick a color');
+  await expect
+    .poll(() => shadowText(page, 'huefinch-identify'))
+    .toContain('Click anywhere to pick a color');
   await page.mouse.click(640, 500);
   await expect.poll(() => shadowText(page, 'huefinch-identify')).toContain('Navy blue');
   expect(await shadowText(page, 'huefinch-identify')).toContain('Close to: midnight blue');
@@ -86,4 +109,19 @@ test('Escape cancels the overlay without picking', async ({ ext }) => {
   await expect.poll(() => shadowText(page, 'huefinch-identify')).toBe('');
   expect(await evalInContentWorld(page, 'globalThis.__opened')).toEqual([]);
   await waitForFilter(page, M);
+});
+
+test('on a plain http site (no Clipboard API) the card still appears and copying still works', async ({
+  ext,
+}) => {
+  const page = await ext.ctx.newPage();
+  await page.goto(fixture(ext, 'blocks.html', 'plain.example'));
+  await waitForFilter(page, M);
+  expect(await page.evaluate(() => window.isSecureContext)).toBe(false);
+  await mockEyeDropper(page, '#6b7a2e');
+  await page.keyboard.press('Alt+Shift+KeyC');
+  await expect.poll(() => shadowText(page, 'huefinch-identify')).toContain('Olive green');
+  // Either copied with the copy command, or offered as a button (a click is always allowed to copy).
+  expect(await shadowText(page, 'huefinch-identify')).toMatch(/#6B7A2E, copied|Copy hex/);
+  expect(ext.errors).toEqual([]);
 });
