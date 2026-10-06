@@ -12,5 +12,5 @@ First release.
 - Switch off per site; Alt+Shift+F turns everything on or off; hold Alt+Shift+X to see the original colors.
 - Identify any color with Alt+Shift+C or the popup: a plain-English name, the nearest CSS color and the hex code, copied to the clipboard.
 - "Find my setting": mark color pairs that look alike, get a suggestion, tune until they separate.
-- gray toolbar icon when off. Dark mode. Full keyboard support.
+- Gray toolbar icon when off. Dark mode. Full keyboard support.
 - No network requests, no page reading, settings in this browser only; audited on every build.
