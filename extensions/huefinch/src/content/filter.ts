@@ -69,6 +69,10 @@ export class PageFilter {
     this.root.append(svg, this.style);
 
     this.observer = new MutationObserver(() => this.ensureAttached());
+    // A container left by an older Huefinch (its script is orphaned after an
+    // update) is replaced by this one, so there is only ever one filter.
+    for (const el of [...(document.documentElement?.children ?? [])])
+      if (el.localName === ROOT_TAG) el.remove();
     this.attach();
   }
 
@@ -96,6 +100,12 @@ export class PageFilter {
   }
 
   private ensureAttached(): void {
+    // After an update or removal this script is orphaned: stop maintaining the
+    // old container and let the new version (or nothing) take over.
+    if (!chrome.runtime?.id) {
+      this.observer.disconnect();
+      return;
+    }
     const html = document.documentElement;
     const intact =
       !!html &&

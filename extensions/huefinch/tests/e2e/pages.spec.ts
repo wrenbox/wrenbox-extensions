@@ -137,3 +137,32 @@ test('a strict Content-Security-Policy page (no inline styles) is recolored exac
   BLOCKS.forEach((c, i) => expectClose(got[i]!, expected(M, c), `CSP page rgb(${c})`));
   await checkSingle(page, 'csp');
 });
+
+test('a container left by an older version is replaced, so there is one filter', async ({
+  ext,
+}) => {
+  const page = await ext.ctx.newPage();
+  // Simulate the leftover of an orphaned older version: a stale container
+  // whose filter has the same id but a different (identity) matrix.
+  await page.addInitScript(() => {
+    const ns = 'http://www.w3.org/2000/svg';
+    const stale = document.createElement('huefinch-root');
+    const svg = document.createElementNS(ns, 'svg');
+    const filter = document.createElementNS(ns, 'filter');
+    filter.id = 'huefinch-filter';
+    const m = document.createElementNS(ns, 'feColorMatrix');
+    m.setAttribute('values', '1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0');
+    filter.append(m);
+    svg.append(filter);
+    stale.append(svg);
+    document.documentElement.append(stale);
+  });
+  await page.goto(fixture(ext, 'blocks.html'));
+  await waitForFilter(page, M);
+  await checkSingle(page, 'stale container');
+  const got = await pixels(
+    page,
+    BLOCKS.map((_, i) => blockCenter(i)),
+  );
+  BLOCKS.forEach((c, i) => expectClose(got[i]!, expected(M, c), `rgb(${c})`));
+});

@@ -98,7 +98,7 @@ test.describe('with access to all websites', () => {
     expect((await filterState(page)).roots).toBe(0);
   });
 
-  test('Alt+Shift+F turns Huefinch off and on everywhere, and greys the icon', async ({ ext }) => {
+  test('Alt+Shift+F turns Huefinch off and on everywhere, and grays the icon', async ({ ext }) => {
     const page = await ext.ctx.newPage();
     await page.goto(fixture(ext, 'blocks.html'));
     await waitForFilter(page, M);

@@ -17,12 +17,12 @@ This uses your **second** item slot (Bowerline is the first). New accounts get t
    - **Description:** paste the detailed description from `extensions/huefinch/CHROMEWEBSTORE.md`.
    - **Category:** Accessibility. **Language:** English.
    - **Store icon:** `store-assets/store-icon-128.png`
-   - **Screenshots, in this order:**
-     1. `screenshot-1-before-after.png`
-     2. `screenshot-2-popup.png`
-     3. `screenshot-3-identify.png`
-     4. `screenshot-4-simulate.png`
-     5. `screenshot-5-settings.png`
+   - **Screenshots, in this order** (from `store-assets/captured/`: real captures of the built extension, made with `npm run screens`; see step 3 above):
+     1. `captured/screenshot-1-before-after.png`
+     2. `captured/screenshot-2-popup.png`
+     3. `captured/screenshot-3-identify.png`
+     4. `captured/screenshot-4-simulate.png`
+     5. `captured/screenshot-5-settings.png`
    - **Small promo tile:** `store-assets/promo-small-440x280.png`
    - **Marquee promo tile:** `store-assets/promo-marquee-1400x560.png`
    - **Global promo video:** the YouTube link, if ready.

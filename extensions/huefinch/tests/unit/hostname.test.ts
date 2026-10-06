@@ -55,8 +55,6 @@ describe('where Huefinch can run', () => {
     ['https://example.com/', true],
     ['http://127.0.0.1:8080/x', true],
     ['https://chromewebstore.google.com/detail/x', false],
-    ['https://chrome.google.com/webstore/detail/x', false],
-    ['https://chrome.google.com/other', true],
     ['https://microsoftedge.microsoft.com/addons/detail/x', false],
     ['chrome://extensions', false],
     ['edge://extensions', false],

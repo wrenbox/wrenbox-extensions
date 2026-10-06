@@ -6,7 +6,7 @@
  *   when that access is removed.
  * - Runs the filter on one tab when the user clicks the toolbar icon or
  *   presses the shortcut without automatic mode (activeTab).
- * - Handles the on/off shortcut and keeps the toolbar icon grey while off.
+ * - Handles the on/off shortcut and keeps the toolbar icon gray while off.
  *
  * It holds no page data. The only thing content scripts send it is whether
  * their tab is recolored, for the icon.
@@ -175,7 +175,7 @@ async function setGlobalIcon(): Promise<void> {
   await chrome.action.setTitle({ title: enabled ? 'Huefinch' : 'Huefinch (off)' });
 }
 
-/** Per tab, the icon is grey where Huefinch is switched off for that site. */
+/** Per tab, the icon is gray where Huefinch is switched off for that site. */
 async function setTabIcon(tabId: number, applied: boolean | null): Promise<void> {
   try {
     if (applied === null) {
@@ -240,7 +240,7 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.status !== 'complete') return;
   void ping(tabId).then(async (r) => {
     if (r) return setTabIcon(tabId, r.applied);
-    // Not running here. With website access the URL is visible: grey on sites switched off.
+    // Not running here. With website access the URL is visible: gray on sites switched off.
     const s = await loadSettings();
     return setTabIcon(tabId, s.enabled && !isOffOn(s.offSites, siteOf(tab.url)));
   });
@@ -249,6 +249,12 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install')
     void chrome.tabs.create({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
+  // After an update, open tabs still run the old version's script, which can
+  // no longer hear settings changes. Give them the new one.
+  if (details.reason === 'update')
+    void ready.then(async () => {
+      if (await hasAllSites()) await recolorOpenTabs();
+    });
 });
 
 /** Runs on every service worker start (install, browser start, wake-up). */

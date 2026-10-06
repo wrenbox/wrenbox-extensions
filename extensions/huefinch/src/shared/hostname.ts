@@ -34,17 +34,15 @@ export function siteOf(url: string | undefined | null): string | null {
 }
 
 /**
- * Whether Huefinch can recolor this page at all. Chrome's own pages, other
- * extensions, the Web Store and local files (without "Allow access to file
- * URLs") are off limits to every extension.
+ * Whether Huefinch can recolor this page at all, judged from the scheme and
+ * hostname only (Huefinch never looks at the rest of an address). Chrome's
+ * own pages, other extensions, the extension stores and local files are off
+ * limits to every extension; anything else Chrome refuses is reported when
+ * injecting fails.
  */
 export function canRunOn(url: string | undefined | null): boolean {
   const site = siteOf(url);
-  if (!site) return false;
-  if (BLOCKED_HOSTS.has(site)) return false;
-  if (site === 'chrome.google.com' && /^https:\/\/chrome\.google\.com\/webstore/i.test(url ?? ''))
-    return false;
-  return true;
+  return !!site && !BLOCKED_HOSTS.has(site);
 }
 
 export function isOffOn(offSites: readonly string[], site: string | null): boolean {

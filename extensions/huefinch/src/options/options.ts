@@ -256,7 +256,10 @@ async function useType(type: CvdType): Promise<void> {
   $('#tuned').replaceChildren(...shown.map((p, i) => pairCard(p, i, false)));
   $('#tuned').style.filter = tuneFilter.url;
   $('#tune-sub').textContent =
-    `${TYPE_LABEL[type]} is on. Here are the pairs again, with Huefinch. Move the slider until the two colors in each pair look clearly different. A lower strength keeps colors more natural.`;
+    `${TYPE_LABEL[type]} is on. Here are the pairs again, with Huefinch. Move the slider until the two colors in each pair look clearly different. A lower strength keeps colors more natural.` +
+    (type === 'tritan'
+      ? ' Blue-weak correction is gentler than red or green, so a higher strength often helps.'
+      : '');
   $('#tune').hidden = false;
   renderTune();
   $('#tune-amount').focus();
