@@ -1,0 +1,147 @@
+body {
+  background: var(--paper);
+}
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 24px 56px;
+  display: grid;
+  gap: 32px;
+}
+.hero {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+.hero .logo {
+  font-size: 30px;
+  gap: 14px;
+}
+.hero .logo img {
+  border-radius: 10px;
+}
+.hero .brand-bar {
+  width: 240px;
+}
+h1 {
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  margin-top: 8px;
+}
+.story {
+  max-width: 720px;
+  font-size: 18px;
+  color: var(--ink-2);
+}
+@media (prefers-color-scheme: dark) {
+  .story {
+    color: var(--muted);
+  }
+}
+.demo {
+  display: grid;
+  gap: 12px;
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.panel {
+  margin: 0;
+  background: #ffffff;
+  color: #18214d;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.panel figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #dce1ec;
+  font-weight: 700;
+  font-size: 16px;
+}
+.tag {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #eef1f7;
+  color: #2c3870;
+  font-size: 12.5px;
+}
+.tag.dark {
+  background: #18214d;
+  color: #ffffff;
+}
+.chart {
+  padding: 16px 20px 20px;
+}
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.caption {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.access {
+  padding: 28px;
+}
+.access > div {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  max-width: 720px;
+}
+.access h2 {
+  font-size: 24px;
+}
+.declined {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.next {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tips h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.tips ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+.foot {
+  color: var(--muted);
+  display: grid;
+  gap: 4px;
+  font-size: 13.5px;
+}
+.foot p:first-child {
+  color: var(--text);
+  font-weight: 700;
+}
+@media (max-width: 760px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+  h1 {
+    font-size: 30px;
+  }
+}

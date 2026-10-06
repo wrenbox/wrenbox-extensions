@@ -1,0 +1,14 @@
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: 'tests/e2e',
+  testMatch: '**/*.spec.ts',
+  outputDir: 'test-results',
+  globalSetup: './tests/e2e/global-setup.ts',
+  fullyParallel: true,
+  workers: 3,
+  retries: process.env.CI ? 1 : 0,
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
+  reporter: [['list']],
+});

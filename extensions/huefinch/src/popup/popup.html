@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Huefinch</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <h1 class="logo"><img src="../icons/icon-128.png" width="26" height="26" alt="" />Huefinch</h1>
+      <span id="master"></span>
+    </header>
+    <main>
+      <div id="vision"></div>
+      <div class="site-row">
+        <div class="site-text">
+          <p>On for this site</p>
+          <p id="site-host" class="site-host"></p>
+        </div>
+        <span id="site"></span>
+      </div>
+      <div id="note" class="note" hidden></div>
+      <div class="actions">
+        <button id="identify" type="button" class="btn small"></button>
+        <button id="settings" type="button" class="btn small ghost"></button>
+      </div>
+    </main>
+    <footer id="hints" class="hints"></footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
