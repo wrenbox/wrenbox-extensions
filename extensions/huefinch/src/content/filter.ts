@@ -13,13 +13,19 @@ export const ROOT_TAG = 'huefinch-root';
 
 /**
  * <html> gets the filter, so everything inside it (text, images, video,
- * canvas, iframes) is recolored once. Top-layer content (modal dialogs,
+ * canvas, iframes) is recolored once.
+ *
+ * With a filter on <html>, Chrome paints the page background only over
+ * <html>'s own box, so below a short page the default (white) canvas would
+ * show. A minimum height of 100% makes <html> cover the window. It has zero
+ * specificity, so any page that sizes <html> itself keeps its own rule. Top-layer content (modal dialogs,
  * popovers, full-screen elements and their backdrops) is painted outside
  * <html>, so it gets the same filter itself; it is never inside another
  * filtered box, so it is recolored exactly once too.
  */
 export const FILTER_CSS = `html { filter: url(#${FILTER_ID}) !important; }
-dialog:modal, :popover-open, :fullscreen, ::backdrop { filter: url(#${FILTER_ID}) !important; }`;
+dialog:modal, :popover-open, :fullscreen, ::backdrop { filter: url(#${FILTER_ID}) !important; }
+:where(html) { min-height: 100%; }`;
 
 /** Inline style that keeps an element out of the page's layout and away from its CSS. */
 export function hideFromLayout(el: HTMLElement | SVGElement): void {

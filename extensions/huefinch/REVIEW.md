@@ -49,6 +49,7 @@ The quality loop from the build brief (§9), recorded as it ran. Every section o
 - [x] **G5. Extension updates.** After an update, open tabs keep the old version's orphaned script; a new injection would add a second container with a duplicate filter id (the stale one would win). Orphans now stop maintaining themselves, a new instance replaces any stale container, and the worker re-applies the new version to open tabs on update. Tested with a planted stale container.
 - [x] **G6. Service-worker race in the tests.** Chrome can report the worker before its module finished running (1 failure in 141). The harness now waits for it.
 - [x] **G7. Address beyond the hostname.** `canRunOn` looked at the URL path to recognize the old Web Store address. It now uses scheme and hostname only (anything else Chrome refuses is reported when injection fails).
+- [x] **G8. Short pages showed a white band (found by the promo video, fixed in 1.0.1).** With a filter on the root element, Chrome paints the page background only over `<html>`'s own box, so below a page shorter than the window the background stopped and the canvas showed white. Huefinch now also sets `:where(html) { min-height: 100% }` (zero specificity, so a page that sizes `<html>` keeps its own rule). Pixel-tested at the top and bottom of the window on two short fixtures (background on `<html>` and on `<body>`); the scroll size of all 13 other fixtures is unchanged.
 - [x] Label spacing in the popup (fieldset legends ignore grid gaps): rebuilt as `role="radiogroup"` with a labelled heading.
 - [x] Section headings receive focus on navigation (for screen readers) but showed a large focus box; programmatic-focus targets no longer draw a ring.
 - [x] The Simulate pill's shadow overlapped a sampled pixel (the pixel tests caught it); samples moved below the pill's reach.
@@ -142,10 +143,10 @@ Each page is opened with automatic mode on; the test checks that the filter is i
 npm run verify
   typecheck            ok
   lint                 ok (ESLint + Prettier)
-  unit                 185 passed (8 files)
+  unit                 188 passed (9 files)
   build                ok
   audit:network        passed: no way to make a network request
   audit:permissions    passed: permissions, privacy and code policy
-  e2e                  48 passed (46 functional + 2 performance)
-  zip                  release/huefinch-1.0.0.zip, release/huefinch-1.0.0-edge.zip
+  e2e                  50 passed (48 functional + 2 performance)
+  zip                  release/huefinch-1.0.1.zip, release/huefinch-1.0.1-edge.zip
 ```

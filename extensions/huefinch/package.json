@@ -1,6 +1,6 @@
 {
   "name": "huefinch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Huefinch – Color Blind Filter & Color Identifier. A private Chrome extension by Wrenbox.",
   "license": "UNLICENSED",
@@ -21,7 +21,8 @@
     "zip": "node scripts/zip.mjs",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build && npm run audit:network && npm run audit:permissions && npm run test:e2e && npm run zip",
     "screens": "node scripts/build.mjs && playwright test -c playwright.screens.config.ts",
-    "perf": "node scripts/build.mjs && playwright test --project=performance --no-deps"
+    "perf": "node scripts/build.mjs && playwright test --project=performance --no-deps",
+    "video": "node tools/demo-video/run.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

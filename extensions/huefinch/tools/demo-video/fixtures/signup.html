@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sign up</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .form {
+        max-width: 404px;
+        margin: 40px 0 0 80px;
+        display: grid;
+        gap: 6px;
+      }
+      label {
+        color: #2c3870;
+        font-size: 15px;
+        margin-top: 8px;
+      }
+      input {
+        font: inherit;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 2px solid;
+        outline: none;
+      }
+      .ok {
+        border-color: #558833;
+      }
+      .ok + .msg {
+        color: #558833;
+      }
+      .bad {
+        border-color: #dc3545;
+      }
+      .bad + .msg {
+        color: #dc3545;
+      }
+      .msg {
+        margin: 0;
+        font-size: 14px;
+      }
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      button {
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        border: 0;
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .cancel {
+        background: #dc3545;
+      }
+      .create {
+        background: #558833;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <form class="panel form" onsubmit="return false;">
+        <h1>Create your account</h1>
+        <label for="email">Email</label>
+        <input id="email" class="ok" value="sam@example.com" />
+        <p class="msg">Email looks good</p>
+        <label for="password">Password</label>
+        <input id="password" class="bad" type="password" value="abcd" />
+        <p class="msg">Password is too short</p>
+        <div class="buttons">
+          <button class="cancel" type="button">Cancel</button
+          ><button class="create">Create account</button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

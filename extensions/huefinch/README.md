@@ -47,6 +47,7 @@ npm run verify         typecheck, lint, unit tests, build, network audit,
                        permissions audit, end-to-end tests, zips
 npm run screens        capture every screen and rebuild store-assets/captured/
 npm run perf           frame-time measurements only (tests/output/perf-*.json)
+npm run video          record and render the promo video (see store-assets/video/README.md)
 ```
 
 `npm run verify` writes `release/huefinch-<version>.zip` (Chrome Web Store) and `release/huefinch-<version>-edge.zip` (Microsoft Edge Add-ons; same build, only the manifest name is shortened to Edge's 45-character limit: "Huefinch – Color Blind Filter & Identifier"). Both are reproducible byte for byte.
@@ -55,7 +56,7 @@ The end-to-end tests run the real extension in Playwright's Chromium. Install th
 
 ### Releasing
 
-Bump `version` in `package.json`, add a `## <version>` section to `CHANGELOG.md`, merge to `main`. The **Huefinch** GitHub workflow runs `verify` and publishes a GitHub Release tagged `huefinch-v<version>` with both zips attached and notes from the changelog. Upload the Chrome zip to the Web Store (see `CHROMEWEBSTORE.md` and `STORE_UPLOAD_STEPS.md`).
+Bump `version` in `package.json`, add a `## <version>` section to `CHANGELOG.md`, merge to `main`. The **Huefinch** GitHub workflow runs `verify` and publishes a GitHub Release tagged `huefinch-v<version>` with both zips and the promo video (`store-assets/video/huefinch-demo-1080p.mp4`) attached and notes from the changelog. Upload the Chrome zip to the Web Store (see `CHROMEWEBSTORE.md` and `STORE_UPLOAD_STEPS.md`).
 
 ## How it works
 

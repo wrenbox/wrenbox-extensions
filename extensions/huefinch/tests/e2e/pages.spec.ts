@@ -166,3 +166,20 @@ test('a container left by an older version is replaced, so there is one filter',
   );
   BLOCKS.forEach((c, i) => expectClose(got[i]!, expected(M, c), `rgb(${c})`));
 });
+
+for (const [path, color] of [
+  ['short.html', [250, 228, 196]],
+  ['short-body.html', [16, 22, 40]],
+] as const) {
+  test(`${path}: the page background still reaches the bottom of a short page`, async ({ ext }) => {
+    // With a filter on <html>, Chrome paints the root background only over <html>'s
+    // own box; below short content the default canvas (white) would show instead.
+    const page = await visit(ext, path);
+    const [top, bottom] = await pixels(page, [
+      [1200, 100],
+      [1200, 790],
+    ]);
+    expectClose(top!, expected(M, [...color]), `${path} background near the top`);
+    expectClose(bottom!, expected(M, [...color]), `${path} background at the bottom`);
+  });
+}
