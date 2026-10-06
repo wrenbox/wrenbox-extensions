@@ -3,14 +3,16 @@
 Upload on the **Wrenbox** channel (wrenbox.studio).
 
 ## Files
-| What | File |
-|---|---|
-| Video | `store-assets/video/huefinch-demo-1080p.mp4` (made by Claude Code with VIDEO_PROMPT.md) |
-| Subtitles | `store-assets/video/huefinch-demo.srt` |
-| Thumbnail | `store-assets/youtube-thumbnail-1280x720.png` (included) |
-| Music credit | `store-assets/video/MUSIC_CREDIT.md` |
+
+| What         | File                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| Video        | `store-assets/video/huefinch-demo-1080p.mp4` (made by Claude Code with VIDEO_PROMPT.md) |
+| Subtitles    | `store-assets/video/huefinch-demo.srt`                                                  |
+| Thumbnail    | `store-assets/youtube-thumbnail-1280x720.png` (included)                                |
+| Music credit | `store-assets/video/MUSIC_CREDIT.md`                                                    |
 
 ## Settings
+
 - **Title:**
   `Huefinch – Color Blind Filter for Chrome: tell colors apart on any website`
 - **Description:**
@@ -46,4 +48,5 @@ Made by Wrenbox: small, private tools for your browser.
 - **Allow embedding:** **on**, or the video won't play in the Chrome Web Store.
 
 ## Then
+
 Copy the video link into the store dashboard's **Global promo video** field. Once Huefinch is live, replace the placeholder in the description with the real store link.

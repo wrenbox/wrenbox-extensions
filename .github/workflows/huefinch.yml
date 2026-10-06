@@ -1,0 +1,98 @@
+# Huefinch CI and releases.
+#
+# Every push and pull request touching Huefinch runs the full suite
+# (typecheck, lint, unit tests, build, network + permission audits, e2e, zip).
+# On main, if package.json's version has no GitHub Release yet, the release
+# job publishes one: tag huefinch-v<version> on that commit, the Chrome Web
+# Store and Edge Add-ons zips attached, notes from CHANGELOG.md. Shipping a version is therefore
+# "bump the version, add a CHANGELOG entry, merge to main".
+name: Huefinch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'extensions/huefinch/**'
+      - '.github/workflows/huefinch.yml'
+  pull_request:
+    paths:
+      - 'extensions/huefinch/**'
+      - '.github/workflows/huefinch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: huefinch-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: extensions/huefinch
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: extensions/huefinch/package-lock.json
+      - id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run verify
+      - uses: actions/upload-artifact@v7
+        with:
+          name: huefinch-zip
+          path: |
+            extensions/huefinch/release/huefinch-${{ steps.version.outputs.version }}.zip
+            extensions/huefinch/release/huefinch-${{ steps.version.outputs.version }}-edge.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      TAG: huefinch-v${{ needs.verify.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    defaults:
+      run:
+        working-directory: extensions/huefinch
+    steps:
+      - uses: actions/checkout@v7
+      - name: Skip if this version is already released
+        id: check
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "Release $TAG already exists; nothing to publish."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.publish == 'true'
+        uses: actions/download-artifact@v7
+        with:
+          name: huefinch-zip
+          path: extensions/huefinch/release
+      - if: steps.check.outputs.publish == 'true'
+        name: Publish the GitHub Release
+        run: |
+          node scripts/release-notes.mjs "$VERSION" > "$RUNNER_TEMP/notes.md"
+          gh release create "$TAG" "release/huefinch-$VERSION.zip" "release/huefinch-$VERSION-edge.zip" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Huefinch $VERSION" \
+            --notes-file "$RUNNER_TEMP/notes.md"

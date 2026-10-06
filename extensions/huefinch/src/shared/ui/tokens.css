@@ -1,0 +1,380 @@
+/* Huefinch design system: Wrenbox tokens and base components for every extension page.
+   State is never shown by color alone: switches move their knob and carry On/Off text,
+   selected options are bold with a heavier border. */
+:root {
+  color-scheme: light;
+  --ink: #18214d;
+  --ink-2: #2c3870;
+  --paper: #f4f6fb;
+  --line: #dce1ec;
+  --muted: #5d6690;
+  --surface: #ffffff;
+  --surface-2: #f4f6fb;
+  --track: #e9ecf4;
+  --text: #18214d;
+  --accent: #18214d;
+  --accent-text: #ffffff;
+  --knob: #ffffff;
+  --focus: #2c3870;
+  --brand-red: #ff6b5b;
+  --brand-green: #3cc98a;
+  --brand-blue: #4c8dff;
+  --shadow: 0 1px 2px rgba(24, 33, 77, 0.06), 0 6px 18px rgba(24, 33, 77, 0.06);
+  --shadow-lg: 0 24px 64px rgba(24, 33, 77, 0.2);
+  --radius: 12px;
+  --radius-sm: 10px;
+  --radius-lg: 14px;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper: #0f1430;
+    --surface: #171e42;
+    --surface-2: #1d2550;
+    --track: #262f5c;
+    --line: #2e3866;
+    --muted: #a9b1d6;
+    --text: #eef1fb;
+    --accent: #a9c2ff;
+    --accent-text: #0f1430;
+    --knob: #0f1430;
+    --focus: #a9c2ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.45);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+}
+[hidden] {
+  display: none !important;
+}
+body {
+  background: var(--paper);
+  color: var(--text);
+  font: 14px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+p {
+  margin: 0;
+}
+a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+.muted {
+  color: var(--muted);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Brand bar: the three colors Huefinch helps tell apart. */
+.brand-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.brand-bar span {
+  flex: 1;
+}
+.brand-bar span:nth-child(1) {
+  background: var(--brand-red);
+}
+.brand-bar span:nth-child(2) {
+  background: var(--brand-green);
+}
+.brand-bar span:nth-child(3) {
+  background: var(--brand-blue);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.logo img {
+  display: block;
+  border-radius: 6px;
+}
+
+/* Buttons */
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--text);
+  background: var(--surface);
+  color: var(--text);
+  font: 700 14px/1.1 var(--font);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover {
+  background: var(--surface-2);
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.btn.primary:hover {
+  filter: brightness(1.15);
+}
+.btn.large {
+  min-height: 48px;
+  padding: 12px 22px;
+  font-size: 15px;
+}
+.btn.small {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* Switch: a real checkbox with role="switch". The knob's position shows the
+   state, and a hidden On/Off word (updated by switches.ts) says it too. */
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+.switch input {
+  appearance: none;
+  position: relative;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.switch input::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s;
+}
+.switch input:checked {
+  background: var(--accent);
+}
+.switch input:checked::after {
+  transform: translateX(20px);
+  background: var(--knob);
+}
+.switch input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.switch input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Segmented control (two radio buttons). */
+.segmented {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  background: var(--track);
+  border-radius: var(--radius);
+  margin: 0;
+  border: 0;
+}
+.segmented label {
+  flex: 1;
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  color: var(--muted);
+  font: 500 14px/1.2 var(--font);
+  cursor: pointer;
+  text-align: center;
+}
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.segmented label:has(input:checked) {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(24, 33, 77, 0.14);
+}
+.segmented label:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* Type options (radio rows). */
+.options {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.option .term {
+  color: var(--muted);
+  font-size: 12px;
+}
+.option:hover {
+  border-color: var(--muted);
+}
+.option:has(input:checked) {
+  border: 1.5px solid var(--text);
+  padding: 7.5px 11.5px;
+  background: var(--surface-2);
+  font-weight: 700;
+}
+.option:has(input:checked) .term {
+  color: var(--text);
+  font-weight: 700;
+}
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Range slider: filled track left of the thumb (--fill is set by script). */
+input[type='range'] {
+  --fill: 50%;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) 0 var(--fill), var(--line) var(--fill) 100%);
+}
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 1px 3px rgba(24, 33, 77, 0.25);
+}
+input[type='range']:focus-visible {
+  outline: none;
+}
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Cards and rows */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.row .grow {
+  flex: 1;
+  min-width: 0;
+}
+.row-title {
+  font-weight: 500;
+}
+.row-sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+kbd {
+  font: 700 12.5px/1.4 var(--font);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Project settings</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      dialog {
+        border: 0;
+        border-radius: 14px;
+        padding: 28px;
+        max-width: 420px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+      }
+      dialog::backdrop {
+        background: rgba(24, 33, 77, 0.45);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      button {
+        font: 600 15px/1 inherit;
+        padding: 12px 18px;
+        border-radius: 10px;
+        border: 0;
+        color: #fff;
+        cursor: pointer;
+      }
+      .danger {
+        background: #d6303a;
+      }
+      .ok {
+        background: #2f9e44;
+      }
+      .plain {
+        background: #e9ecf4;
+        color: #1c2340;
+      }
+      [popover] {
+        border: 1px solid #dce1ec;
+        border-radius: 12px;
+        padding: 8px;
+        margin: 0;
+        inset: auto;
+        position-area: bottom;
+      }
+      [popover] p {
+        margin: 6px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="panel">
+        <h1>Project settings</h1>
+        <p class="sub">
+          Status: <span style="color: #2f9e44">● Live</span> · Errors:
+          <span style="color: #d6303a">● 2</span>
+        </p>
+        <div class="row">
+          <button class="danger" id="open">Delete project…</button>
+          <button class="plain" popovertarget="menu" id="menu-button">More ▾</button>
+        </div>
+        <div popover id="menu">
+          <p style="color: #d6303a">● Archive</p>
+          <p style="color: #2f9e44">● Publish</p>
+        </div>
+      </div>
+    </main>
+    <dialog id="confirm">
+      <h2 style="margin-top: 0">Delete this project?</h2>
+      <p>This can't be undone.</p>
+      <div class="row">
+        <button class="ok" id="keep">Keep it</button><button class="danger">Delete</button>
+      </div>
+    </dialog>
+    <script>
+      const d = document.getElementById('confirm');
+      document.getElementById('open').addEventListener('click', () => d.showModal());
+      document.getElementById('keep').addEventListener('click', () => d.close());
+    </script>
+  </body>
+</html>

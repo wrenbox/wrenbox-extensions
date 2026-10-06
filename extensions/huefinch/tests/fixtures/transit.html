@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>City transit map</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .map {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="panel">
+        <h1>City transit map</h1>
+        <p class="sub">Change at the white stations.</p>
+        <svg class="map" viewBox="0 0 900 460" role="img" aria-label="Transit map with six lines">
+          <g fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="#e2231a" d="M40 80h260l120 120h440" />
+            <path stroke="#00985f" d="M40 380h220l160-180 120-120h320" />
+            <path stroke="#f39200" d="M140 40v160l140 140h560" />
+            <path stroke="#0062ad" d="M40 230h860" />
+            <path stroke="#9b4f96" d="M420 20v420" />
+            <path stroke="#8b5a2b" d="M600 30 760 200v220" />
+          </g>
+          <g fill="#fff" stroke="#1c2340" stroke-width="4">
+            <circle cx="420" cy="200" r="13" />
+            <circle cx="420" cy="230" r="13" />
+            <circle cx="140" cy="80" r="13" />
+            <circle cx="760" cy="230" r="13" />
+            <circle cx="280" cy="340" r="13" />
+            <circle cx="140" cy="230" r="13" />
+          </g>
+        </svg>
+      </div>
+    </main>
+  </body>
+</html>

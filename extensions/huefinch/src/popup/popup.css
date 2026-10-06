@@ -1,0 +1,85 @@
+body {
+  width: 340px;
+  padding: 16px;
+  background: var(--surface);
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.logo {
+  font-size: 18px;
+}
+.vision {
+  display: grid;
+  gap: 0;
+}
+.field-label {
+  display: block;
+  padding: 0;
+  margin: 14px 0 6px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.amount {
+  display: grid;
+  gap: 4px;
+}
+.amount .field-label {
+  margin-bottom: 0;
+}
+.site-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+.site-text {
+  min-width: 0;
+}
+.site-host {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.note {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.note .btn {
+  justify-self: start;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.actions .btn {
+  flex: 1;
+}
+.btn.ghost {
+  border-color: var(--line);
+}
+.hints {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+.hints kbd {
+  color: var(--text);
+}

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    />
+    <title>Huefinch settings</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="side">
+        <p class="logo">
+          <img src="../icons/icon-128.png" width="26" height="26" alt="" />Huefinch
+        </p>
+        <nav aria-label="Settings sections">
+          <a href="#vision">Color vision</a>
+          <a href="#websites">Websites</a>
+          <a href="#shortcuts">Keyboard shortcuts</a>
+          <a href="#find">Find my setting</a>
+          <a href="#about">About</a>
+        </nav>
+      </aside>
+      <main id="main">
+        <h1 class="sr-only">Huefinch settings</h1>
+
+        <section id="vision" aria-labelledby="vision-title">
+          <h2 id="vision-title">Color vision</h2>
+          <p class="sub">Changes apply right away, on every page where Huefinch is on.</p>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Huefinch is on</p>
+              <p class="row-sub" id="master-sub"></p>
+            </div>
+            <span id="master"></span>
+          </div>
+          <div class="card vision-card">
+            <div id="vision-controls"></div>
+            <div class="preview" aria-hidden="true">
+              <p class="preview-label">Original</p>
+              <div class="strip" id="strip-original"></div>
+              <p class="preview-label" id="preview-label">With Huefinch</p>
+              <div class="strip" id="strip-filtered"></div>
+            </div>
+          </div>
+          <p class="hint">
+            Not sure which type is yours? <a href="#find">Find my setting</a> in a minute.
+          </p>
+        </section>
+
+        <section id="websites" aria-labelledby="websites-title" hidden>
+          <h2 id="websites-title">Websites</h2>
+          <p class="sub">
+            Your setting applies to every site. Turn it off where you do not need it.
+          </p>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Turn on automatically on every website</p>
+              <p class="row-sub" id="auto-sub"></p>
+            </div>
+            <span id="auto"></span>
+          </div>
+          <div class="row stack">
+            <div>
+              <p class="row-title">Off on these sites</p>
+              <p class="row-sub" id="off-sub">Remove a site to turn Huefinch back on there.</p>
+            </div>
+            <ul class="chips" id="off-list" aria-label="Sites where Huefinch is off"></ul>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Your privacy</p>
+              <p class="row-sub">
+                Settings are stored in this browser only. Huefinch never reads or sends the content
+                of the pages you visit.
+              </p>
+            </div>
+            <a class="btn" id="privacy-link" target="_blank" rel="noopener">Privacy policy</a>
+          </div>
+        </section>
+
+        <section id="shortcuts" aria-labelledby="shortcuts-title" hidden>
+          <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+          <p class="sub">Use Huefinch without leaving the page.</p>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Turn Huefinch on or off</p>
+              <p class="row-sub">
+                Works on any tab. You can change this key in your browser’s shortcut settings.
+              </p>
+            </div>
+            <kbd class="key" id="toggle-key"></kbd>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Name a color</p>
+              <p class="row-sub">
+                Then click anywhere: Huefinch names the color and copies its hex code.
+              </p>
+            </div>
+            <kbd class="key" id="pick-key"></kbd>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Show the original colors while held</p>
+              <p class="row-sub">Let go and Huefinch’s colors come back.</p>
+            </div>
+            <kbd class="key" id="hold-key"></kbd>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <p class="row-title">Change the on/off shortcut</p>
+              <p class="row-sub">
+                The other two keys are fixed. They work on pages where Huefinch is on, and never
+                while you type in a text field.
+              </p>
+            </div>
+            <button class="btn" id="open-shortcuts" type="button">Open Chrome shortcuts</button>
+          </div>
+        </section>
+
+        <section id="find" aria-labelledby="find-title" hidden>
+          <h2 id="find-title">Find my setting</h2>
+          <p class="sub">
+            Mark the pairs whose two colors look alike to you. Huefinch suggests a setting.
+          </p>
+          <p class="note" id="find-note"></p>
+          <div class="pairs" id="pairs" role="group" aria-label="Color pairs"></div>
+          <div class="find-result" id="find-result" aria-live="polite"></div>
+          <div class="tune card" id="tune" hidden>
+            <h3>Tune the strength</h3>
+            <p class="row-sub" id="tune-sub"></p>
+            <div class="pairs tuned" id="tuned"></div>
+            <div class="amount">
+              <label class="field-label" for="tune-amount" id="tune-label"></label>
+              <input type="range" id="tune-amount" min="0" max="100" step="5" />
+            </div>
+          </div>
+        </section>
+
+        <section id="about" aria-labelledby="about-title" hidden>
+          <h2 id="about-title">About Huefinch</h2>
+          <p class="sub" id="version"></p>
+          <div class="card about">
+            <p id="story"></p>
+            <p id="studio" class="studio"></p>
+            <p><a id="about-privacy" target="_blank" rel="noopener">Privacy policy</a></p>
+          </div>
+          <div class="card about">
+            <h3>Credits</h3>
+            <p>
+              Simulation: Gustavo M. Machado, Manuel M. Oliveira and Leandro A. F. Fernandes (2009),
+              “A Physiologically-based Model for Simulation of Color Vision Deficiency”, IEEE
+              Transactions on Visualization and Computer Graphics.
+            </p>
+            <p>
+              Correction: error redistribution (“daltonization”) after Onur Fidaner, Poliang Lin and
+              Nevran Ozguven (2005), “Analysis of Color Blindness”, Stanford University.
+            </p>
+            <p id="not-medical" class="muted"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

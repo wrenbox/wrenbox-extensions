@@ -1,0 +1,75 @@
+html,
+body {
+  margin: 0;
+  background: #ffffff;
+}
+.b {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+}
+.b0 {
+  left: 0px;
+  top: 0px;
+  background: rgb(255, 0, 0);
+}
+.b1 {
+  left: 100px;
+  top: 0px;
+  background: rgb(0, 255, 0);
+}
+.b2 {
+  left: 200px;
+  top: 0px;
+  background: rgb(0, 0, 255);
+}
+.b3 {
+  left: 300px;
+  top: 0px;
+  background: rgb(255, 255, 0);
+}
+.b4 {
+  left: 400px;
+  top: 0px;
+  background: rgb(0, 255, 255);
+}
+.b5 {
+  left: 500px;
+  top: 0px;
+  background: rgb(255, 0, 255);
+}
+.b6 {
+  left: 0px;
+  top: 100px;
+  background: rgb(255, 128, 0);
+}
+.b7 {
+  left: 100px;
+  top: 100px;
+  background: rgb(128, 0, 255);
+}
+.b8 {
+  left: 200px;
+  top: 100px;
+  background: rgb(128, 128, 128);
+}
+.b9 {
+  left: 300px;
+  top: 100px;
+  background: rgb(214, 96, 145);
+}
+.b10 {
+  left: 400px;
+  top: 100px;
+  background: rgb(61, 153, 0);
+}
+.b11 {
+  left: 500px;
+  top: 100px;
+  background: rgb(107, 122, 46);
+}
+#field {
+  position: absolute;
+  left: 700px;
+  top: 20px;
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Dialogs, popovers and full screen</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #ffffff;
+      }
+      .red {
+        background: rgb(255, 0, 0);
+      }
+      #normal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100px;
+        height: 100px;
+      }
+      dialog {
+        position: fixed;
+        inset: 300px auto auto 300px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        width: 200px;
+        height: 200px;
+      }
+      dialog::backdrop {
+        background: rgb(0, 0, 255);
+      }
+      #pop {
+        position: fixed;
+        inset: 0 auto auto 600px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        width: 200px;
+        height: 200px;
+      }
+      #fs {
+        position: absolute;
+        left: 0;
+        top: 200px;
+        width: 100px;
+        height: 100px;
+      }
+      #frame {
+        position: absolute;
+        left: 300px;
+        top: 0;
+        width: 200px;
+        height: 150px;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="normal" class="red"></div>
+    <dialog id="modal" class="red"></dialog>
+    <div id="pop" class="red" popover="manual"></div>
+    <div id="fs" class="red"></div>
+    <iframe id="frame" title="Embedded red block" src="__OTHER__/frame.html"></iframe>
+    <button id="go-fullscreen" style="position: absolute; left: 0; top: 350px">Full screen</button>
+    <script>
+      document.getElementById('go-fullscreen').addEventListener('click', () => {
+        document.getElementById('fs').requestFullscreen();
+      });
+    </script>
+  </body>
+</html>

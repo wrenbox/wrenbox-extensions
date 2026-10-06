@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Weekly orders, Sales dashboard</title>
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      .page {
+        padding-top: 32px;
+      }
+      .chart {
+        display: block;
+        width: 100%;
+        max-width: 760px;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="panel" style="max-width: 760px">
+        <h1>Weekly orders by region</h1>
+        <p class="sub">Last 10 weeks</p>
+        <ul class="legend">
+          <li><i style="background: #dc3545"></i>North</li>
+          <li><i style="background: #558833"></i>South</li>
+          <li><i style="background: #f4a06b"></i>Target</li>
+        </ul>
+        <svg class="chart" viewBox="0 0 720 300" role="img" aria-label="Line chart">
+          <g stroke="#eceff5" stroke-width="1">
+            <line x1="20" x2="700" y1="60" y2="60" />
+            <line x1="20" x2="700" y1="105" y2="105" />
+            <line x1="20" x2="700" y1="150" y2="150" />
+            <line x1="20" x2="700" y1="195" y2="195" />
+            <line x1="20" x2="700" y1="240" y2="240" />
+          </g>
+          <line
+            x1="30"
+            x2="700"
+            y1="160"
+            y2="160"
+            stroke="#f4a06b"
+            stroke-width="3"
+            stroke-dasharray="10 7"
+          />
+          <polyline
+            fill="none"
+            stroke="#dc3545"
+            stroke-width="5"
+            stroke-linejoin="round"
+            points="30,240 104,205 178,178 252,168 326,172 400,188 474,205 548,211 622,201 696,175"
+          />
+          <polyline
+            fill="none"
+            stroke="#558833"
+            stroke-width="5"
+            stroke-linejoin="round"
+            points="30,188 104,190 178,205 252,219 326,222 400,207 474,182 548,154 622,135 696,134"
+          />
+        </svg>
+        <div class="dots">
+          <div class="dot"><i style="background: #558833"></i>Store 14 on track</div>
+          <div class="dot"><i style="background: #dc3545"></i>Store 22 behind</div>
+          <div class="dot"><i style="background: #dc3545"></i>Store 47 behind</div>
+          <div class="dot"><i style="background: #558833"></i>Store 31 on track</div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
