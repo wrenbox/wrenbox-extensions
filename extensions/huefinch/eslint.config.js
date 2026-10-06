@@ -10,6 +10,8 @@ export default tseslint.config(
       'test-results/**',
       'test-results-screens/**',
       'tests/output/**',
+      'tools/demo-video/out/**',
+      'tools/demo-video/review/**',
     ],
   },
   js.configs.recommended,
@@ -71,6 +73,27 @@ export default tseslint.config(
         clearTimeout: 'readonly',
         URL: 'readonly',
         performance: 'readonly',
+      },
+    },
+    rules: { 'no-restricted-globals': 'off', 'no-restricted-properties': 'off' },
+  },
+  {
+    // The promo video recorder: Node, plus page.evaluate() callbacks that run in the
+    // demo pages (its cursor and key-hint overlays are not part of the extension).
+    files: ['tools/demo-video/**'],
+    languageOptions: {
+      globals: {
+        Buffer: 'readonly',
+        setTimeout: 'readonly',
+        URL: 'readonly',
+        Image: 'readonly',
+        MutationObserver: 'readonly',
+        getComputedStyle: 'readonly',
+        requestAnimationFrame: 'readonly',
+        innerWidth: 'readonly',
+        innerHeight: 'readonly',
+        outerWidth: 'readonly',
+        outerHeight: 'readonly',
       },
     },
     rules: { 'no-restricted-globals': 'off', 'no-restricted-properties': 'off' },

@@ -1,0 +1,10 @@
+html {
+  background: rgb(250, 228, 196);
+}
+body {
+  margin: 0;
+  padding: 24px;
+  font:
+    16px system-ui,
+    sans-serif;
+}

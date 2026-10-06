@@ -6,3 +6,6 @@ test-results-screens/
 playwright-report/
 tests/output/
 *.log
+tools/demo-video/out/
+tools/demo-video/review/
+__pycache__/

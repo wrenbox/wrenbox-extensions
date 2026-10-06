@@ -2,6 +2,10 @@
 
 All notable changes to Huefinch are recorded here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## 1.0.1 (2026-10-06)
+
+- Fixed: on pages shorter than the window, the area below the page showed white instead of the page's background while Huefinch was on.
+
 ## 1.0.0 (2026-10-06)
 
 First release.

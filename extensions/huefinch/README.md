@@ -47,6 +47,7 @@ npm run verify         typecheck, lint, unit tests, build, network audit,
                        permissions audit, end-to-end tests, zips
 npm run screens        capture every screen and rebuild store-assets/captured/
 npm run perf           frame-time measurements only (tests/output/perf-*.json)
+npm run video          record and render the promo video (see store-assets/video/README.md)
 ```
 
 `npm run verify` writes `release/huefinch-<version>.zip` (Chrome Web Store) and `release/huefinch-<version>-edge.zip` (Microsoft Edge Add-ons; same build, only the manifest name is shortened to Edge's 45-character limit: "Huefinch – Color Blind Filter & Identifier"). Both are reproducible byte for byte.

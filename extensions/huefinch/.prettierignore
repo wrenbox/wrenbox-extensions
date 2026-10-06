@@ -9,3 +9,8 @@ store-assets
 public
 BUILD_PROMPT.md
 VIDEO_PROMPT.md
+tools/demo-video/out
+tools/demo-video/review
+tools/demo-video/fonts
+tools/demo-video/audio
+store-assets/video/*.srt
