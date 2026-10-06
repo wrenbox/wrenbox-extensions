@@ -4,7 +4,8 @@
 # (typecheck, lint, unit tests, build, network + permission audits, e2e, zip).
 # On main, if package.json's version has no GitHub Release yet, the release
 # job publishes one: tag huefinch-v<version> on that commit, the Chrome Web
-# Store and Edge Add-ons zips attached, notes from CHANGELOG.md. Shipping a version is therefore
+# Store and Edge Add-ons zips and the promo video attached, notes from CHANGELOG.md.
+# Shipping a version is therefore
 # "bump the version, add a CHANGELOG entry, merge to main".
 name: Huefinch
 
@@ -91,7 +92,10 @@ jobs:
         name: Publish the GitHub Release
         run: |
           node scripts/release-notes.mjs "$VERSION" > "$RUNNER_TEMP/notes.md"
+          # The promo video rides along when it is in the repo (store-assets/video/README.md).
+          VIDEO=store-assets/video/huefinch-demo-1080p.mp4
           gh release create "$TAG" "release/huefinch-$VERSION.zip" "release/huefinch-$VERSION-edge.zip" \
+            $( [ -f "$VIDEO" ] && echo "$VIDEO" ) \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Huefinch $VERSION" \
