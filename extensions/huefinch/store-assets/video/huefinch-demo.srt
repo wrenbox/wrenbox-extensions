@@ -1,27 +1,27 @@
 1
-00:00:00,000 --> 00:00:03,367
+00:00:00,000 --> 00:00:03,321
 See colors clearly on every website.
 
 2
-00:00:03,367 --> 00:00:12,144
+00:00:03,321 --> 00:00:11,982
 Tell red and green apart again.
 
 3
-00:00:12,144 --> 00:00:18,204
+00:00:11,982 --> 00:00:17,996
 On every website, automatically.
 
 4
-00:00:18,204 --> 00:00:24,265
+00:00:17,996 --> 00:00:23,986
 Hold a key to compare.
 
 5
-00:00:24,265 --> 00:00:30,999
+00:00:23,986 --> 00:00:31,324
 Name any color on screen.
 
 6
-00:00:30,999 --> 00:00:38,150
+00:00:31,324 --> 00:00:37,988
 Designers: check your work through color-blind eyes.
 
 7
-00:00:38,150 --> 00:00:42,294
+00:00:37,988 --> 00:00:42,155
 Private. Nothing leaves your browser.

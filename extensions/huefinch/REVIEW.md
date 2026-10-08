@@ -133,7 +133,7 @@ Each page is opened with automatic mode on; the test checks that the filter is i
 
 ## 8. For the owner (can't be done from here)
 
-- Trademark check, store accounts, uploads and submission: see `STORE_UPLOAD_STEPS.md`.
+- Trademark check, store accounts, uploads and submission: see `LAUNCH.md`.
 - Confirm the Chrome data-usage form wording (N2) and Edge's 45-character name limit (D5) in the dashboards.
 - Make sure GitHub Pages serves `https://wrenbox.github.io/wrenbox-extensions/huefinch/privacy` after merging.
 

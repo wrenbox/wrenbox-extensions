@@ -53,8 +53,10 @@ LEVELS = {
     'pick': -6.0,
     'chime': -6.0,
 }
-DUCK_DB = -3.0  # music under the shimmer and the colour-picked chime
-DUCKED = {'shimmer', 'pick'}
+# The music dips under every prominent effect, so an effect never piles onto the track's
+# own peaks (a dense, loud track would otherwise force loudnorm out of linear mode).
+DUCK_DB = -3.0
+DUCKED = {'shimmer', 'press', 'release', 'pick', 'chime'}
 SOUNDS = {'toggle', 'option', 'shimmer', 'press', 'release', 'key', 'pick'}  # logged actions with an effect
 
 NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']

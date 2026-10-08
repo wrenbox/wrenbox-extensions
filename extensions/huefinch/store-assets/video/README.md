@@ -31,7 +31,7 @@ This builds the extension, writes the LUT, records every scene, plans the soundt
 - Sync: every effect lands on the exact frame its action shows.
 - Ending: the music fades to silence exactly as the video ends, with no gap before the fade.
 
-Last run: 45.00 s, 4.3 MB, −14 LUFS, −2.1 dBTP, 8/8 effects on their frame.
+Last run: 45.00 s, 4.3 MB, −14 LUFS, −2.2 dBTP, 8/8 effects on their frame.
 
 **For review:** one frame per second in `tools/demo-video/review/frame-NN.png`, and `tools/demo-video/review/waveform.png`. The waveform shows the mix, the beats, the scene changes, and the effects stem under a marker for the frame each action shows.
 
@@ -45,7 +45,7 @@ The caption font (Poppins, SIL Open Font License) is bundled in `tools/demo-vide
 
 ## Storyboard
 
-Times are where each caption appears. Six of the seven scene changes sit on a beat of the music.
+Times are where each caption appears. All seven scene changes sit on a beat of the music.
 
 | Time        | Scene                                                                                                                                                                             | Caption                                              | Sound                                        |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------- |
@@ -87,9 +87,9 @@ Intermediate files go to `tools/demo-video/out/` and review files to `tools/demo
 
 ## Soundtrack
 
-**Music.** The file is `tools/demo-video/audio/music.mp3`, named in `audio/TRACK.txt`. `audio.py plan` analyses it with librosa: beats, phrases, energy and key. It picks the section that opens calmly, lifts mid-video and ends a phrase on the end card. The chosen section is 0.84–45.84 s of the track (89.1 BPM, C# major). It fades in over 0.5 s and fades out from the phrase end at 42.8 s to silence exactly at 45.0 s.
+**Music.** The file is `tools/demo-video/audio/music.mp3`, named in `audio/TRACK.txt`. `audio.py plan` analyses it with librosa: beats, phrases, energy and key. It picks the section that opens calmly, lifts mid-video and ends a phrase on the end card. The chosen section is 1:04.71–1:49.71 of the track (89.1 BPM, C major). It starts quiet under the title card and the chart, then lifts at 9.8 s, right after the chart's colors switch. It fades in over 0.5 s and fades out from the phrase end at 42.7 s to silence exactly at 45.0 s.
 
-**Beat sync.** Each scene change moves to the nearest beat if one is within 250 ms. Only the stillness after a scene's last change is stretched or shortened, never the actions. Six of seven changes moved: +217, −6, +54, +115, −151 and −6 ms.
+**Beat sync.** Each scene change moves to the nearest beat if one is within 250 ms. Only the stillness after a scene's last change is stretched or shortened, never the actions. All seven changes moved: +170, −168, −155, −164, +174, −162 and −145 ms.
 
 **Effects.** All are synthesised in numpy and scipy, with no sample files:
 
@@ -100,6 +100,6 @@ Intermediate files go to `tools/demo-video/out/` and review files to `tools/demo
 - **Pick:** a two-note chime a major third apart.
 - **End card:** a chime a fifth apart, on the music's tonic and tuned to it.
 
-**On the frame.** `audio.py align` watches each action's screen area in the composed video and puts its effect on the frame where the change first shows. The median lag was +84 ms. `audio.py verify` re-checks every effect.
+**On the frame.** `audio.py align` watches each action's screen area in the composed video and puts its effect on the frame where the change first shows. The median lag was +98 ms. `audio.py verify` re-checks every effect.
 
-**Mix.** The music dips under the shimmer and the pick. Two-pass `loudnorm` brings the mix to −14 LUFS integrated with linear gain. The audio is encoded as AAC 192 kbps and muxed with the picture copied.
+**Mix.** The music dips 3 dB under every prominent effect (shimmer, whoomps, pick and end chime), so an effect never stacks on the track's own peaks. Two-pass `loudnorm` brings the mix to −14 LUFS integrated with linear gain. The audio is encoded as AAC 192 kbps and muxed with the picture copied.
