@@ -2,6 +2,8 @@
 
 Everything needed to fill in the Chrome Web Store Developer Dashboard, field by field. Publisher: **Wrenbox**.
 
+The launch walkthrough, with these texts ready to paste in order, is `LAUNCH.md`. If you change a text here, change it there too.
+
 ## Package
 
 - Upload `release/huefinch-<version>.zip` (for 1.0.1: `release/huefinch-1.0.1.zip`), built by `npm run verify` or `npm run build && npm run zip`. Once the CI workflow has run on `main`, the same zip is attached to the **Huefinch <version>** GitHub Release. `manifest.json` is at the zip root; there are no source maps, and the same build always produces the same zip, byte for byte.
