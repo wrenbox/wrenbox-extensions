@@ -1,11 +1,12 @@
 # Bowerline CI and releases.
 #
 # Every push and pull request touching Bowerline runs the full suite
-# (typecheck, lint, unit tests, build, network + permission audits, e2e, zip).
+# (typecheck, lint, unit tests, build, network + permission audits, e2e, zip),
+# then the e2e suite again in real Microsoft Edge.
 # On main, if package.json's version has no GitHub Release yet, the release
 # job publishes one: tag bowerline-v<version> on that commit, the Chrome Web
-# Store zip attached, notes from CHANGELOG.md. Shipping a version is therefore
-# "bump the version, add a CHANGELOG entry, merge to main".
+# Store and Edge Add-ons zips attached, notes from CHANGELOG.md. Shipping a
+# version is therefore "bump the version, add a CHANGELOG entry, merge to main".
 name: Bowerline
 
 on:
@@ -48,10 +49,16 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run verify
+      - name: End-to-end tests in Microsoft Edge
+        run: |
+          npx playwright install --with-deps msedge
+          npm run test:e2e:edge
       - uses: actions/upload-artifact@v7
         with:
           name: bowerline-zip
-          path: extensions/bowerline/release/bowerline-${{ steps.version.outputs.version }}.zip
+          path: |
+            extensions/bowerline/release/bowerline-${{ steps.version.outputs.version }}.zip
+            extensions/bowerline/release/bowerline-${{ steps.version.outputs.version }}-edge.zip
           if-no-files-found: error
           retention-days: 7
 
@@ -89,7 +96,7 @@ jobs:
         name: Publish the GitHub Release
         run: |
           node scripts/release-notes.mjs "$VERSION" > "$RUNNER_TEMP/notes.md"
-          gh release create "$TAG" "release/bowerline-$VERSION.zip" \
+          gh release create "$TAG" "release/bowerline-$VERSION.zip" "release/bowerline-$VERSION-edge.zip" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Bowerline $VERSION" \

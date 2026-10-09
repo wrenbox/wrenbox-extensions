@@ -10,6 +10,7 @@ import type { Highlight, Source, SourceInput } from '../shared/types';
 import { wordmark } from '../shared/ui/brand';
 import { $ } from '../shared/ui/dom';
 import { initTheme } from '../shared/ui/theme';
+import { nameBrowserIn } from '../shared/browser';
 
 const ALWAYS_ON_ORIGINS = ['https://*/*', 'http://*/*'];
 const DEMO_PAGE: SourceInput = {
@@ -136,6 +137,7 @@ async function initAlwaysOn(): Promise<void> {
 }
 
 async function init(): Promise<void> {
+  nameBrowserIn();
   await initTheme();
   $('#brand').append(wordmark(40));
   const cmd = (await chrome.commands.getAll()).find((c) => c.name === 'highlight-selection');

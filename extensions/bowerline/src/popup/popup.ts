@@ -12,6 +12,8 @@ import { $, h } from '../shared/ui/dom';
 import { plural } from '../shared/ui/feedback';
 import { icon, type IconName } from '../shared/ui/icons';
 import { initTheme } from '../shared/ui/theme';
+import { browserName, currentStore } from '../shared/browser';
+import { finishRating, rateState, shouldAsk } from './rate';
 
 let tab: chrome.tabs.Tab | undefined;
 let settings: Settings;
@@ -84,8 +86,8 @@ function renderState(s: PopupState): void {
     case 'pdf':
       setStatus(
         'restricted',
-        "This PDF is in Chrome's viewer",
-        "Extensions can't change Chrome's built-in viewer. Open it in Bowerline's viewer to highlight it.",
+        `This PDF is in ${browserName()}'s viewer`,
+        `Extensions can't change ${browserName()}'s built-in viewer. Open it in Bowerline's viewer to highlight it.`,
       );
       openThis.hidden = false;
       break;
@@ -98,6 +100,29 @@ function renderState(s: PopupState): void {
       break;
   }
   if (!openThis.hidden) openThis.classList.add('primary');
+}
+
+/** Once, to someone who clearly uses Bowerline, while it's working on this page. */
+async function maybeAskForRating(): Promise<void> {
+  if (state?.state !== 'active' && state?.state !== 'viewer') return;
+  const store = await currentStore();
+  if (!store) return; // unpacked or development copy: no listing to send anyone to
+  const rate = await rateState();
+  if (rate.done) return;
+  const { highlights } = await send('library:stats', {});
+  if (!shouldAsk(rate, Date.now(), highlights)) return;
+  $('#rate-store').textContent =
+    store.name === 'Edge Add-ons' ? 'Edge Add-ons' : 'the Chrome Web Store';
+  $('#rate-yes').addEventListener('click', async () => {
+    await finishRating(rate);
+    await chrome.tabs.create({ url: store.reviewUrl });
+    window.close();
+  });
+  $('#rate-no').addEventListener('click', async () => {
+    await finishRating(rate);
+    $('#rate').hidden = true;
+  });
+  $('#rate').hidden = false;
 }
 
 async function shortcut(): Promise<string> {
@@ -164,6 +189,7 @@ async function init(): Promise<void> {
   }
   // A tab whose URL ends in .pdf can always be opened in the viewer.
   if (looksLikePdfUrl(tab.url) && state?.state !== 'viewer') $('#open-this-pdf').hidden = false;
+  await maybeAskForRating().catch(() => undefined);
 }
 
 void init();

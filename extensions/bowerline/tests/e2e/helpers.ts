@@ -11,7 +11,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { makePdf } from '../../scripts/lib/pdf-writer.mjs';
-import { FIXTURES, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
+import { CHANNEL, FIXTURES, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
 import { startServer, type FixtureServer } from './server';
 
 export const ALWAYS_ON = ['http://*/*', 'https://*/*'];
@@ -69,7 +69,7 @@ export async function launchExtension(
   cpSync(PROFILE_TEMPLATE, profile, { recursive: true });
   grantOrigins(profile, id, opts.origins ?? ['http://127.0.0.1/*']);
   const ctx = await chromium.launchPersistentContext(profile, {
-    channel: 'chromium',
+    channel: CHANNEL,
     headless: true,
     viewport: { width: 1280, height: 800 },
     args: chromeArgs(),

@@ -53,12 +53,12 @@ test('highlights a PDF opened from the computer, then restores it by fingerprint
     .poll(async () => (await storedHighlights(ext)).map((h) => h.text))
     .toContain('compared with 38% for the restudy group.');
 
-  // Overlays follow the zoom.
-  const before = await viewer.locator('.bl-hl').first().boundingBox();
+  // Overlays follow the zoom. Saving redraws the overlay layer, so measure once it's back.
+  const width = async () => (await viewer.locator('.bl-hl').first().boundingBox())?.width ?? 0;
+  await expect.poll(width).toBeGreaterThan(0);
+  const before = await width();
   await viewer.keyboard.press('+');
-  await expect
-    .poll(async () => (await viewer.locator('.bl-hl').first().boundingBox())?.width ?? 0)
-    .toBeGreaterThan(before!.width * 1.05);
+  await expect.poll(width).toBeGreaterThan(before * 1.05);
 
   // The same file from a different place (a URL, a different name) shows the same highlights.
   const again = await ext.ctx.newPage();

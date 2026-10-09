@@ -1,5 +1,8 @@
 import type { Worker } from '@playwright/test';
 import { activate, expect, test } from './helpers';
+import { CHANNEL } from './paths';
+
+const BROWSER = CHANNEL === 'msedge' ? 'Edge' : 'Chrome';
 
 async function tabIdFor(ext: { sw: Worker }, match: string): Promise<number> {
   return ext.sw.evaluate(
@@ -9,7 +12,7 @@ async function tabIdFor(ext: { sw: Worker }, match: string): Promise<number> {
   );
 }
 
-test('the popup explains why Bowerline cannot run on Chrome pages', async ({ ext }) => {
+test("the popup explains why Bowerline cannot run on the browser's own pages", async ({ ext }) => {
   const chromePage = await ext.ctx.newPage();
   await chromePage.goto('chrome://version');
   // Without access, tab URLs are hidden; Chrome's own error message names the chrome:// tab.
@@ -28,7 +31,7 @@ test('the popup explains why Bowerline cannot run on Chrome pages', async ({ ext
   await popup.goto(ext.url(`popup/popup.html?tabId=${tabId}`));
   await expect(popup.locator('#status-title')).toHaveText("Bowerline can't run on this page");
   await expect(popup.locator('#status-sub')).toContainText(
-    "Chrome doesn't let extensions run on its own pages",
+    `${BROWSER} doesn't let extensions run on its own pages`,
   );
   await expect(popup.locator('#highlight')).toBeDisabled();
   await expect(popup.locator('#open-this-pdf')).toBeHidden();

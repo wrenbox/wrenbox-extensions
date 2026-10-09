@@ -19,7 +19,7 @@ import { getSettings, saveSettings } from '../shared/settings';
 import type { SourceInput } from '../shared/types';
 import { looksLikePdfUrl } from '../shared/url';
 import { clearAll, counts, getDb, readLibrary } from './db';
-import { explainScriptingError, isOwnPage, MSG, restrictionFor, viewerUrl } from './pages';
+import { explainScriptingError, isOwnPage, messages, restrictionFor, viewerUrl } from './pages';
 import * as store from './store';
 
 const CONTENT_JS = 'content/content.js';
@@ -216,7 +216,7 @@ async function popupOpen(tabId: number, url: string | undefined): Promise<PopupS
   if (url && isOwnPage(url)) {
     return url.includes('/viewer/')
       ? { state: 'viewer' }
-      : { state: 'restricted', reason: MSG.otherExtension, isPdf: false };
+      : { state: 'restricted', reason: messages().otherExtension, isPdf: false };
   }
   const restriction = await restrictionFor(url);
   if (restriction)

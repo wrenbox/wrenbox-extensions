@@ -28,6 +28,7 @@ Made by Wrenbox: small, private tools for your browser.
 14. Settings → turn on **Show my highlights automatically**: Chrome asks for permission. Revisit a highlighted page: highlights appear without clicking. Turn it off (or revoke site access at `chrome://extensions`): the toggle updates and pages no longer load Bowerline.
 15. Settings → **Colours and labels**: name a colour ("key idea"); the name appears in toolbar tooltips, the library and exports. Switch the theme to Dark.
 16. Keyboard only: Tab through the popup, side panel, library and settings; focus rings are visible everywhere.
+17. **Edge:** load `dist` in `edge://extensions` the same way and repeat a few steps above. The popup and settings say "Edge" where they would say "Chrome", and the Edge Add-ons store and `edge://` pages get Edge's explanation.
 
 ---
 
@@ -69,7 +70,7 @@ Releases are built by GitHub Actions, never by hand, so every zip on the [Releas
 2. Add a `## <version> (<date>)` section at the top of `CHANGELOG.md`. It becomes the release notes.
 3. Merge to `main`.
 
-The **Bowerline** workflow (`.github/workflows/bowerline.yml`) then runs `npm run verify` (typecheck, lint, unit tests, build, audits, e2e, zip). If it passes and that version has no release yet, it creates the tag `bowerline-v<version>` on that commit and publishes the GitHub Release **Bowerline <version>**, with `bowerline-<version>.zip` attached and its SHA-256 in the notes. Pushes that don't change the version are verified but publish nothing. Download the zip from the release and upload it to the Chrome Web Store.
+The **Bowerline** workflow (`.github/workflows/bowerline.yml`) then runs `npm run verify` (typecheck, lint, unit tests, build, audits, e2e, zip) and the end-to-end suite again in real Microsoft Edge. If it passes and that version has no release yet, it creates the tag `bowerline-v<version>` on that commit and publishes the GitHub Release **Bowerline <version>**, with `bowerline-<version>.zip` (Chrome Web Store) and `bowerline-<version>-edge.zip` (Microsoft Edge Add-ons) attached and their SHA-256 in the notes. Pushes that don't change the version are verified but publish nothing. Upload each zip to its store: Chrome as in [CHROMEWEBSTORE.md](CHROMEWEBSTORE.md), Edge as in [EDGE.md](EDGE.md).
 
 Tags carry the extension's name (`bowerline-v…`) because this repository will hold several extensions. Pull requests run the same checks, and every run keeps the built zip as a downloadable artifact for 7 days. `release/` stays out of git.
 
@@ -85,9 +86,10 @@ npm run typecheck    # tsc, strict
 npm run lint         # ESLint + Prettier check
 npm test             # unit tests (Vitest + jsdom)
 npm run test:e2e     # end-to-end tests (Playwright + Chromium with the extension loaded)
+npm run test:e2e:edge  # the same suite in real Microsoft Edge (npx playwright install msedge once)
 npm run audit:network
 npm run audit:permissions
-npm run zip          # release/bowerline-<version>.zip
+npm run zip          # release/bowerline-<version>.zip and release/bowerline-<version>-edge.zip
 npm run verify       # all of the above, in order
 npm run screens      # capture every screen at 1280×800 into tests/output/screens/ (for review)
 npm run store-screenshots  # the five framed Chrome Web Store screenshots → store-assets/captured/

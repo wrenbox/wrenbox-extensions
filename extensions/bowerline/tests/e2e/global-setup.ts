@@ -4,7 +4,7 @@
  */
 import { chromium } from '@playwright/test';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { DIST, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
+import { CHANNEL, DIST, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
 
 export default async function globalSetup(): Promise<void> {
   if (!existsSync(`${DIST}/manifest.json`))
@@ -12,7 +12,7 @@ export default async function globalSetup(): Promise<void> {
   rmSync(PROFILE_TEMPLATE, { recursive: true, force: true });
   mkdirSync(PROFILE_TEMPLATE, { recursive: true });
   const ctx = await chromium.launchPersistentContext(PROFILE_TEMPLATE, {
-    channel: 'chromium',
+    channel: CHANNEL,
     headless: true,
     args: chromeArgs(),
   });

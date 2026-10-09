@@ -28,6 +28,7 @@ import { $, clear, h } from '../shared/ui/dom';
 import { openExportDialog } from '../shared/ui/export-dialog';
 import { copyText } from '../shared/ui/feedback';
 import { icon } from '../shared/ui/icons';
+import { browserName } from '../shared/browser';
 import { initTheme } from '../shared/ui/theme';
 import { bounds, containsPoint, mergeRects, stackCards } from './geometry';
 import {
@@ -141,7 +142,7 @@ function explain(f: LoadFailure, url: string): string {
     case 'blocked':
       return "The website that hosts this PDF doesn't let other apps read it directly.";
     case 'file-access':
-      return 'Chrome only lets extensions read files on your computer when you allow it. You can choose the file below instead.';
+      return `${browserName()} only lets extensions read files on your computer when you allow it. You can choose the file below instead.`;
     case 'http':
       return f.status === 404
         ? 'The server says this PDF no longer exists (error 404).'
@@ -187,7 +188,7 @@ async function showLoadError(err: unknown, url: string): Promise<void> {
     canAsk
       ? h('p', {
           class: 'small',
-          text: `Chrome will ask to let Bowerline read ${host}. It's used only to open PDFs from there.`,
+          text: `${browserName()} will ask to let Bowerline read ${host}. It's used only to open PDFs from there.`,
         })
       : null,
     h(

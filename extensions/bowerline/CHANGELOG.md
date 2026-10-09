@@ -2,6 +2,17 @@
 
 All notable changes to Bowerline are recorded here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## 1.0.2 (2026-10-09)
+
+### Added
+
+- **Microsoft Edge.** Each release now includes `bowerline-<version>-edge.zip` for Edge Add-ons, built from the same code, and the full end-to-end suite runs in real Microsoft Edge in CI. In Edge, Bowerline says "Edge" wherever it would say "Chrome", points to `edge://extensions`, and explains that Edge doesn't let extensions run on its own pages or on the Edge Add-ons store. See [EDGE.md](https://github.com/wrenbox/wrenbox-extensions/blob/main/extensions/bowerline/EDGE.md) for publishing.
+- **A one-time rating request.** After at least three days and ten highlights, the toolbar popup asks once, while Bowerline is working on the page, whether you'd rate it in the store you installed it from (Chrome Web Store or Edge Add-ons). "No thanks" or "Rate Bowerline" closes it for good. Everything is decided locally; the store page opens only if you click. Settings → About also has a quiet "Rate Bowerline" link.
+
+### Changed
+
+- The privacy policy covers both browsers and mentions the rating request's one local reminder.
+
 ## 1.0.1 (2026-10-04)
 
 ### Fixed

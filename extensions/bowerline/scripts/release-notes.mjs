@@ -1,6 +1,6 @@
 /**
  * Prints GitHub Release notes for a version: its CHANGELOG section, then the
- * zip's SHA-256 and how to install it.
+ * zips' SHA-256 and how to install them.
  *
  *   node scripts/release-notes.mjs 1.0.0
  */
@@ -24,13 +24,21 @@ const section = lines
   .join('\n')
   .trim();
 
-const zip = join(root, 'release', `bowerline-${version}.zip`);
-const sha = existsSync(zip) ? createHash('sha256').update(readFileSync(zip)).digest('hex') : null;
+const sha = (file) => {
+  const p = join(root, 'release', file);
+  return existsSync(p)
+    ? ` (SHA-256 \`${createHash('sha256').update(readFileSync(p)).digest('hex')}\`)`
+    : '';
+};
+const chrome = `bowerline-${version}.zip`;
+const edge = `bowerline-${version}-edge.zip`;
 
 console.log(`${section}
 
 ---
 
-**Chrome Web Store upload:** \`bowerline-${version}.zip\`${sha ? ` (SHA-256 \`${sha}\`)` : ''}
+**Chrome Web Store upload:** \`${chrome}\`${sha(chrome)}
 
-To try it before publishing: unzip it, open \`chrome://extensions\`, turn on **Developer mode**, click **Load unpacked** and select the unzipped folder.`);
+**Microsoft Edge Add-ons upload:** \`${edge}\`${sha(edge)}. How to publish it: [EDGE.md](https://github.com/wrenbox/wrenbox-extensions/blob/main/extensions/bowerline/EDGE.md).
+
+To try either before publishing: unzip it, open \`chrome://extensions\` (or \`edge://extensions\`), turn on **Developer mode**, click **Load unpacked** and select the unzipped folder.`);

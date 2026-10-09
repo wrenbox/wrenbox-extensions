@@ -8,6 +8,7 @@ import { logoMark, PRIVACY_URL, wordmark } from '../shared/ui/brand';
 import { $, h } from '../shared/ui/dom';
 import { downloadText, pickFile, plural, toast } from '../shared/ui/feedback';
 import { initTheme } from '../shared/ui/theme';
+import { browserName, currentStore, nameBrowserIn } from '../shared/browser';
 
 const ALWAYS_ON_ORIGINS = ['https://*/*', 'http://*/*'];
 const SECTIONS = ['general', 'colours', 'data', 'shortcuts', 'about'];
@@ -166,7 +167,7 @@ function wireData(): void {
     if (alwaysOn.checked) {
       // Must be called straight from the click so Chrome sees the user gesture.
       const granted = await chrome.permissions.request({ origins: ALWAYS_ON_ORIGINS });
-      if (!granted) toast("Always on stays off. Chrome's permission wasn't granted.");
+      if (!granted) toast(`Always on stays off. ${browserName()}'s permission wasn't granted.`);
     } else {
       await chrome.permissions.remove({ origins: ALWAYS_ON_ORIGINS });
     }
@@ -242,11 +243,19 @@ async function renderShortcut(): Promise<void> {
 }
 
 async function init(): Promise<void> {
+  nameBrowserIn();
   await initTheme();
   $('#brand').append(wordmark(26));
   $('#about-mark').append(logoMark(56));
   $('#version').textContent = `version ${chrome.runtime.getManifest().version}`;
   $<HTMLAnchorElement>('#privacy-link').href = PRIVACY_URL;
+  void currentStore().then((store) => {
+    if (!store) return;
+    $<HTMLAnchorElement>('#rate-link').href = store.reviewUrl;
+    $('#rate-where').textContent =
+      `on ${store.name === 'Edge Add-ons' ? 'Edge Add-ons' : 'the Chrome Web Store'}`;
+    $('#rate-item').hidden = false;
+  });
   settings = await getSettings();
   onSettingsChanged((s) => {
     settings = s;
