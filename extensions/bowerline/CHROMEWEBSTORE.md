@@ -186,3 +186,14 @@ Permissions: no host access at install. Settings > "Show my highlights automatic
 
 Network: the only request is fetching a PDF the user opens, from its own URL (viewer/viewer.js loadPdf / fetchDirect; background.js fetchPdfViaTab). The code is not minified.
 ```
+
+## Updating to a new version
+
+Every version on the [Releases page](https://github.com/wrenbox/wrenbox-extensions/releases) has `bowerline-<version>.zip` for the Chrome Web Store.
+
+1. Download `bowerline-<version>.zip` from the release (for example from [Bowerline 1.0.2](https://github.com/wrenbox/wrenbox-extensions/releases/tag/bowerline-v1.0.2)). Don't unzip it.
+2. [Developer Dashboard](https://chrome.google.com/webstore/devconsole) → Bowerline → **Package** → **Upload new package** → choose the zip. The version must be higher than the one in the store.
+3. Check the other tabs. The listing, graphics and privacy answers carry over, and only need changing if the release notes say so.
+4. **Submit for review.** Existing users get the update automatically, usually within a few hours of approval.
+
+Version 1.0.2 adds no permissions and sends nothing new, so the privacy answers stay the same.
