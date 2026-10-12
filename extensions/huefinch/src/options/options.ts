@@ -11,6 +11,7 @@ import {
   type Settings,
 } from '../shared/settings';
 import { withSite } from '../shared/hostname';
+import { currentStore, storeInSentence } from '../shared/store';
 import { NOT_MEDICAL, PRIVACY_URL, STORY, STUDIO_LINE } from '../shared/ui/brand';
 import { PreviewFilter, switchControl, visionControls } from '../shared/ui/controls';
 import { $, h } from '../shared/ui/dom';
@@ -288,6 +289,13 @@ $('#story').textContent = STORY;
 $('#studio').textContent = STUDIO_LINE;
 ($('#about-privacy') as HTMLAnchorElement).href = PRIVACY_URL;
 $('#not-medical').textContent = NOT_MEDICAL;
+// Store installs only: an unpacked copy has no listing to rate.
+void currentStore().then((store) => {
+  if (!store) return;
+  ($('#rate-link') as HTMLAnchorElement).href = store.reviewUrl;
+  $('#rate-where').textContent = `on ${storeInSentence(store)}`;
+  $('#rate-item').hidden = false;
+});
 
 // --- Live updates -------------------------------------------------------------------
 

@@ -31,6 +31,16 @@
         <button id="identify" type="button" class="btn small"></button>
         <button id="settings" type="button" class="btn small ghost"></button>
       </div>
+      <aside id="rate" class="rate" aria-labelledby="rate-text" hidden>
+        <p id="rate-text">
+          Is Huefinch helping? A rating on <span id="rate-store">the Chrome Web Store</span> helps
+          others who see colors differently find it.
+        </p>
+        <div class="rate-actions">
+          <button id="rate-yes" type="button" class="btn small primary">Rate Huefinch</button>
+          <button id="rate-no" type="button" class="btn small ghost">No thanks</button>
+        </div>
+      </aside>
     </main>
     <footer id="hints" class="hints"></footer>
     <script type="module" src="popup.js"></script>

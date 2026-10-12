@@ -4,9 +4,9 @@ title: Huefinch privacy policy
 
 # Huefinch privacy policy
 
-**Effective date:** 6 October 2026
+**Effective date:** 12 October 2026
 
-Huefinch – Color Blind Filter & Color Identifier ("Huefinch") is a browser extension made by Wrenbox. This policy explains, in plain language, what Huefinch stores, where, and what it never does.
+Huefinch – Color Blind Filter & Color Identifier ("Huefinch") is an extension for Google Chrome and Microsoft Edge, made by Wrenbox. This policy explains, in plain language, what Huefinch stores, where, and what it never does.
 
 **The short version:** Huefinch changes how colors look on the pages you visit, and nothing else. It never reads, stores or sends what is on those pages. It makes no network requests at all. Its settings stay in your browser.
 
@@ -16,15 +16,18 @@ Huefinch stores only the following, **in this browser**, in the extension's own 
 
 - **Your settings:** whether Huefinch is on, Correct or Simulate mode, your type of color vision (red-, green- or blue-weak) and the strength or severity.
 - **The list of sites where you switched Huefinch off:** just the hostname of each one (for example `photos.example.com`), nothing else about the page or your visit.
+- **One small reminder:** the date you first opened Huefinch's toolbar popup, how many times you have opened it, and whether you have answered its one-time request to rate Huefinch in the store, so it is asked at most once.
 
-Settings are not copied to your Google account: Huefinch does not use Chrome Sync.
+Settings are not copied to your Google or Microsoft account: Huefinch does not use the browser's sync.
+
+If you click **Rate Huefinch** (in the toolbar popup, once, or in Settings → About), the store's page for Huefinch opens in a new tab, just like a link you click. Huefinch sends nothing to it.
 
 When you use "Identify a color", the color you pick is shown on screen and its hex code (for example `#6B7A2E`) is copied to your clipboard so you can paste it. Huefinch does not keep it.
 
 ## What Huefinch never does
 
 - It **never reads page content.** It doesn't read the text, images, video or forms on a page. It adds a color filter over the page, which the browser applies while drawing it.
-- It **never records where you go.** The only part of a page's address it uses is the hostname, to check whether you switched Huefinch off for that site. It doesn't store addresses, titles or browsing history.
+- It **never records where you go.** The only part of a page's address it uses is the hostname, to check whether you switched Huefinch off for that site. Inside content embedded in a page from another website (an iframe, such as a video or a map), Huefinch adds its filter too, and the only address it uses there is the hostname of the page around it, for the same check. It doesn't store addresses, titles or browsing history.
 - It **makes no network requests.** No analytics, telemetry, crash reports, advertising, remote fonts or content delivery networks. Every build is checked automatically for any way to contact a server.
 - It **never sells or shares data.** There is none to share: Wrenbox has no server and never receives anything from Huefinch.
 

@@ -1,6 +1,6 @@
 # Launching Huefinch: YouTube, then the Chrome Web Store
 
-The whole launch, start to finish, with every text ready to paste. Do YouTube first: the store listing asks for the video link. It takes about 15 minutes for YouTube and 30 for the store, then a few days of review.
+The whole launch, start to finish, with every text ready to paste. Do YouTube first: the store listing asks for the video link. Edge Add-ons is step 4. It takes about 15 minutes for YouTube and 30 for the store, then a few days of review.
 
 The texts below are copied from `CHROMEWEBSTORE.md` (the listing reference, with the reasoning behind each answer). If you change one, change both.
 
@@ -8,8 +8,8 @@ The texts below are copied from `CHROMEWEBSTORE.md` (the listing reference, with
 
 | What                              | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Extension zip for Chrome          | `huefinch-1.0.1.zip` on the [Huefinch 1.0.1 release](https://github.com/wrenbox/wrenbox-extensions/releases/tag/huefinch-v1.0.1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Extension zip for Edge (optional) | `huefinch-1.0.1-edge.zip` on the same release                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Extension zip for Chrome          | `huefinch-1.1.0.zip` on the [Huefinch 1.1.0 release](https://github.com/wrenbox/wrenbox-extensions/releases/tag/huefinch-v1.1.0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Extension zip for Edge (optional) | `huefinch-1.1.0-edge.zip` on the same release                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | Promo video                       | `huefinch-demo-1080p.mp4` on the same release, or [direct link](https://github.com/wrenbox/wrenbox-extensions/raw/main/extensions/huefinch/store-assets/video/huefinch-demo-1080p.mp4)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Subtitles                         | [`huefinch-demo.srt`](https://github.com/wrenbox/wrenbox-extensions/raw/main/extensions/huefinch/store-assets/video/huefinch-demo.srt)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | YouTube thumbnail                 | [`youtube-thumbnail-1280x720.png`](https://github.com/wrenbox/wrenbox-extensions/raw/main/extensions/huefinch/store-assets/youtube-thumbnail-1280x720.png)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -82,13 +82,13 @@ The texts below are copied from `CHROMEWEBSTORE.md` (the listing reference, with
 ### 2.1 Before you upload
 
 - [ ] **Trademark check:** search "Huefinch" on [tmsearch.uspto.gov](https://tmsearch.uspto.gov) and [ipindia.gov.in](https://ipindia.gov.in) in classes 9 and 42. If anything live shows up, stop and tell me.
-- [ ] **Try the exact zip:** unzip `huefinch-1.0.1.zip` → `chrome://extensions` → **Developer mode** → **Load unpacked** → select the folder. Then run through the checklist in `README.md`.
+- [ ] **Try the exact zip:** unzip `huefinch-1.1.0.zip` → `chrome://extensions` → **Developer mode** → **Load unpacked** → select the folder. Then run through the checklist in `README.md`.
 - [x] **Privacy policy is live:** [wrenbox.github.io/wrenbox-extensions/huefinch/privacy](https://wrenbox.github.io/wrenbox-extensions/huefinch/privacy) (checked 8 October 2026).
 - **Item slot:** new publishers can have **two** published items; Huefinch is the second, after Bowerline. Don't submit anything else until more slots are granted. The dashboard shows your limit and offers "request an increase".
 
 ### 2.2 Upload
 
-[Developer Dashboard](https://chrome.google.com/webstore/devconsole) → publisher **Wrenbox** → **Add new item** → **Choose file** → `huefinch-1.0.1.zip` → **Upload**.
+[Developer Dashboard](https://chrome.google.com/webstore/devconsole) → publisher **Wrenbox** → **Add new item** → **Choose file** → `huefinch-1.1.0.zip` → **Upload**.
 
 The name and summary come from the zip's manifest, so they're already filled in (and not editable here):
 
@@ -194,7 +194,7 @@ The name and summary come from the zip's manifest, so they're already filled in 
   **scripting**
 
   ```
-  Injects Huefinch's content script, which adds an SVG color filter (feColorMatrix) to the page, into the tab the user activated (chrome.scripting.executeScript). If, and only if, the user chooses "Turn on for all websites" and grants host access, registers the same script with chrome.scripting.registerContentScripts so every page is recolored as it loads; it is unregistered as soon as that access is removed.
+  Injects Huefinch's content script, which adds an SVG color filter (feColorMatrix) to the page, into the tab the user activated (chrome.scripting.executeScript). If, and only if, the user chooses "Turn on for all websites" and grants host access, registers the same script with chrome.scripting.registerContentScripts so every page, and the content embedded in it, is recolored as it loads; it is unregistered as soon as that access is removed.
   ```
 
   **Host permissions** (shown as `https://*/*` and `http://*/*`; one box covers both)
@@ -224,13 +224,13 @@ No account, login or payment is needed. Everything is free and works offline.
 
 Please test on a normal web page with colors (for example a Wikipedia article with a chart or map). Chrome doesn't allow extensions on chrome:// pages or the Chrome Web Store.
 
-1. On install, a welcome page opens. "Turn on for all websites" asks for optional host access; with it, every page is recolored automatically from the first frame. If declined, click the Huefinch toolbar icon on a page: that tab is recolored until it navigates.
+1. On install, a welcome page opens. "Turn on for all websites" asks for optional host access; with it, every page (and content embedded in it) is recolored automatically from the first frame. If declined, click the Huefinch toolbar icon on a page: that tab is recolored until it navigates.
 2. Popup: master switch, Correct colors / Simulate, Red-/Green-/Blue-weak, Strength (or Severity) slider, "On for this site". Changes apply live. In Simulate mode a pill at the top of the page says "Simulating green-blind vision".
 3. Hold Alt+Shift+X on a page: original colors while held. Alt+Shift+F turns Huefinch on/off.
 4. Alt+Shift+C (or popup > "Identify a color", then click the page): the browser's eyedropper opens; click any color. A card names it ("Olive green"), shows the nearest CSS color and copies the hex code.
 5. Settings > Find my setting: mark color pairs that look alike; Huefinch suggests a type; a slider tunes the strength.
 
-Network: none. The content script never reads page content; it adds an SVG feColorMatrix filter and a style rule. Code is not minified.
+Network: none. The content script never reads page content; it adds an SVG feColorMatrix filter and a style rule. In frames from another website it does the same, using only the hostname of the page around it. Code is not minified.
 ```
 
 ### 2.7 Submit
@@ -245,8 +245,6 @@ Review usually takes a few days. The optional website access gets a closer look,
 2. YouTube Studio → the video → **Details** → replace `[STORE LINK – add once the listing is live]` with it → **Save**.
 3. Tell me the link. I'll add it to the READMEs and the Wrenbox website.
 
-## Optional: Microsoft Edge Add-ons
+## 4. Microsoft Edge Add-ons
 
-This is free and doesn't use a Chrome slot. Register at [Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview), then **Create new extension** → upload `huefinch-1.0.1-edge.zip`. Its name is shortened to Edge's 45-character limit: "Huefinch – Color Blind Filter & Identifier".
-
-Use the same description, privacy policy URL, single purpose and screenshots. For the logo, `store-icon-128.png` meets Edge's 128×128 minimum (300×300 is only recommended).
+Do this after the Chrome Web Store, or at the same time. It's free, doesn't use a Chrome slot, and uses the same build: upload `huefinch-1.1.0-edge.zip`. Every field, with the text to paste, is in [EDGE.md](EDGE.md). Leave the YouTube video out on Edge, because its end card says "Free on the Chrome Web Store".

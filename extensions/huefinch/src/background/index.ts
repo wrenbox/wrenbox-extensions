@@ -3,13 +3,15 @@
  *
  * - Keeps the content script registered exactly when the user has granted
  *   access to all websites ("Turn on for all websites"), and unregistered
- *   when that access is removed.
+ *   when that access is removed. It runs in every frame; frames the top
+ *   page's filter can't reach recolor themselves (content/frames.ts).
  * - Runs the filter on one tab when the user clicks the toolbar icon or
  *   presses the shortcut without automatic mode (activeTab).
  * - Handles the on/off shortcut and keeps the toolbar icon gray while off.
  *
- * It holds no page data. The only thing content scripts send it is whether
- * their tab is recolored, for the icon.
+ * It holds no page data. The only things content scripts send it are whether
+ * their tab is recolored, for the icon, and whether the page is showing its
+ * original colors for a moment, which it passes on to the tab's frames.
  */
 import { canRunOn, isOffOn, siteOf } from '../shared/hostname';
 import { excludePatterns, initialFilesFor } from '../shared/initial';
@@ -58,7 +60,7 @@ function registration(s: Settings): chrome.scripting.RegisteredContentScript {
     matches: ALL_SITES,
     ...(exclude.length ? { excludeMatches: exclude } : {}),
     runAt: 'document_start',
-    allFrames: false,
+    allFrames: true,
     persistAcrossSessions: true,
   };
 }
@@ -79,7 +81,10 @@ export function syncRegistration(): Promise<boolean> {
       if (!current) await chrome.scripting.registerContentScripts([script]);
       else if (
         JSON.stringify(current.js) !== JSON.stringify(script.js) ||
-        JSON.stringify(current.excludeMatches ?? []) !== JSON.stringify(script.excludeMatches ?? [])
+        JSON.stringify(current.excludeMatches ?? []) !==
+          JSON.stringify(script.excludeMatches ?? []) ||
+        // Registered by 1.0.x, top frame only.
+        current.allFrames !== script.allFrames
       ) {
         await chrome.scripting.updateContentScripts([
           { ...script, excludeMatches: script.excludeMatches ?? [] },
@@ -119,10 +124,16 @@ async function inject(tabId: number): Promise<boolean> {
       target: { tabId, frameIds: [0] },
       files: [...initialFilesFor(await loadSettings()), CONTENT_SCRIPT_FILE],
     });
-    return true;
   } catch {
     return false;
   }
+  // The frames too, where Huefinch has access to them (with "all websites";
+  // activeTab alone covers the top page's own origin). The script ignores a
+  // frame the top page's filter already reaches, and runs once per frame.
+  await chrome.scripting
+    .executeScript({ target: { tabId, allFrames: true }, files: [CONTENT_SCRIPT_FILE] })
+    .catch(() => {});
+  return true;
 }
 
 /**
@@ -198,6 +209,13 @@ chrome.runtime.onMessage.addListener((msg: WorkerRequest, sender, reply) => {
   if (msg.type === 'state') {
     if (sender.tab?.id !== undefined && sender.frameId === 0)
       void setTabIcon(sender.tab.id, msg.applied === true);
+    return false;
+  }
+  if (msg.type === 'original') {
+    if (sender.tab?.id !== undefined && sender.frameId === 0)
+      void chrome.tabs
+        .sendMessage(sender.tab.id, { type: 'original', on: msg.on } satisfies ContentRequest)
+        .catch(() => {});
     return false;
   }
   // Only Huefinch's own pages (popup, settings) may start things in a tab.

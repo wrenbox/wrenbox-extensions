@@ -10,7 +10,9 @@ export type WorkerRequest =
   | { type: 'activate'; tabId: number }
   | { type: 'identify'; tabId: number }
   /** Content script → service worker: what this tab shows now (for the toolbar icon). */
-  | { type: 'state'; applied: boolean };
+  | { type: 'state'; applied: boolean }
+  /** Top frame → service worker → the tab's frames: the page shows original colors now. */
+  | { type: 'original'; on: boolean };
 
 export interface ActivateResult {
   ok: boolean;
@@ -19,7 +21,8 @@ export interface ActivateResult {
 }
 
 /** Service worker or popup → content script. */
-export type ContentRequest = { type: 'ping' } | { type: 'identify' };
+export type ContentRequest =
+  { type: 'ping' } | { type: 'identify' } | { type: 'original'; on: boolean };
 
 export interface PingReply {
   huefinch: true;

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Frames</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: rgb(0, 0, 255);
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        border: 0;
+        display: block;
+      }
+      #cross {
+        left: 0;
+        width: 200px;
+        height: 150px;
+      }
+      #same {
+        left: 220px;
+        width: 200px;
+        height: 150px;
+      }
+      #nested {
+        left: 440px;
+        width: 400px;
+        height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Red blocks: another origin, this origin, and a frame of another origin that holds
+         a frame of its own origin and a frame of this page's origin. -->
+    <iframe id="cross" title="Red block, another origin" src="__OTHER__/frame.html"></iframe>
+    <iframe id="same" title="Red block, this origin" src="frame.html"></iframe>
+    <iframe id="nested" title="Frames inside a frame" src="__OTHER__/nested.html"></iframe>
+  </body>
+</html>

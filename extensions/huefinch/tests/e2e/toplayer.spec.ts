@@ -77,13 +77,12 @@ test('a full-screen element is filtered exactly once', async ({ ext }) => {
   await page.evaluate(() => document.exitFullscreen());
 });
 
-test('a cross-origin iframe is filtered exactly once, by the top frame only', async ({ ext }) => {
+test('a cross-origin iframe is filtered exactly once', async ({ ext }) => {
+  // More cases (same origin, nested, held key, switched off) in frames.spec.ts.
   const page = await open(ext);
   const frame = page.frameLocator('#frame');
   await expect(frame.locator('body')).toBeAttached();
-  // Huefinch runs in the top frame only: nothing is injected into the iframe.
-  const child = page.frames().find((f) => f !== page.mainFrame())!;
-  expect(await child.evaluate(() => document.querySelectorAll('huefinch-root').length)).toBe(0);
+  await page.waitForTimeout(300);
   const [inside] = await pixels(page, [[400, 75]]);
   once(inside!, RED, 'iframe content');
 });

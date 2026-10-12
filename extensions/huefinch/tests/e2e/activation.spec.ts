@@ -21,7 +21,7 @@ const M = matrixOf({ mode: 'correct', type: 'deutan', amount: 80 });
 test.describe('with access to all websites', () => {
   test.use({ origins: ALL_SITES });
 
-  test('the content script is registered at document_start, top frame only, across sessions', async ({
+  test('the content script is registered at document_start, in every frame, across sessions', async ({
     ext,
   }) => {
     const scripts = await ext.sw.evaluate(() => chrome.scripting.getRegisteredContentScripts());
@@ -38,7 +38,8 @@ test.describe('with access to all websites', () => {
         ],
         matches: expect.arrayContaining(['https://*/*', 'http://*/*']),
         runAt: 'document_start',
-        allFrames: false,
+        // Frames the top page's filter can't reach recolor themselves (frames.spec.ts).
+        allFrames: true,
         persistAcrossSessions: true,
       }),
     ]);

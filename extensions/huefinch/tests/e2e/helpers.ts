@@ -19,7 +19,14 @@ import {
   type Vec3,
 } from '../../src/shared/matrix';
 import type { Settings } from '../../src/shared/settings';
-import { EXTENSION_NAME, FIXTURES, PROFILE_TEMPLATE, TEMPLATE_INFO, chromeArgs } from './paths';
+import {
+  CHANNEL,
+  EXTENSION_NAME,
+  FIXTURES,
+  PROFILE_TEMPLATE,
+  TEMPLATE_INFO,
+  chromeArgs,
+} from './paths';
 import { startServer, type FixtureServer } from './server';
 
 export const ALL_SITES = ['https://*/*', 'http://*/*'];
@@ -62,7 +69,7 @@ export async function launchExtension(
   cpSync(PROFILE_TEMPLATE, profile, { recursive: true });
   grantOrigins(profile, id, origins);
   const ctx = await chromium.launchPersistentContext(profile, {
-    channel: 'chromium',
+    channel: CHANNEL,
     headless: true,
     viewport: { width: 1280, height: 800 },
     args: [...chromeArgs(), ...extraArgs],

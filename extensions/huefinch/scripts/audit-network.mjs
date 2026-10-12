@@ -9,7 +9,8 @@
  * - CSS @import, url(), @font-face pointing anywhere but the extension;
  * - any http(s) URL in the code, except the few listed below, which are
  *   never requested by Huefinch (namespaces, permission patterns, and the
- *   privacy policy, which opens only as a link the user clicks).
+ *   privacy policy and store listings, which open only as links the user
+ *   clicks).
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -25,6 +26,14 @@ const ALLOWED_URLS = new Map([
   [
     'https://wrenbox.github.io/wrenbox-extensions/huefinch/privacy',
     'privacy policy: a link the user can click, opened as a normal tab',
+  ],
+  [
+    'https://chromewebstore.google.com/detail/',
+    'Chrome Web Store listing for "Rate Huefinch": opened as a tab only when the user clicks',
+  ],
+  [
+    'https://microsoftedge.microsoft.com/addons/detail/',
+    'Edge Add-ons listing for "Rate Huefinch": opened as a tab only when the user clicks',
   ],
 ]);
 
