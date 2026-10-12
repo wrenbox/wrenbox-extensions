@@ -25,7 +25,7 @@ Made by Wrenbox: small, private tools for your browser.
 8. **Alt+Shift+F** turns Huefinch off everywhere (icon turns gray) and on again.
 9. **Hold Alt+Shift+X** on a page: original colors while held, with a small "Showing original colors" pill; let go → recolored. Also try holding it and switching to another window: colors come back.
 10. **Alt+Shift+C**, then click a color (try inside a photo): a card in the top-right corner names the color ("Olive green"), shows "Close to: …" and the hex code, and says "copied". Paste somewhere to check. Escape or a click elsewhere closes it. Popup → **Identify a color** shows "Click anywhere to pick a color" first.
-11. **Dialogs and full screen:** on a site with a modal dialog (e.g. a cookie banner or a "Delete?" confirmation) and on a full-screen YouTube video, colors are recolored the same as the page — not left original, not doubled.
+11. **Dialogs, full screen and embeds:** on a site with a modal dialog (e.g. a cookie banner or a "Delete?" confirmation), on a full-screen YouTube video, and on a page with an embedded YouTube video or map from another site, colors are recolored the same as the page — not left original, not doubled.
 12. **Settings → Find my setting:** mark the pairs that look alike → a suggestion appears → **Use …** → move the slider until the pairs look different. The note says it's a comfort setting, not a medical test.
 13. **Settings → Keyboard shortcuts → Open Chrome shortcuts** opens `chrome://extensions/shortcuts`; change Alt+Shift+F to something else and come back: the settings page and popup show the new key.
 14. **Decline path:** remove Huefinch and load it again; on the welcome page click the button and choose **Don't allow**. Open a page: no recoloring. Click the Huefinch icon: that tab is recolored and the popup says "on for this tab until you leave the page" with a **Turn on for all websites** button. Reload: not recolored any more.
@@ -33,7 +33,8 @@ Made by Wrenbox: small, private tools for your browser.
 16. **Keyboard only:** Tab through the popup and every settings section: focus is always visible, radio groups work with the arrow keys, sliders with arrows, switches with Space.
 17. **Dark mode:** set your system to dark: the popup, settings and welcome page switch to dark colors.
 18. Chrome's own pages (`chrome://settings`) and the Web Store: the popup explains that Chrome doesn't allow extensions there.
-19. **Edge (optional):** load `dist` in `edge://extensions` the same way; the UI says "Edge" where it would say "Chrome".
+19. **Edge:** load `dist` in `edge://extensions` the same way and repeat a few steps above. The UI says "Edge" where it would say "Chrome", and Settings → Keyboard shortcuts opens `edge://extensions/shortcuts`.
+20. **Rating request** (store installs only, so you'll see it after publishing): after three days and five popup opens, the popup asks once, while Huefinch is recoloring the page, for a rating in the store it was installed from. **No thanks** or **Rate Huefinch** closes it for good. Settings → About keeps a quiet "Rate Huefinch" link.
 
 ---
 
@@ -46,17 +47,18 @@ npm run dev            rebuild on change
 npm run verify         typecheck, lint, unit tests, build, network audit,
                        permissions audit, end-to-end tests, zips
 npm run screens        capture every screen and rebuild store-assets/captured/
+npm run test:e2e:edge  the end-to-end suite in real Microsoft Edge (npx playwright install msedge once)
 npm run perf           frame-time measurements only (tests/output/perf-*.json)
 npm run video          record and render the promo video (see store-assets/video/README.md)
 ```
 
 `npm run verify` writes `release/huefinch-<version>.zip` (Chrome Web Store) and `release/huefinch-<version>-edge.zip` (Microsoft Edge Add-ons; same build, only the manifest name is shortened to Edge's 45-character limit: "Huefinch – Color Blind Filter & Identifier"). Both are reproducible byte for byte.
 
-The end-to-end tests run the real extension in Playwright's Chromium. Install the browser once with `npx playwright install chromium` if it isn't already there.
+The end-to-end tests run the real extension in Playwright's Chromium, and CI runs them again in real Microsoft Edge. The two cover different browser generations: Playwright's Chromium is older than Chromium 151, current Edge is newer, and frames are handled differently on each side of 151 (see "How it works"). Install the browsers once with `npx playwright install chromium msedge`.
 
 ### Releasing
 
-Bump `version` in `package.json`, add a `## <version>` section to `CHANGELOG.md`, merge to `main`. The **Huefinch** GitHub workflow runs `verify` and publishes a GitHub Release tagged `huefinch-v<version>` with both zips and the promo video (`store-assets/video/huefinch-demo-1080p.mp4`) attached and notes from the changelog. Upload the Chrome zip to the Web Store (step by step, with every text to paste: `LAUNCH.md`).
+Bump `version` in `package.json`, add a `## <version>` section to `CHANGELOG.md`, merge to `main`. The **Huefinch** GitHub workflow runs `verify` and publishes a GitHub Release tagged `huefinch-v<version>` with both zips and the promo video (`store-assets/video/huefinch-demo-1080p.mp4`) attached and notes from the changelog. Upload the Chrome zip to the Web Store (step by step, with every text to paste: `LAUNCH.md`) and the Edge zip to Edge Add-ons (`EDGE.md`).
 
 ## How it works
 
@@ -72,7 +74,7 @@ tests/unit/     Vitest       tests/e2e/   Playwright      tests/fixtures/  test 
 ```
 
 - **The filter.** One inline `<svg>` with `<filter id="huefinch-filter"><feColorMatrix type="matrix">`, and a style rule `html { filter: url(#huefinch-filter) !important }`, both in a `<huefinch-root>` element attached to `<html>` at `document_start` and re-attached by a MutationObserver if a page removes them. The browser converts each pixel sRGB → linear, applies the matrix, clamps and converts back (`color-interpolation-filters: linearRGB`, set inline so site CSS can't change it).
-- **The top layer.** Modal dialogs, popovers, full-screen elements and their backdrops are painted outside `<html>`, so they get the same filter themselves. Being outside `<html>`, they are recolored exactly once. Iframes are inside the page, so the top-frame filter covers them; Huefinch runs in the top frame only.
+- **The top layer.** Modal dialogs, popovers, full-screen elements and their backdrops are painted outside `<html>`, so they get the same filter themselves. Being outside `<html>`, they are recolored exactly once. Iframes are drawn inside the page, so the top page's filter covers them, except one case: since Chromium 151 (Chrome and Edge, August 2026, an SVG security fix), a page's SVG filter no longer reaches into an iframe from another origin. Huefinch therefore runs in every frame: a frame from another origin than its parent recolors itself on Chromium 151 and later, and every other frame does nothing (the filter above it already recolors it, and recoloring it again would double the correction). Frames follow the switch of the page they are embedded in. While Alt+Shift+X is held or the color picker is open, the top page tells its frames through the service worker, so they show their original colors too. (`src/content/frames.ts`; tested in Chromium 141 and 150, the old behavior, and Chrome 151 and 155 and Edge 155, the new one.)
 - **The maths** (`src/shared/matrix.ts`): simulation matrices from Machado, Oliveira & Fernandes (2009) at severity 1, `S(s) = (1−s)·I + s·S`; correction by error redistribution after Fidaner, Lin & Ozguven (2005), `C(k) = I + k·E·(I − S)`. Default: Correct, Green-weak, 80%.
 - **No flash.** The content script must know the setting before the first frame, but `chrome.storage` is asynchronous. So the automatic registration lists three generated one-line files first (`content/initial/mode-correct.js`, `type-deutan.js`, `amount-80.js`); the service worker swaps them with `updateContentScripts` when settings change, and puts switched-off sites in `excludeMatches`. A test checks the filter is in place at the first animation frame on 12 pages.
 - **Color names** (`src/shared/color.ts`): a hue family from HSL with everyday names (dark orange is brown, dark yellow olive, light red pink) and modifiers (very dark, dark, light, pale, grayish, muted, bright); "dark" uses the mean of HSL lightness and CIE L*, because HSL calls vivid greens dark. The nearest of the 139 CSS named colors by CIEDE2000.
@@ -85,7 +87,7 @@ tests/unit/     Vitest       tests/e2e/   Playwright      tests/fixtures/  test 
 
 **Why can't Huefinch recolor Chrome's own pages?** Chrome doesn't let any extension change `chrome://` pages, the Web Store or (unless you allow it) local files.
 
-**Does it work in iframes?** Yes: embedded content is drawn inside the page, so the page's filter recolors it once.
+**Does it work in iframes?** Yes, once each: embedded videos, maps and widgets are recolored exactly like the page around them, from any website, in automatic mode. In one-tab mode (without "Turn on for all websites"), embedded content from another website can keep its original colors on Chrome and Edge 151 and later, because the browser gives Huefinch access to the clicked page only.
 
 **Why does copying sometimes show a "Copy hex" button?** Some sites block clipboard access, or are plain `http` pages where the Clipboard API isn't available. Huefinch then falls back to the copy command, and if that's blocked too, offers a button (a click is always allowed to copy).
 

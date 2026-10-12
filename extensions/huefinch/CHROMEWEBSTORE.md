@@ -6,7 +6,7 @@ The launch walkthrough, with these texts ready to paste in order, is `LAUNCH.md`
 
 ## Package
 
-- Upload `release/huefinch-<version>.zip` (for 1.0.1: `release/huefinch-1.0.1.zip`), built by `npm run verify` or `npm run build && npm run zip`. Once the CI workflow has run on `main`, the same zip is attached to the **Huefinch <version>** GitHub Release. `manifest.json` is at the zip root; there are no source maps, and the same build always produces the same zip, byte for byte.
+- Upload `release/huefinch-<version>.zip` (for 1.1.0: `release/huefinch-1.1.0.zip`), built by `npm run verify` or `npm run build && npm run zip`. Once the CI workflow has run on `main`, the same zip is attached to the **Huefinch <version>** GitHub Release. `manifest.json` is at the zip root; there are no source maps, and the same build always produces the same zip, byte for byte.
 - Code is bundled and **not minified**, so reviewers can read it directly. The `content/initial/*.js` files are one-line files (see "Notes for reviewers" below).
 
 ## Store listing tab
@@ -109,7 +109,7 @@ Adjust the colors of web pages so people with color vision deficiency can tell c
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `storage`                                             | Saves the user's settings (on/off, Correct or Simulate mode, type of color vision, strength) and the hostnames of sites where the user switched Huefinch off, in chrome.storage.local on the device. chrome.storage.sync is never used, and nothing is sent anywhere.                                                                                                                                                                                                                 |
 | `activeTab`                                           | If the user has not turned on automatic mode, Huefinch recolors a tab only after the user clicks the toolbar icon or presses the Alt+Shift+F shortcut. activeTab gives temporary access to that one tab, until it navigates away, without any standing host permission.                                                                                                                                                                                                               |
-| `scripting`                                           | Injects Huefinch's content script, which adds an SVG color filter (feColorMatrix) to the page, into the tab the user activated (chrome.scripting.executeScript). If, and only if, the user chooses "Turn on for all websites" and grants host access, registers the same script with chrome.scripting.registerContentScripts so every page is recolored as it loads; it is unregistered as soon as that access is removed.                                                            |
+| `scripting`                                           | Injects Huefinch's content script, which adds an SVG color filter (feColorMatrix) to the page, into the tab the user activated (chrome.scripting.executeScript). If, and only if, the user chooses "Turn on for all websites" and grants host access, registers the same script with chrome.scripting.registerContentScripts so every page, and the content embedded in it, is recolored as it loads; it is unregistered as soon as that access is removed.                           |
 | Optional host permissions `https://*/*`, `http://*/*` | Requested at runtime only, after the user clicks "Turn on for all websites" (onboarding, popup or settings). Lets the color filter apply automatically at document_start on every page, so colors are corrected before the page is shown, including pop-up dialogs and full-screen video. Huefinch never reads page content: the content script only adds the filter and listens for its own three key combinations. Never required at install; the user can turn it off at any time. |
 
 No other permissions are requested. `tabs`, `clipboardWrite`, `webRequest`, `declarativeNetRequest` and required host permissions are deliberately not used. The color identifier uses the browser's own EyeDropper (which needs a user gesture and shows its own picker) and copies the hex code with the standard Clipboard API.
@@ -160,13 +160,13 @@ No account, login or payment is needed. Everything is free and works offline.
 
 Please test on a normal web page with colors (for example a Wikipedia article with a chart or map). Chrome doesn't allow extensions on chrome:// pages or the Chrome Web Store.
 
-1. On install, a welcome page opens. "Turn on for all websites" asks for optional host access; with it, every page is recolored automatically from the first frame. If declined, click the Huefinch toolbar icon on a page: that tab is recolored until it navigates.
+1. On install, a welcome page opens. "Turn on for all websites" asks for optional host access; with it, every page (and content embedded in it) is recolored automatically from the first frame. If declined, click the Huefinch toolbar icon on a page: that tab is recolored until it navigates.
 2. Popup: master switch, Correct colors / Simulate, Red-/Green-/Blue-weak, Strength (or Severity) slider, "On for this site". Changes apply live. In Simulate mode a pill at the top of the page says "Simulating green-blind vision".
 3. Hold Alt+Shift+X on a page: original colors while held. Alt+Shift+F turns Huefinch on/off.
 4. Alt+Shift+C (or popup > "Identify a color", then click the page): the browser's eyedropper opens; click any color. A card names it ("Olive green"), shows the nearest CSS color and copies the hex code.
 5. Settings > Find my setting: mark color pairs that look alike; Huefinch suggests a type; a slider tunes the strength.
 
-Network: none. The content script never reads page content; it adds an SVG feColorMatrix filter and a style rule. Code is not minified.
+Network: none. The content script never reads page content; it adds an SVG feColorMatrix filter and a style rule. In frames from another website it does the same, using only the hostname of the page around it. Code is not minified.
 ```
 
 ## Notes for reviewers (and for us)

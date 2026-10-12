@@ -36,7 +36,8 @@ console.log(`${section}
 
 ---
 
-**Chrome Web Store upload:** \`${chrome}\`${sha(chrome)}
-**Microsoft Edge Add-ons upload:** \`${edge}\`${sha(edge)}
+**Chrome Web Store upload:** \`${chrome}\`${sha(chrome)}. How to publish it: [LAUNCH.md](https://github.com/wrenbox/wrenbox-extensions/blob/main/extensions/huefinch/LAUNCH.md).
 
-To try it before publishing: unzip it, open \`chrome://extensions\`, turn on **Developer mode**, click **Load unpacked** and select the unzipped folder.`);
+**Microsoft Edge Add-ons upload:** \`${edge}\`${sha(edge)}. How to publish it: [EDGE.md](https://github.com/wrenbox/wrenbox-extensions/blob/main/extensions/huefinch/EDGE.md).
+
+To try either before publishing: unzip it, open \`chrome://extensions\` (or \`edge://extensions\`), turn on **Developer mode**, click **Load unpacked** and select the unzipped folder.`);
