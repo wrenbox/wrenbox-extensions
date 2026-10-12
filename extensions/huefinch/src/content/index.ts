@@ -1,6 +1,8 @@
 /**
- * Huefinch content script. Runs in the top frame only, at document_start when
- * automatic mode is on, or when the user clicks the toolbar icon (activeTab).
+ * Huefinch content script. Runs at document_start in every frame when
+ * automatic mode is on, or in the tab the user clicked the toolbar icon on
+ * (activeTab). The top frame does the work; a frame below it recolors itself
+ * only when the top page's filter can't reach it (see frames.ts).
  *
  * It adds the color filter and listens for Huefinch's keys. It never reads
  * page text, images or the address beyond the hostname (for the per-site
@@ -13,8 +15,16 @@ import { siteKey, isOffOn } from '../shared/hostname';
 import { simulationLabel } from '../shared/labels';
 import { feColorMatrixValues, matrixFor } from '../shared/matrix';
 import type { ContentRequest, PingReply, WorkerRequest } from '../shared/messages';
-import { amountOf, applyChanges, sanitize, STORAGE_KEYS, type Settings } from '../shared/settings';
+import {
+  amountOf,
+  applyChanges,
+  sanitize,
+  SETTING_KEYS,
+  STORAGE_KEYS,
+  type Settings,
+} from '../shared/settings';
 import { PageFilter } from './filter';
+import { frameRole, topSiteOf } from './frames';
 import { PageUi, copyText } from './ui';
 
 interface EyeDropperResult {
@@ -33,18 +43,30 @@ if (!flag.__huefinch && isHtml) {
 }
 
 function start(): void {
-  const site = siteKey(location.hostname) || null;
+  const role = frameRole(window, navigator.userAgent);
+  if (role === 'covered') return;
+  const top = role === 'top';
+  // A frame follows the switch of the page it's embedded in.
+  const site = top
+    ? siteKey(location.hostname) || null
+    : topSiteOf(location.ancestorOrigins as unknown as string[]);
   // Known synchronously when registered with the initial-state files, so the
   // very first frame is already recolored; storage confirms a moment later.
-  let settings: Settings | null = settingsFromInitial(flag.__huefinchInitial);
+  // A frame waits for storage instead: the initial files can't know whether
+  // the page around it is switched off.
+  let settings: Settings | null = top ? settingsFromInitial(flag.__huefinchInitial) : null;
   /** Alt+Shift+X is held: show the original colors. */
   let holding = false;
   /** The eyedropper is open: show the original colors so the pick is the true color. */
   let picking = false;
+  /** In a frame: the top page is showing original colors (held key or eyedropper). */
+  let original = false;
   let reported: boolean | null = null;
+  let told = false;
 
   const filter = new PageFilter();
-  const ui = new PageUi(filter.root, { onPick: () => pick() });
+  // The pill, card and keys belong to the top page only.
+  const ui = top ? new PageUi(filter.root, { onPick: () => pick() }) : null;
 
   const active = (): boolean => !!settings && settings.enabled && !isOffOn(settings.offSites, site);
 
@@ -54,10 +76,11 @@ function start(): void {
     // At 0% the matrix is the identity: no filter at all, so no rendering cost.
     const amount = s ? amountOf(s) : 0;
     filter.set(
-      on && s && amount > 0 && !holding && !picking
+      on && s && amount > 0 && !holding && !picking && !original
         ? feColorMatrixValues(matrixFor(s.mode, s.type, amount))
         : null,
     );
+    if (!ui) return;
     let pill: string | null = null;
     if (on && s && !picking) {
       if (holding) pill = 'Showing original colors';
@@ -67,6 +90,12 @@ function start(): void {
     if (on !== reported) {
       reported = on;
       send({ type: 'state', applied: on });
+    }
+    // Frames that recolor themselves show their original colors along with the page.
+    const showOriginal = holding || picking;
+    if (showOriginal !== told) {
+      told = showOriginal;
+      send({ type: 'original', on: showOriginal });
     }
   }
 
@@ -80,6 +109,7 @@ function start(): void {
 
   /** Opens the browser's eyedropper with the filter removed, then shows the card. */
   function pick(): void {
+    if (!ui) return;
     ui.hide(false);
     const Dropper = (globalThis as { EyeDropper?: EyeDropperCtor }).EyeDropper;
     if (!Dropper) {
@@ -120,10 +150,22 @@ function start(): void {
     render();
   });
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local' || !settings) return;
+    // Only settings matter here (the popup also keeps its rating reminder in storage).
+    if (area !== 'local' || !settings || !SETTING_KEYS.some((k) => k in changes)) return;
     settings = applyChanges(settings, changes);
     render();
   });
+
+  if (!ui) {
+    // A frame: only follows the page's settings and its held key.
+    chrome.runtime.onMessage.addListener((msg: ContentRequest, sender) => {
+      if (sender.id !== chrome.runtime.id || msg.type !== 'original') return false;
+      original = msg.on;
+      render();
+      return false;
+    });
+    return;
+  }
 
   // --- Keys ----------------------------------------------------------------
   // Matched on the physical key (e.code), so they work on every keyboard
@@ -196,7 +238,7 @@ function start(): void {
     if (msg.type === 'ping') {
       reply({ huefinch: true, applied: active() } satisfies PingReply);
     } else if (msg.type === 'identify') {
-      ui.showOverlay();
+      ui!.showOverlay();
       reply({ ok: true });
     }
     return false;

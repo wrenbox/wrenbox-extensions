@@ -15,6 +15,8 @@ import { $, h } from '../shared/ui/dom';
 import { gearIcon, pickerIcon } from '../shared/ui/icons';
 import { browserName, keyLabel, toggleShortcut } from '../shared/ui/keys';
 import { switchControl, visionControls } from '../shared/ui/controls';
+import { currentStore, storeInSentence } from '../shared/store';
+import { countOpen, finishRating, shouldAsk } from './rate';
 
 let settings: Settings = await loadSettings();
 let tab: chrome.tabs.Tab | undefined = undefined; // set once the target tab is known
@@ -148,6 +150,44 @@ async function hints(): Promise<void> {
   );
 }
 
+// --- Rating (once) ----------------------------------------------------------------
+
+/**
+ * Huefinch is recoloring the page in front of the user right now, and the
+ * popup isn't already asking something else (the note's "Turn on for all
+ * websites"): one request at a time.
+ */
+const working = (): boolean =>
+  runnable &&
+  settings.enabled &&
+  !isOffOn(settings.offSites, site) &&
+  !!activation?.ok &&
+  $('#note').hidden === true;
+
+/**
+ * Counts this open, then asks once, to someone who keeps coming back, while
+ * Huefinch is visibly doing its job on this page. Store installs only: an
+ * unpacked copy has no listing to send anyone to.
+ */
+async function maybeAskForRating(): Promise<void> {
+  const store = await currentStore();
+  if (!store) return;
+  const state = await countOpen();
+  if (!working() || !shouldAsk(state, Date.now())) return;
+  $('#rate-store').textContent = storeInSentence(store);
+  $('#rate-yes').addEventListener('click', async () => {
+    await finishRating(state);
+    await chrome.tabs.create({ url: store.reviewUrl });
+    window.close();
+  });
+  $('#rate-no').addEventListener('click', async () => {
+    await finishRating(state);
+    $('#rate').hidden = true;
+    settingsBtn.focus();
+  });
+  $('#rate').hidden = false;
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') return;
   settings = applyChanges(settings, changes);
@@ -167,3 +207,4 @@ if (runnable && tab?.id !== undefined) {
   activation = await send<ActivateResult>({ type: 'activate', tabId: tab.id });
   render();
 }
+await maybeAskForRating().catch(() => undefined);

@@ -16,6 +16,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "node scripts/build.mjs && playwright test",
+    "test:e2e:edge": "node scripts/build.mjs && HUEFINCH_BROWSER=edge playwright test",
     "audit:network": "node scripts/audit-network.mjs",
     "audit:permissions": "node scripts/audit-permissions.mjs",
     "zip": "node scripts/zip.mjs",

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nested frames</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: rgb(0, 0, 255);
+      }
+      iframe {
+        position: absolute;
+        left: 0;
+        width: 150px;
+        height: 100px;
+        border: 0;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Served from the other origin: frame.html is this frame's own origin, and
+         __OTHER__ is the top page's origin. -->
+    <iframe style="top: 0" title="Red block, this frame's origin" src="frame.html"></iframe>
+    <iframe
+      style="top: 120px"
+      title="Red block, the top page's origin"
+      src="__OTHER__/frame.html"
+    ></iframe>
+  </body>
+</html>

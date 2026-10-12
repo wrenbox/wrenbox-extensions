@@ -9,6 +9,12 @@ export const PROFILE_TEMPLATE = join(OUTPUT, 'profile-template');
 export const TEMPLATE_INFO = join(OUTPUT, 'profile-template.json');
 export const EXTENSION_NAME = 'Huefinch – Color Blind Filter & Color Identifier';
 
+/**
+ * The browser the suite drives: Playwright's Chromium by default, or real
+ * Microsoft Edge with HUEFINCH_BROWSER=edge (`npm run test:e2e:edge`).
+ */
+export const CHANNEL = process.env.HUEFINCH_BROWSER === 'edge' ? 'msedge' : 'chromium';
+
 export function chromeArgs(): string[] {
   return [
     `--disable-extensions-except=${DIST}`,

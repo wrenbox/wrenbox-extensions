@@ -34,6 +34,12 @@ export const DEFAULTS: Readonly<Settings> = Object.freeze({
 export const SETTING_KEYS = Object.keys(DEFAULTS) as Array<keyof Settings>;
 export const STORAGE_KEYS = ['schemaVersion', ...SETTING_KEYS] as const;
 
+/**
+ * Stored next to the settings but not one of them: the one-time rating
+ * request's reminder (see popup/rate.ts). Migration keeps it.
+ */
+export const RATE_KEY = 'ratePrompt';
+
 type Raw = Record<string, unknown>;
 
 /**
@@ -86,7 +92,7 @@ export function migrate(stored: Raw): MigrationResult {
   // and anything it stored that this version doesn't know about.
   const newer = from > SCHEMA_VERSION;
   if (!newer && stored.schemaVersion !== SCHEMA_VERSION) write.schemaVersion = SCHEMA_VERSION;
-  const known = new Set<string>(STORAGE_KEYS);
+  const known = new Set<string>([...STORAGE_KEYS, RATE_KEY]);
   const remove = newer ? [] : Object.keys(stored).filter((k) => !known.has(k));
   return { settings, write, remove };
 }

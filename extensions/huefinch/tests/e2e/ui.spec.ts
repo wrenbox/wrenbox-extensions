@@ -9,6 +9,11 @@ import {
   test,
   expect,
 } from './helpers';
+import { CHANNEL } from './paths';
+
+/** The browser the suite runs in, as Huefinch names it. */
+const BROWSER =
+  CHANNEL === 'msedge' ? { name: 'Edge', scheme: 'edge' } : { name: 'Chrome', scheme: 'chrome' };
 
 const STUDIO = 'Made by Wrenbox: small, private tools for your browser.';
 
@@ -130,9 +135,9 @@ test.describe('with access', () => {
     await expect(page.locator('#toggle-key')).toHaveText('Alt+Shift+F');
     const [shortcuts] = await Promise.all([
       ext.ctx.waitForEvent('page'),
-      page.getByRole('button', { name: 'Open Chrome shortcuts' }).click(),
+      page.getByRole('button', { name: `Open ${BROWSER.name} shortcuts` }).click(),
     ]);
-    await expect.poll(() => shortcuts.url()).toBe('chrome://extensions/shortcuts');
+    await expect.poll(() => shortcuts.url()).toBe(`${BROWSER.scheme}://extensions/shortcuts`);
     expect(ext.errors).toEqual([]);
   });
 
